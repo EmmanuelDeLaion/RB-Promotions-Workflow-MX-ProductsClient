@@ -9,7 +9,7 @@ import {
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
 import * as strings from 'PromoFormWebPartWebPartStrings';
-import { IPromoFormProps, PromoForm } from '../../core/components/PromoForm';
+import { IPromoFormLinkProps, PromoFormLink } from '../../core/components/PromoForm';
 import { sp } from '@pnp/sp';
 
 export interface IPromoFormWebPartWebPartProps {
@@ -29,8 +29,8 @@ export default class PromoFormWebPartWebPart extends BaseClientSideWebPart <IPro
   }
 
   public render(): void {
-    const element: React.ReactElement<IPromoFormProps> = React.createElement(
-      PromoForm,
+    const element: React.ReactElement<IPromoFormLinkProps> = React.createElement(
+      PromoFormLink,
       {
         context: this.context
       }
@@ -38,6 +38,10 @@ export default class PromoFormWebPartWebPart extends BaseClientSideWebPart <IPro
 
     ReactDom.render(element, this.domElement);
   }
+
+  private openPromoFormDialog(): void{
+    console.log("Open promo form...");
+}
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);

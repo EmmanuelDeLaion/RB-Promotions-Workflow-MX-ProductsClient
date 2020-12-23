@@ -1,29 +1,18 @@
-import { Promo } from "../model/Promo";
-import { sp } from "@pnp/sp/presets/all";
+import { Promo } from "../model/Promo/Promo";
+import { PromoViewModel } from "../model/Promo/PromoViewModel";
+import { PromoRepository } from "../data/PromoRepository";
 
-export class PromoService {
-    static LIST_NAME: string = "Promociones";
+export class PromoService { 
 
-    //TODO: Revisar si hay que mejorar los mensajes de error
-    public static GetById(id: number): Promise<Promo> {
-      const entity = sp.web.lists.getByTitle(PromoService.LIST_NAME)
-        .items.getById(id).fieldValuesAsText.get().then((item) => {      
-          return PromoService.BuildEntity(item);
-        }, (error) => {
-          console.error(error.message);
-        });
+  private static async GetPromo(itemId?: number): Promise<Promo> {
+    return itemId ? await PromoRepository.GetById(itemId) : new Promo();
+  }
 
-      return entity;
-    }
+  public static async GetViewModel(itemId?: number): Promise<PromoViewModel> {
+    return (await this.GetPromo(itemId)).GetViewModel();
+  }
 
-    static BuildEntity(item: any): Promo {
-      let entity = new Promo();
-
-      entity.ItemId = item.ID;
-      entity.PromoID = item.PromoID;
-      entity.Name = item.Title;
-      entity.Description = item.Description;
-
-      return entity;
-    }
+  public static async Save(entity: Promo): Promise<void> {
+    return (await this.GetPromo(entity.ItemId)).ExecuteAction1(entity);
+  }
 }
