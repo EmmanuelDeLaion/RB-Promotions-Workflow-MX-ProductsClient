@@ -3,9 +3,16 @@
   "solution": {
     "name": "rb-workflow-promociones-client-side-solution",
     "id": "46966589-82f7-457e-9b9d-68325a5c982c",
-    "version": "1.0.0.0",
+    "version": "1.0.0.2",
     "includeClientSideAssets": true,
-    "isDomainIsolated": false
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": ""
+    }
   },
   "paths": {
     "zippedPackage": "solution/rb-workflow-promociones.sppkg"
