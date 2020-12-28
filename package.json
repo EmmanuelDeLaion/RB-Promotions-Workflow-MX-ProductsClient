@@ -7,9 +7,13 @@
     "node": ">=0.10.0"
   },
   "scripts": {
+    "serve": "gulp serve",
+    "serve-sgiovannini": "gulp serve --config=sgiovannini",
     "build": "gulp bundle",
     "clean": "gulp clean",
-    "test": "gulp test"
+    "test": "gulp test",
+    "build-package": "gulp bundle && gulp package-solution",
+    "build-package-production": "gulp bundle --production && gulp package-solution --production"
   },
   "dependencies": {
     "@microsoft/sp-core-library": "1.11.0",

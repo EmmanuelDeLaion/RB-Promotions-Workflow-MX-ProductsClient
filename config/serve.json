@@ -5,6 +5,9 @@
   "serveConfigurations":{
     "default":{
       "pageUrl": "https://spme.sharepoint.com/sites/RB-Promociones/_layouts/workbench.aspx"
+    },
+    "sgiovannini":{
+      "pageUrl": "https://sgiovannini.sharepoint.com/sites/RB-Promociones/_layouts/workbench.aspx"
     }
   },
   "initialPage": "https://localhost:5432/workbench",
