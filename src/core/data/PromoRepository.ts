@@ -4,6 +4,7 @@ import { Client } from "../model/Common";
 import { PromoStatus } from "../model/Promo";
 import { Promo } from "../model/Promo/Promo";
 import { DraftPromoState } from "../model/Promo/PromoStates/DraftPromoState";
+import { PromoItemRepository } from "./PromoItemRepository";
 
 export class PromoRepository {
     private static LIST_NAME: string = "Promociones";
@@ -12,7 +13,7 @@ export class PromoRepository {
     //TODO: Optimizar consulta
     public static GetById(id: number): Promise<Promo> {
       const entity = sp.web.lists.getByTitle(PromoRepository.LIST_NAME)
-        .items.getById(id).select("ID", "PromoID","Title", "ActivityObjective", "ClientId", "StatusId").get().then((item) => { 
+        .items.getById(id).select("ID", "Title", "ActivityObjective", "ClientId", "StatusId").get().then((item) => { 
             console.log(item);
             if(item.ClientId){
               return ClientRepository.GetById(item.ClientId).then((client) => {
@@ -28,7 +29,6 @@ export class PromoRepository {
 
     public static async SaveOrUpdate(entity: Promo): Promise<void> {
       const data = {        
-        Title: entity.Name,
         ActivityObjective: entity.ActivityObjective,
         ClientId: entity.Client ? entity.Client.ItemId : null,
         Status: entity.GetStatusText(),
@@ -39,26 +39,28 @@ export class PromoRepository {
         const iar: IItemAddResult = await sp.web.lists.getByTitle(PromoRepository.LIST_NAME).items.add(data);
 
         //TODO: Obtener prefijo de país desde configuración
+        entity.ItemId = iar.data.ID;
+        entity.PromoID = "MX" + iar.data.ID;
+        
         await sp.web.lists.getByTitle(PromoRepository.LIST_NAME).items.getById(iar.data.ID).update({
-          PromoID: "MX" + iar.data.ID
+          Title: entity.PromoID
         });
       } 
       else
         await sp.web.lists.getByTitle(PromoRepository.LIST_NAME).items.getById(entity.ItemId).update(data);
+
+      await PromoItemRepository.SaveOrUpdateItems(entity.ItemId, entity.PromoID, entity.Items);
     }
 
     private static BuildEntity(item: any, client?: Client): Promo {
       let entity = new Promo();
 
       entity.ItemId = item.ID;
-      entity.PromoID = item.PromoID;
-      entity.Name = item.Title;
+      entity.PromoID = item.Title;
       entity.ActivityObjective = item.ActivityObjective;
       entity.Client = client;
 
       entity.ChangeState(parseInt(item.StatusId));
-
-
 
       return entity;
     }

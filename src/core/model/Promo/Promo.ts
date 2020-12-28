@@ -2,12 +2,13 @@ import { Entity } from "../../infrastructure";
 import { Client } from "../Common";
 import { NewPromoState, PromoState, DraftPromoState } from "./PromoStates";
 import { PromoStatus, PromoViewModel } from "./";
+import { PromoItem } from "./PromoItem";
 
 export class Promo extends Entity {
-    public PromoID: string;
-    public Name: string;
+    public PromoID: string = "MX--";
     public ActivityObjective: string;
     public Client: Client;
+    public Items: PromoItem[] = [new PromoItem()];
 
     protected _state: PromoState;
 

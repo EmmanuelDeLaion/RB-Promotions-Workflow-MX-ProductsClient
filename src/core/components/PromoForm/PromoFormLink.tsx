@@ -3,6 +3,7 @@ import { ExtensionContext } from "@microsoft/sp-extension-base";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { PromoFormDialog } from '.';
 import { TextField } from "office-ui-fabric-react";
+import { CommonHelper } from "../../common/CommonHelper";
 
 export interface IPromoFormLinkProps{
     context: ExtensionContext | WebPartContext;
@@ -20,8 +21,9 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, {}> {
     }
 
     private openPromoFormDialog(): void{
-        var dialog: PromoFormDialog = new PromoFormDialog();
-        dialog.title = "Nueva promoción";
+        var itemId = CommonHelper.getParameterByName("ItemId");
+        var dialog: PromoFormDialog = new PromoFormDialog(!isNaN(parseFloat(itemId)) ? parseFloat(itemId) : null);
+        //dialog.title = "Nueva promoción";
         dialog.context = this.props.context;
         dialog.show();
     }

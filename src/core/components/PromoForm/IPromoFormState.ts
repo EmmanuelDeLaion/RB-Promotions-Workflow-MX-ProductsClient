@@ -8,4 +8,6 @@ export interface IPromoFormState {
     resultIsOK: boolean;
     viewModel?: PromoViewModel;
     errorMessage?: string; 
+    selectedIndex: number;
+    loadingTypes: boolean;
 }

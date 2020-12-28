@@ -2,6 +2,8 @@ import { baseElementEvents } from "office-ui-fabric-react";
 import { Promo } from "..";
 import { Constants } from "../../..";
 import { ClientRepository, PromoRepository } from "../../../data";
+import { CategoriesRepository as CategoryRepository } from "../../../data/CategoryRepository";
+import { TypeRepository } from "../../../data/TypeRepository";
 import { PromoStatus } from "../PromoStatus";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoState } from "./PromoState";
@@ -19,6 +21,7 @@ export class NewPromoState extends PromoState {
         let viewModel = new PromoViewModel(this.Entity);
 
         viewModel.Clients = await ClientRepository.GetClients();
+        viewModel.Categories = await CategoryRepository.GetAll();
 
         return viewModel;
     }    

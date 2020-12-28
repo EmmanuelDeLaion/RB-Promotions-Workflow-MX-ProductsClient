@@ -1,6 +1,8 @@
 import { Promo } from "../model/Promo/Promo";
 import { PromoViewModel } from "../model/Promo/PromoViewModel";
 import { PromoRepository } from "../data/PromoRepository";
+import { TypeRepository } from "../data/TypeRepository";
+import { Type } from "../model/Common";
 
 export class PromoService { 
 
@@ -14,5 +16,9 @@ export class PromoService {
 
   public static async Save(entity: Promo): Promise<void> {
     return (await this.GetPromo(entity.ItemId)).ExecuteAction1(entity);
+  }
+
+  public static async GetTypesByCategory(categoryId: number): Promise<Type[]> {
+    return await TypeRepository.GetByCategory(categoryId);
   }
 }

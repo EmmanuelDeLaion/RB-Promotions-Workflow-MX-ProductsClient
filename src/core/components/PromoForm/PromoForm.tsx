@@ -15,7 +15,7 @@ import {
   } from 'office-ui-fabric-react';
 import { Promo } from '../../model/Promo/Promo';
 import styles from './PromoForm.module.scss';
-import { Client } from '../../model/Common';
+import { Category, Client, Type } from '../../model/Common';
 import { ClientRepository } from '../../data';
 
 export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState> {    
@@ -27,7 +27,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             hasValidationError: false,
             enableSubmit: false,
             formSubmitted: false,
-            resultIsOK: false
+            resultIsOK: false,
+            selectedIndex: 0,
+            loadingTypes: false
         };
     }
 
@@ -51,6 +53,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         const headOfChannel = channel ? channel.HeadOfChannel : null;
         const kam = client ? client.KeyAccountManager : null;
         const subchannel = client ? client.Subchannel : null;
+        const selectedItem = entity ? entity.Items[this.state.selectedIndex] : null;
 
         var output = 
             <DialogContent
@@ -70,6 +73,18 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             const clients: Array<{ key: number, text: string }> =
                 this.state.viewModel.Clients != null ?
                     (this.state.viewModel.Clients as Array<Client>).map((item): { key: number, text: string } => {
+                        return { key: item.ItemId, text: item.Name };
+                    }) : [];
+
+            const categories: Array<{ key: number, text: string }> =
+                this.state.viewModel.Categories != null ?
+                    (this.state.viewModel.Categories as Array<Client>).map((item): { key: number, text: string } => {
+                        return { key: item.ItemId, text: item.Name };
+                    }) : [];
+                        
+            const types: Array<{ key: number, text: string }> =
+                this.state.viewModel.Types != null ?
+                    (this.state.viewModel.Types as Array<Client>).map((item): { key: number, text: string } => {
                         return { key: item.ItemId, text: item.Name };
                     }) : [];
 
@@ -93,7 +108,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField 
                                         label="Promo ID:"
                                         readOnly={true}
-                                        defaultValue={entity.PromoID || "--"}
+                                        value={entity.PromoID}
                                     />
                                 </td>
                                 <td colSpan={3}>&nbsp;</td>
@@ -101,18 +116,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField 
                                         label="Estado:"
                                         readOnly={true}
-                                        defaultValue={entity.GetStatusText()}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={6}>
-                                    <TextField 
-                                        label="Nombre:" 
-                                        required={true} 
-                                        autoComplete='off'
-                                        onChanged={this.onNameChanged.bind(this)}
-                                        defaultValue={entity.Name}
+                                        value={entity.GetStatusText()}
                                     />
                                 </td>
                             </tr>
@@ -123,7 +127,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         required={true} 
                                         multiline={true}
                                         onChanged={this.onActivityObjectiveChanged.bind(this)}
-                                        defaultValue={entity.ActivityObjective}
+                                        value={entity.ActivityObjective}
                                     />
                                 </td>
                             </tr>
@@ -144,14 +148,14 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <td colSpan={3}>
                                     <TextField 
                                         label="Cabeza de canal:" 
-                                        defaultValue={headOfChannel ? headOfChannel.Value : null}
+                                        value={headOfChannel ? headOfChannel.Value : null}
                                         readOnly={true}
                                     />
                                 </td>
                                 <td colSpan={3}>
                                     <TextField 
                                         label="Gerente/Kam (LP):" 
-                                        defaultValue={kam ? kam.Value : null}
+                                        value={kam ? kam.Value : null}
                                         readOnly={true}
                                     />
                                 </td>
@@ -169,6 +173,67 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         label="SubCanal:"
                                         defaultValue={subchannel ? subchannel.Value : null} 
                                         readOnly={true}
+                                    />
+                                </td>
+                            </tr>
+                        </table>
+                        <ul style={{paddingLeft:'5px', marginBottom: '0px'}}>
+                            {entity.Items.map((item, index) => { return (
+                                <li style={{display:'inline', minWidth: '50px', fontWeight: index == this.state.selectedIndex ? 'bold' : 'inherit'}}>
+                                    <a onClick={this.changeSelectedItem.bind(this, index)} style={{cursor: 'pointer'}}>{entity.PromoID}.{index + 1} | </a>
+                                </li>
+                            );})}
+                            <li style={{display:'inline', minWidth: '50px'}}>
+                                <a style={{cursor: 'pointer'}}> + | </a>
+                            </li>
+                        </ul>
+                        <table style={{width:'100%'}}>
+                            <tr>
+                                <td style={{width:'100px'}}></td>
+                                <td style={{width:'100px'}}></td>
+                                <td style={{width:'100px'}}></td>
+                                <td style={{width:'100px'}}></td>
+                                <td style={{width:'100px'}}></td>
+                                <td style={{width:'100px'}}></td>   
+                            </tr>
+                            <tr>
+                                <td colSpan={3}>
+                                    <TextField 
+                                        label="Descripción corta:"
+                                        onChanged={this.onShortDescriptionChanged.bind(this)}
+                                        value={selectedItem ? selectedItem.ShortDescription : null} 
+                                        required={true}
+                                    />
+                                </td>
+                                <td colSpan={3}>
+                                    <Dropdown
+                                        placeholder="Seleccione una categoría"
+                                        label="Categoria de la Promoción (LD):"
+                                        options={categories}
+                                        selectedKey={selectedItem.Category ? selectedItem.Category.ItemId : null}
+                                        onChanged={this.onCategoryChanged.bind(this)}
+                                        required={true}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={3}>
+                                    <TextField 
+                                        label="Inversión ($):"
+                                        onChanged={this.onInvestmentChanged.bind(this)}
+                                        value={selectedItem ? selectedItem.InvestmentAsString() : null} 
+                                        required={true}
+                                    />
+                                </td>
+                                <td colSpan={3}>
+                                    <Dropdown
+                                        placeholder="Seleccione una tipo"
+                                        label="Tipo de Promocion (LD):"
+                                        options={types}
+                                        disabled={this.state.loadingTypes || types.length === 0}
+                                        selectedKey={selectedItem.Type ? selectedItem.Type.ItemId : null}
+                                        onChanged={this.onTypeChanged.bind(this)}
+                                        required={true}
                                     />
                                 </td>
                             </tr>
@@ -200,12 +265,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         return output;  
     }
 
-    private onNameChanged(text: any) {
-        this.setState((prevState) => {
-          prevState.viewModel.Entity.Name = text;    
-          return prevState;
-        });
-    }
+    //#region Header events
 
     private onActivityObjectiveChanged(text: any) {
         this.setState((state) => {
@@ -230,7 +290,64 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         });
     }
 
+    //#endregion
+
+    private changeSelectedItem(index: number) {
+        this.setState({
+            selectedIndex: index
+        });
+    }
+
+    private onShortDescriptionChanged(text: any) {
+        this.setState((state) => {
+            state.viewModel.Entity.Items[this.state.selectedIndex].ShortDescription = text;    
+            return state;
+        });
+    }
+
+    private onCategoryChanged(item: IDropdownOption) {
+        const category = this.state.viewModel.Categories.filter(x => x.ItemId === item.key as number)[0];
+
+        this.setState({loadingTypes: true});
+        this.setState((state) => {            
+            state.viewModel.Entity.Items[this.state.selectedIndex].Category = category;
+            state.viewModel.Entity.Items[this.state.selectedIndex].Type = null;
+            return state;
+        });
+
+        PromoService.GetTypesByCategory(category.ItemId).then((types: Type[]) => {
+            this.setState({loadingTypes: false});
+            this.setState((state) => {
+                state.viewModel.Types = types;
+                return state;
+            });            
+        });        
+    }
+
+    private onInvestmentChanged(text: any) {
+        this.setState((state) => {
+            state.viewModel.Entity.Items[this.state.selectedIndex].Investment = !isNaN(parseInt(text)) ? parseInt(text) : null;    
+            return state;
+        });
+        //this.forceUpdate();
+    }
+
+    private onTypeChanged(item: IDropdownOption) {
+        const type = this.state.viewModel.Types.filter(x => x.ItemId === item.key as number)[0];
+
+        this.setState((state) => {            
+            state.viewModel.Entity.Items[this.state.selectedIndex].Type = type;
+            return state;
+        });
+    }
+
     private submit() {
+        console.log(this.state.viewModel.Entity);
+
+        this.setState({
+        enableSubmit:false
+        });
+
         PromoService.Save(this.state.viewModel.Entity).then(() => {
             this.setState({
                 formSubmitted: true,
