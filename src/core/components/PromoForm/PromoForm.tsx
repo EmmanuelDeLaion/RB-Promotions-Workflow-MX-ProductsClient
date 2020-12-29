@@ -11,12 +11,14 @@ import {
     IShimmerStyles,
     DialogFooter,
     Dropdown,
-    IDropdownOption
+    IDropdownOption,
+    Toggle
   } from 'office-ui-fabric-react';
 import { Promo } from '../../model/Promo/Promo';
 import styles from './PromoForm.module.scss';
-import { Category, Client, Type } from '../../model/Common';
+import { Category, Client, Product, Type } from '../../model/Common';
 import { ClientRepository } from '../../data';
+import { PromoItem } from '../../model/Promo';
 
 export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState> {    
 
@@ -88,6 +90,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         return { key: item.ItemId, text: item.Name };
                     }) : [];
 
+            const products: Array<{ key: number, text: string }> =
+                this.state.viewModel.Products != null ?
+                    (this.state.viewModel.Products as Array<Product>).map((item): { key: number, text: string } => {
+                        return { key: item.ItemId, text: item.SKUNumber + ' - ' + item.SKUDescription };
+                    }) : [];
+
             output =
                 <DialogContent
                 title={this.props.title}
@@ -125,9 +133,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField 
                                         label="Objetivo de la actividad:" 
                                         required={true} 
-                                        multiline={true}
+                                        multiline={false}
                                         onChanged={this.onActivityObjectiveChanged.bind(this)}
-                                        value={entity.ActivityObjective}
+                                        value={entity.ActivityObjective} 
+                                        autoComplete="Off"
                                     />
                                 </td>
                             </tr>
@@ -180,11 +189,14 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         <ul style={{paddingLeft:'5px', marginBottom: '0px'}}>
                             {entity.Items.map((item, index) => { return (
                                 <li style={{display:'inline', minWidth: '50px', fontWeight: index == this.state.selectedIndex ? 'bold' : 'inherit'}}>
-                                    <a onClick={this.changeSelectedItem.bind(this, index)} style={{cursor: 'pointer'}}>{entity.PromoID}.{index + 1} | </a>
+                                    <a onClick={this.changeSelectedItem.bind(this, index)} style={{cursor: 'pointer'}}>{item.AdditionalID} | </a>
                                 </li>
                             );})}
                             <li style={{display:'inline', minWidth: '50px'}}>
-                                <a style={{cursor: 'pointer'}}> + | </a>
+                                <a onClick={this.AddPromoItem.bind(this)} style={{cursor: 'pointer'}}> + | </a>
+                            </li>
+                            <li style={{display: entity.Items.length > 1 ? 'inline' : 'none', minWidth: '50px'}}>
+                                <a onClick={this.RemovePromoItem.bind(this)} style={{cursor: 'pointer'}}> - | </a>
                             </li>
                         </ul>
                         <table style={{width:'100%'}}>
@@ -197,14 +209,17 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <td style={{width:'100px'}}></td>   
                             </tr>
                             <tr>
-                                <td colSpan={3}>
+                                <td colSpan={6}>
                                     <TextField 
                                         label="Descripción corta:"
                                         onChanged={this.onShortDescriptionChanged.bind(this)}
                                         value={selectedItem ? selectedItem.ShortDescription : null} 
                                         required={true}
+                                        autoComplete="Off"
                                     />
                                 </td>
+                            </tr>
+                            <tr>
                                 <td colSpan={3}>
                                     <Dropdown
                                         placeholder="Seleccione una categoría"
@@ -215,16 +230,17 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         required={true}
                                     />
                                 </td>
-                            </tr>
-                            <tr>
                                 <td colSpan={3}>
                                     <TextField 
                                         label="Inversión ($):"
                                         onChanged={this.onInvestmentChanged.bind(this)}
                                         value={selectedItem ? selectedItem.InvestmentAsString() : null} 
                                         required={true}
+                                        autoComplete="Off"
                                     />
                                 </td>
+                            </tr>
+                            <tr>
                                 <td colSpan={3}>
                                     <Dropdown
                                         placeholder="Seleccione una tipo"
@@ -234,6 +250,51 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         selectedKey={selectedItem.Type ? selectedItem.Type.ItemId : null}
                                         onChanged={this.onTypeChanged.bind(this)}
                                         required={true}
+                                    />
+                                </td>
+                                <td colSpan={2}>&nbsp;</td>
+                                <td colSpan={1}>
+                                    <Toggle 
+                                        label="Actividad topada" 
+                                        onText="Si" 
+                                        offText="No" 
+                                        onChange={this.onCappedActivityChanged.bind(this)} 
+                                        checked={selectedItem.CappedActivity}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={3}>
+                                    <TextField 
+                                        label="BU:"
+                                        value={selectedItem.Product ? selectedItem.Product.BusinessUnit : null}
+                                        readOnly={true}
+                                    />
+                                </td>
+                                <td colSpan={3}>
+                                    <TextField 
+                                        label="Marca:"
+                                        value={selectedItem.Product ? selectedItem.Product.Brand : null}
+                                        readOnly={true}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={3}>
+                                    <Dropdown
+                                        placeholder="Seleccione un producto"
+                                        label="SKU:"
+                                        options={products}
+                                        selectedKey={selectedItem.Product ? selectedItem.Product.ItemId : null}
+                                        onChanged={this.onProductChanged.bind(this)}
+                                        required={true}
+                                    />
+                                </td>
+                                <td colSpan={3}>
+                                    <TextField 
+                                        label="Categoria:"
+                                        value={selectedItem.Product ? selectedItem.Product.Category : null}
+                                        readOnly={true}
                                     />
                                 </td>
                             </tr>
@@ -292,10 +353,49 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     //#endregion
 
+    private AddPromoItem() {
+        let items = this.state.viewModel.Entity.Items;
+        const index = items.length + 1;
+        
+        items.push(new PromoItem({AdditionalID: this.state.viewModel.Entity.PromoID + "." + index}));
+
+        this.setState((state) => {
+            let newState = state as IPromoFormState;
+            newState.viewModel.Entity.Items = items;
+            newState.selectedIndex = items.length - 1;
+            return newState;
+        });        
+    }
+
+    private RemovePromoItem() {
+        let items = this.state.viewModel.Entity.Items;
+
+        items.splice(-1,1);
+
+        this.setState((state) => {
+            let newState = state as IPromoFormState;
+            newState.viewModel.Entity.Items = items;
+            newState.selectedIndex = 0;
+            return newState;
+        });        
+    }
+
     private changeSelectedItem(index: number) {
         this.setState({
-            selectedIndex: index
+            selectedIndex: index,
+            loadingTypes: true
         });
+
+        const category = this.state.viewModel.Entity.Items[index].Category;
+        if(category != null)    {
+            PromoService.GetTypesByCategory(category.ItemId).then((types: Type[]) => {
+                this.setState({loadingTypes: false});
+                this.setState((state) => {
+                    state.viewModel.Types = types;
+                    return state;
+                });            
+            });
+        }
     }
 
     private onShortDescriptionChanged(text: any) {
@@ -329,14 +429,29 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             state.viewModel.Entity.Items[this.state.selectedIndex].Investment = !isNaN(parseInt(text)) ? parseInt(text) : null;    
             return state;
         });
-        //this.forceUpdate();
     }
 
-    private onTypeChanged(item: IDropdownOption) {
+    private onTypeChanged(item: IDropdownOption) {        
         const type = this.state.viewModel.Types.filter(x => x.ItemId === item.key as number)[0];
 
         this.setState((state) => {            
             state.viewModel.Entity.Items[this.state.selectedIndex].Type = type;
+            return state;
+        });
+    }
+
+    private onCappedActivityChanged(ev: React.MouseEvent<HTMLElement>, checked: boolean) {
+        this.setState((state) => {            
+            state.viewModel.Entity.Items[this.state.selectedIndex].CappedActivity = checked;
+            return state;
+        });
+    }
+
+    private onProductChanged(item: IDropdownOption) {        
+        const product = this.state.viewModel.Products.filter(x => x.ItemId === item.key as number)[0];
+
+        this.setState((state) => {            
+            state.viewModel.Entity.Items[this.state.selectedIndex].Product = product;
             return state;
         });
     }

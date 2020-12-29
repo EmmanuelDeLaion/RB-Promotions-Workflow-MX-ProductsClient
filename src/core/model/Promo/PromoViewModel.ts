@@ -1,5 +1,5 @@
 import { FieldDisplayMode, LookupValue } from "../../infrastructure";
-import { Category, Client, Type } from "../Common";
+import { Category, Client, Product, Type } from "../Common";
 import { Promo } from "./Promo";
 
 export class PromoViewModel {
@@ -24,6 +24,7 @@ export class PromoViewModel {
     public Clients: Client[];
     public Categories: Category[];
     public Types: Type[];
+    public Products: Product[];
 
     //#endregion
 }

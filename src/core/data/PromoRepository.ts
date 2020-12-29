@@ -1,7 +1,7 @@
 import { IItemAddResult, sp } from "@pnp/sp/presets/all";
 import { ClientRepository } from ".";
 import { Client } from "../model/Common";
-import { PromoStatus } from "../model/Promo";
+import { PromoItem, PromoStatus } from "../model/Promo";
 import { Promo } from "../model/Promo/Promo";
 import { DraftPromoState } from "../model/Promo/PromoStates/DraftPromoState";
 import { PromoItemRepository } from "./PromoItemRepository";
@@ -11,20 +11,14 @@ export class PromoRepository {
 
     //TODO: Revisar el manejo de excepciones y mensajes de error
     //TODO: Optimizar consulta
-    public static GetById(id: number): Promise<Promo> {
-      const entity = sp.web.lists.getByTitle(PromoRepository.LIST_NAME)
-        .items.getById(id).select("ID", "Title", "ActivityObjective", "ClientId", "StatusId").get().then((item) => { 
-            console.log(item);
-            if(item.ClientId){
-              return ClientRepository.GetById(item.ClientId).then((client) => {
-                return PromoRepository.BuildEntity(item, client);
-              });            
-            }    
-            else
-              return PromoRepository.BuildEntity(item);      
-        });
+    public static async GetById(id: number): Promise<Promo> {
+      const item = await sp.web.lists.getByTitle(PromoRepository.LIST_NAME)
+        .items.getById(id).select("ID", "Title", "ActivityObjective", "ClientId", "StatusId").get();  
+        
+      const items = await PromoItemRepository.GetByPromo(item.ID);
+      const client = item.ClientId ? await ClientRepository.GetById(item.ClientId) : null;
 
-      return entity;
+      return PromoRepository.BuildEntity(item, items, client);
     }
 
     public static async SaveOrUpdate(entity: Promo): Promise<void> {
@@ -52,15 +46,17 @@ export class PromoRepository {
       await PromoItemRepository.SaveOrUpdateItems(entity.ItemId, entity.PromoID, entity.Items);
     }
 
-    private static BuildEntity(item: any, client?: Client): Promo {
+    private static BuildEntity(item: any, items: PromoItem[], client?: Client): Promo {
+
       let entity = new Promo();
 
       entity.ItemId = item.ID;
       entity.PromoID = item.Title;
       entity.ActivityObjective = item.ActivityObjective;
       entity.Client = client;
+      entity.Items = items;
 
-      entity.ChangeState(parseInt(item.StatusId));
+      entity.ChangeState(parseInt(item.StatusId));      
 
       return entity;
     }

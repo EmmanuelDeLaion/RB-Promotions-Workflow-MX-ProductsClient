@@ -8,7 +8,7 @@ export class Promo extends Entity {
     public PromoID: string = "MX--";
     public ActivityObjective: string;
     public Client: Client;
-    public Items: PromoItem[] = [new PromoItem()];
+    public Items: PromoItem[] = [new PromoItem({AdditionalID: this.PromoID + ".1"})];
 
     protected _state: PromoState;
 
