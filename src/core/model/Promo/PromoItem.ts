@@ -9,6 +9,8 @@ export class PromoItem extends Entity {
     public Type: Type;
     public CappedActivity: boolean = false;
     public Product: Product;
+    public StartDate: Date;
+    public EndDate: Date;
 
     public constructor(init?:Partial<PromoItem>) {
         super();
@@ -17,5 +19,15 @@ export class PromoItem extends Entity {
 
     public InvestmentAsString():string {
         return this.Investment != null ? this.Investment.toString() : null;
+    }
+
+    public StartDateAsString():string {
+        //TODO: Implementar
+        return this.StartDate.toDateString();
+    }
+
+    public EndDateAsString():string {
+        //TODO: Implementar
+        return this.StartDate.toDateString();
     }
 }
