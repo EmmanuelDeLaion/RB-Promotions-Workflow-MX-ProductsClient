@@ -12,13 +12,17 @@ import {
     DialogFooter,
     Dropdown,
     IDropdownOption,
-    Toggle
+    Toggle,
+    DayOfWeek,
+    DatePicker
   } from 'office-ui-fabric-react';
 import { Promo } from '../../model/Promo/Promo';
 import styles from './PromoForm.module.scss';
 import { Category, Client, Product, Type } from '../../model/Common';
 import { ClientRepository } from '../../data';
 import { PromoItem } from '../../model/Promo';
+import { Constants } from '../../Constants';
+require('../PromoForm/PromoForm.overrides.scss');
 
 export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState> {    
 
@@ -97,10 +101,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     }) : [];
 
             output =
-                <DialogContent
-                title={this.props.title}
-                onDismiss={this.props.close}
-                showCloseButton={true}>
+                <DialogContent                    
+                    title={this.props.title}
+                    onDismiss={this.props.close}
+                    showCloseButton={true}>
                     <div className={styles.promoForm}>
                         <table style={{width:'100%'}}>
                             <tr>
@@ -298,6 +302,30 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     />
                                 </td>
                             </tr>
+                            <tr style={{display:"none"}}>
+                                <td colSpan={3}>
+                                    <DatePicker
+                                        label="Fecha comienzo"
+                                        firstDayOfWeek={DayOfWeek.Sunday}
+                                        strings={Constants.Miscellaneous.DayPickerStrings}
+                                        placeholder="Seleccione una fecha..."
+                                        ariaLabel="Seleccione una fecha"
+                                        value={selectedItem.StartDate!}
+                                        onSelectDate={this.onSelectStartDate.bind(this)}                                      
+                                    />
+                                </td>
+                                <td colSpan={3}>
+                                    <DatePicker
+                                        label="Fecha fin"
+                                        firstDayOfWeek={DayOfWeek.Sunday}
+                                        strings={Constants.Miscellaneous.DayPickerStrings}
+                                        placeholder="Seleccione una fecha..."
+                                        ariaLabel="Seleccione una fecha"
+                                        value={selectedItem.EndDate!}
+                                        onSelectDate={this.onSelectEndDate.bind(this)}
+                                    />
+                                </td>
+                            </tr>
                         </table>
                     </div>
                     <DialogFooter>
@@ -455,6 +483,22 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             return state;
         });
     }
+
+    private onSelectStartDate (date: Date | null | undefined): void {
+        console.log(date);
+        this.setState((state) => {            
+            state.viewModel.Entity.Items[this.state.selectedIndex].StartDate = date;
+            return state;
+        });
+    };
+
+    private onSelectEndDate (date: Date | null | undefined): void {
+        console.log(date);
+        this.setState((state) => {            
+            state.viewModel.Entity.Items[this.state.selectedIndex].EndDate = date;
+            return state;
+        });
+    };
 
     private submit() {
         console.log(this.state.viewModel.Entity);

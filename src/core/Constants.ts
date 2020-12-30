@@ -1,3 +1,5 @@
+import { IDatePickerStrings } from "office-ui-fabric-react";
+
 export namespace Constants {
     export class StatusTexts{
         public static NewPromo = "Nueva promoción";
@@ -6,5 +8,37 @@ export namespace Constants {
     
     export class Messages {
         public static NotAllowedAction = "Esta acción no está permitida debido al estado actual de la promoción";
+    }
+
+    export class Miscellaneous{
+        public static DayPickerStrings: IDatePickerStrings = {
+            months: [
+              'Enero',
+              'Febrero',
+              'Marzo',
+              'Abril',
+              'Mayo',
+              'Junio',
+              'Julio',
+              'Agosto',
+              'Septiembre',
+              'Octubre',
+              'Noviembre',
+              'Diciembre',
+            ],
+          
+            shortMonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+          
+            days: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+          
+            shortDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+          
+            goToToday: 'It a hoy',
+            prevMonthAriaLabel: 'Ir al mes anterior',
+            nextMonthAriaLabel: 'Ir al mes siguiente',
+            prevYearAriaLabel: 'Ir al año anterior',
+            nextYearAriaLabel: 'Ir al año siguiente',
+            closeButtonAriaLabel: 'Cerrar'
+          };
     }
 }
