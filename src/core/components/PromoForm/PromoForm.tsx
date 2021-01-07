@@ -490,7 +490,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             state.viewModel.Entity.Items[this.state.selectedIndex].StartDate = date;
             return state;
         });
-    };
+    }
 
     private onSelectEndDate (date: Date | null | undefined): void {
         console.log(date);
@@ -498,7 +498,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             state.viewModel.Entity.Items[this.state.selectedIndex].EndDate = date;
             return state;
         });
-    };
+    }
 
     private submit() {
         console.log(this.state.viewModel.Entity);
