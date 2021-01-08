@@ -5,6 +5,7 @@ import {
     PromoRepository,
     CategoryRepository,
     ProductRepository,
+    MasterDataRepository,
 } from "../../../data";
 import { PromoStatus } from "../PromoStatus";
 import { PromoViewModel } from "../PromoViewModel";
@@ -24,6 +25,9 @@ export class NewPromoState extends PromoState {
 
         viewModel.Clients = await ClientRepository.GetClients();
         viewModel.Categories = await CategoryRepository.GetAll();
+        viewModel.BusinessUnits = await MasterDataRepository.GetBusinessUnits();
+        viewModel.Brands = await MasterDataRepository.GetBrands();
+        viewModel.ProductCategories = await MasterDataRepository.GetProductCategories();
         viewModel.Products = await ProductRepository.GetAll();
 
         return viewModel;

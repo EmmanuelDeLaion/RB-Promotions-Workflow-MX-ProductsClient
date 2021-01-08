@@ -6,7 +6,7 @@ export class CategoryRepository {
 
     public static GetById(id: number): Promise<Category> {
         const entity = sp.web.lists.getByTitle(CategoryRepository.LIST_NAME)
-          .items.getById(id).select("ID", "Title").get().then((item) => {      
+          .items.getById(id).select("ID", "Title", "RequiresInvestment").get().then((item) => {
             return CategoryRepository.BuildEntity(item);
           });
   
@@ -16,11 +16,11 @@ export class CategoryRepository {
     public static async GetAll():Promise<Category[]>
     {
         const collection = sp.web.lists.getByTitle(CategoryRepository.LIST_NAME)
-            .items.select("ID", "Title").get().then((items) => { 
+            .items.select("ID", "Title", "RequiresInvestment").get().then((items) => { 
                 return items.map((item) => {                     
                     return CategoryRepository.BuildEntity(item);
                 });
-            });        
+            });
 
         return collection;
     }
@@ -30,6 +30,7 @@ export class CategoryRepository {
   
         entity.ItemId = item.ID;
         entity.Name = item.Title;
+        entity.RequiresInvestment = item.RequiresInvestment;
 
         return entity;
     }

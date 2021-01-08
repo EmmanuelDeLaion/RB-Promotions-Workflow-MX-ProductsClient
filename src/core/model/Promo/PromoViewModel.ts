@@ -24,6 +24,9 @@ export class PromoViewModel {
     public Clients: Client[];
     public Categories: Category[];
     public Types: Type[];
+    public BusinessUnits: LookupValue[];
+    public Brands: LookupValue[];
+    public ProductCategories: LookupValue[];
     public Products: Product[];
 
     //#endregion

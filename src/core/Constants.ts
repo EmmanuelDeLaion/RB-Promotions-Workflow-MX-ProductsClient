@@ -31,9 +31,9 @@ export namespace Constants {
           
             days: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
           
-            shortDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            shortDays: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
           
-            goToToday: 'It a hoy',
+            goToToday: 'Ir a hoy',
             prevMonthAriaLabel: 'Ir al mes anterior',
             nextMonthAriaLabel: 'Ir al mes siguiente',
             prevYearAriaLabel: 'Ir al año anterior',

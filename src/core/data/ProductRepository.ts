@@ -6,7 +6,16 @@ export class ProductRepository {
 
     public static GetById(id: number): Promise<Product> {
         const entity = sp.web.lists.getByTitle(ProductRepository.LIST_NAME)
-          .items.getById(id).select("ID", "Title", "SKUDescription", "BusinessUnit", "Brand", "Category").get().then((item) => {      
+          .items.getById(id).select(
+              "ID", 
+              "Title", 
+              "SKUDescription", 
+              "BusinessUnit/ID",
+              "BusinessUnit/Title",
+              "Brand/ID",
+              "Brand/Title",
+              "ProductCategory/ID",
+              "ProductCategory/Title").expand("BusinessUnit", "Brand", "ProductCategory").get().then((item) => {      
             return ProductRepository.BuildEntity(item);
           });
   
@@ -16,11 +25,20 @@ export class ProductRepository {
     public static async GetAll():Promise<Product[]>
     {
         const collection = sp.web.lists.getByTitle(ProductRepository.LIST_NAME)
-            .items.select("ID", "Title", "SKUDescription", "BusinessUnit", "Brand", "Category").get().then((items) => { 
+            .items.select(
+                "ID", 
+                "Title", 
+                "SKUDescription", 
+                "BusinessUnit/ID",
+                "BusinessUnit/Title", 
+                "Brand/ID",
+                "Brand/Title",
+                "ProductCategory/ID",
+                "ProductCategory/Title").expand("BusinessUnit", "Brand", "ProductCategory").get().then((items) => { 
                 return items.map((item) => {                     
                     return ProductRepository.BuildEntity(item);
                 });
-            });        
+            });
 
         return collection;
     }
@@ -31,9 +49,9 @@ export class ProductRepository {
         entity.ItemId = item.ID;
         entity.SKUNumber = item.Title;
         entity.SKUDescription = item.SKUDescription;
-        entity.BusinessUnit = item.BusinessUnit;
-        entity.Brand = item.Brand;
-        entity.Category = item.Category;
+        entity.BusinessUnit = item.BusinessUnit ? { ItemId: item.BusinessUnit.ID, Value: item.BusinessUnit.Title } : null;
+        entity.Brand = item.Brand ? { ItemId: item.Brand.ID, Value: item.Brand.Title } : null;
+        entity.Category = item.ProductCategory ? { ItemId: item.ProductCategory.ID, Value: item.ProductCategory.Title } : null;
 
         return entity;
     }

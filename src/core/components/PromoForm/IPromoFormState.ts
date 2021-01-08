@@ -1,3 +1,4 @@
+import { Product } from "../../model/Common";
 import { PromoViewModel } from "../../model/Promo/PromoViewModel";
 
 export interface IPromoFormState {
@@ -10,4 +11,5 @@ export interface IPromoFormState {
     errorMessage?: string; 
     selectedIndex: number;
     loadingTypes: boolean;
+    filteredProducts: Product[];
 }

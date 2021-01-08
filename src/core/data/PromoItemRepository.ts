@@ -1,6 +1,7 @@
 import { sp } from "@pnp/sp/presets/all";
-import { Product, Type } from "../model/Common";
+import { Category, Product, Type } from "../model/Common";
 import { PromoItem } from "../model/Promo";
+import { CategoryRepository } from "./CategoryRepository";
 import { ProductRepository } from "./ProductRepository";
 
 export class PromoItemRepository {
@@ -10,21 +11,30 @@ export class PromoItemRepository {
     {
         const items = await sp.web.lists.getByTitle(PromoItemRepository.LIST_NAME)
             .items.select(
-                    "ID", 
-                    "Title", 
-                    "ShortDescription",
-                    "Category/ID", 
-                    "Category/Title", 
-                    "Investment",
-                    "Type/ID", 
-                    "Type/Title", 
-                    "CappedActivity", 
-                    "ProductId").expand("Category", "Type").filter(`PromoId eq ${promoId}`).get();
+                "ID", 
+                "Title", 
+                "ShortDescription",
+                "CategoryId",
+                "Investment",
+                "Type/ID", 
+                "Type/Title", 
+                "CappedActivity",
+                "BusinessUnit/ID",
+                "BusinessUnit/Title",
+                "Brand/ID",
+                "Brand/Title",
+                "ProductCategory/ID",
+                "ProductCategory/Title",
+                "ProductId",
+                "StartDate",
+                "EndDate"
+            ).expand("Type", "BusinessUnit", "Brand", "ProductCategory").filter(`PromoId eq ${promoId}`).get();
         
         //TODO: revisar y mejorar este query
         const collection = items.map(async (item) => { 
+            const category = item.CategoryId ? await CategoryRepository.GetById(item.CategoryId) : null;
             const product = item.ProductId ? await ProductRepository.GetById(item.ProductId) : null;
-            return PromoItemRepository.BuildEntity(item, product);
+            return PromoItemRepository.BuildEntity(item, category, product);
         });       
 
         return Promise.all(collection);
@@ -47,7 +57,12 @@ export class PromoItemRepository {
                 Investment: entity.Investment,
                 TypeId: entity.Type ? entity.Type.ItemId : null,
                 CappedActivity: entity.CappedActivity,
-                ProductId: entity.Product ? entity.Product.ItemId : null
+                BusinessUnitId: entity.BusinessUnit ? entity.BusinessUnit.ItemId: null,
+                BrandId: entity.Brand ? entity.Brand.ItemId : null,
+                ProductCategoryId: entity.ProductCategory ? entity.ProductCategory.ItemId : null,
+                ProductId: entity.Product ? entity.Product.ItemId : null,
+                StartDate: entity.StartDate,
+                EndDate: entity.EndDate
             };
 
             if(entity.ItemId)
@@ -59,19 +74,22 @@ export class PromoItemRepository {
         await batch.execute();
     }
 
-    private static BuildEntity(item: any, product?: Product): PromoItem {
+    private static BuildEntity(item: any, category?: Category, product?: Product): PromoItem {
         let entity = new PromoItem();
   
         entity.ItemId = item.ID;
         entity.AdditionalID = item.Title;
         entity.ShortDescription = item.ShortDescription;
-        entity.Category = item.Category ? { ItemId: item.Category.ID, Name: item.Category.Title } : null;
+        entity.Category = category;
         entity.Investment = item.Investment;
         entity.Type = item.Type ? { ItemId: item.Type.ID, Name: item.Type.Title } : null;
         entity.CappedActivity = item.CappedActivity;
+        entity.BusinessUnit = item.BusinessUnit ? { ItemId: item.BusinessUnit.ID, Value: item.BusinessUnit.Title } : null;
+        entity.Brand = item.Brand ? { ItemId: item.Brand.ID, Value: item.Brand.Title } : null;
+        entity.ProductCategory = item.ProductCategory ? { ItemId: item.ProductCategory.ID, Value: item.ProductCategory.Title } : null;
         entity.Product = product;
-
-        console.log(entity);
+        entity.StartDate = new Date(item.StartDate);
+        entity.EndDate = new Date(item.EndDate);
   
         return entity;
     }

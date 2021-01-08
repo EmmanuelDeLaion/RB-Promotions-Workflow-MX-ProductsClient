@@ -14,7 +14,8 @@ import {
     IDropdownOption,
     Toggle,
     DayOfWeek,
-    DatePicker
+    DatePicker,
+    Label
   } from 'office-ui-fabric-react';
 import { Promo } from '../../model/Promo/Promo';
 import styles from './PromoForm.module.scss';
@@ -22,6 +23,8 @@ import { Category, Client, Product, Type } from '../../model/Common';
 import { ClientRepository } from '../../data';
 import { PromoItem } from '../../model/Promo';
 import { Constants } from '../../Constants';
+import { LookupValue } from '../../infrastructure';
+import { ProductSelector } from '../ProductSelector/ProductSelector';
 require('../PromoForm/PromoForm.overrides.scss');
 
 export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState> {    
@@ -35,12 +38,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             formSubmitted: false,
             resultIsOK: false,
             selectedIndex: 0,
-            loadingTypes: false
+            loadingTypes: false,
+            filteredProducts: []
         };
     }
 
     public componentDidMount() {
-        PromoService.GetViewModel(this.props.itemId).then((viewModel) => {
+        PromoService.GetViewModel(this.props.itemId).then((viewModel) => {           
             this.setState({
                 isLoading: false,
                 enableSubmit: true,
@@ -50,7 +54,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             console.error(err);
             this.setState({ formSubmitted: true, isLoading: false, errorMessage: err});
         });
-    }
+    }    
 
     public render(): React.ReactElement<IPromoFormProps> {
         const entity = this.state.viewModel ? this.state.viewModel.Entity : null;
@@ -60,6 +64,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         const kam = client ? client.KeyAccountManager : null;
         const subchannel = client ? client.Subchannel : null;
         const selectedItem = entity ? entity.Items[this.state.selectedIndex] : null;
+
+        console.log(selectedItem);
 
         var output = 
             <DialogContent
@@ -84,14 +90,32 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
             const categories: Array<{ key: number, text: string }> =
                 this.state.viewModel.Categories != null ?
-                    (this.state.viewModel.Categories as Array<Client>).map((item): { key: number, text: string } => {
+                    (this.state.viewModel.Categories as Array<Category>).map((item): { key: number, text: string } => {
                         return { key: item.ItemId, text: item.Name };
                     }) : [];
                         
             const types: Array<{ key: number, text: string }> =
                 this.state.viewModel.Types != null ?
-                    (this.state.viewModel.Types as Array<Client>).map((item): { key: number, text: string } => {
+                    (this.state.viewModel.Types as Array<Type>).map((item): { key: number, text: string } => {
                         return { key: item.ItemId, text: item.Name };
+                    }) : [];
+
+            const businessUnits: Array<{ key: number, text: string }> =
+                this.state.viewModel.BusinessUnits != null ?
+                    (this.state.viewModel.BusinessUnits as Array<LookupValue>).map((item): { key: number, text: string } => {
+                        return { key: item.ItemId, text: item.Value };
+                    }) : [];
+
+            const brands: Array<{ key: number, text: string }> =
+                this.state.viewModel.Brands != null ?
+                    (this.state.viewModel.Brands as Array<LookupValue>).map((item): { key: number, text: string } => {
+                        return { key: item.ItemId, text: item.Value };
+                    }) : [];
+
+            const productCategories: Array<{ key: number, text: string }> =
+                this.state.viewModel.ProductCategories != null ?
+                    (this.state.viewModel.ProductCategories as Array<LookupValue>).map((item): { key: number, text: string } => {
+                        return { key: item.ItemId, text: item.Value };
                     }) : [];
 
             const products: Array<{ key: number, text: string }> =
@@ -99,6 +123,11 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     (this.state.viewModel.Products as Array<Product>).map((item): { key: number, text: string } => {
                         return { key: item.ItemId, text: item.SKUNumber + ' - ' + item.SKUDescription };
                     }) : [];
+            
+            const onFormatDate = (date?: Date): string => {
+                console.log(date);
+                return !date ? '' : ("0" + date.getDate()).slice(-2) + '/' + ("0" + (date.getMonth() + 1)).slice(-2) + '/' + (date.getFullYear());
+            };
 
             output =
                 <DialogContent                    
@@ -241,13 +270,14 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         value={selectedItem ? selectedItem.InvestmentAsString() : null} 
                                         required={true}
                                         autoComplete="Off"
+                                        disabled={!selectedItem.Category || !selectedItem.Category.RequiresInvestment }
                                     />
                                 </td>
                             </tr>
                             <tr>
                                 <td colSpan={3}>
                                     <Dropdown
-                                        placeholder="Seleccione una tipo"
+                                        placeholder="Seleccione un tipo"
                                         label="Tipo de Promocion (LD):"
                                         options={types}
                                         disabled={this.state.loadingTypes || types.length === 0}
@@ -269,60 +299,68 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             </tr>
                             <tr>
                                 <td colSpan={3}>
-                                    <TextField 
+                                    <Dropdown
+                                        placeholder="Seleccione un negocio"
                                         label="BU:"
-                                        value={selectedItem.Product ? selectedItem.Product.BusinessUnit : null}
-                                        readOnly={true}
+                                        options={businessUnits}
+                                        selectedKey={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.ItemId : null}
+                                        onChanged={this.onBusinessUnitChanged.bind(this)}
+                                        required={true}
                                     />
                                 </td>
                                 <td colSpan={3}>
-                                    <TextField 
+                                    <Dropdown
+                                        placeholder="Seleccione una marca"
                                         label="Marca:"
-                                        value={selectedItem.Product ? selectedItem.Product.Brand : null}
-                                        readOnly={true}
+                                        options={brands}
+                                        selectedKey={selectedItem.Brand ? selectedItem.Brand.ItemId : null}
+                                        onChanged={this.onBrandChanged.bind(this)}
+                                        required={true}
                                     />
                                 </td>
                             </tr>
                             <tr>
                                 <td colSpan={3}>
-                                    <Dropdown
-                                        placeholder="Seleccione un producto"
-                                        label="SKU:"
-                                        options={products}
-                                        selectedKey={selectedItem.Product ? selectedItem.Product.ItemId : null}
+                                    <ProductSelector 
+                                        products={this.GetFilteredProducts()}
                                         onChanged={this.onProductChanged.bind(this)}
+                                        value={selectedItem.Product}
+                                    />
+                                </td>
+                                <td colSpan={3}>
+                                    <Dropdown
+                                        placeholder="Seleccione una categoría"
+                                        label="Categoría:"
+                                        options={productCategories}
+                                        selectedKey={selectedItem.ProductCategory ? selectedItem.ProductCategory.ItemId : null}
+                                        onChanged={this.onProductCategoryChanged.bind(this)}
                                         required={true}
                                     />
                                 </td>
-                                <td colSpan={3}>
-                                    <TextField 
-                                        label="Categoria:"
-                                        value={selectedItem.Product ? selectedItem.Product.Category : null}
-                                        readOnly={true}
-                                    />
-                                </td>
                             </tr>
-                            <tr style={{display:"none"}}>
+                            <tr>
                                 <td colSpan={3}>
                                     <DatePicker
                                         label="Fecha comienzo"
-                                        firstDayOfWeek={DayOfWeek.Sunday}
+                                        firstDayOfWeek={DayOfWeek.Monday}
                                         strings={Constants.Miscellaneous.DayPickerStrings}
                                         placeholder="Seleccione una fecha..."
                                         ariaLabel="Seleccione una fecha"
                                         value={selectedItem.StartDate!}
-                                        onSelectDate={this.onSelectStartDate.bind(this)}                                      
+                                        onSelectDate={this.onSelectStartDate.bind(this)}   
+                                        formatDate={onFormatDate}                                   
                                     />
                                 </td>
                                 <td colSpan={3}>
                                     <DatePicker
                                         label="Fecha fin"
-                                        firstDayOfWeek={DayOfWeek.Sunday}
+                                        firstDayOfWeek={DayOfWeek.Monday}
                                         strings={Constants.Miscellaneous.DayPickerStrings}
                                         placeholder="Seleccione una fecha..."
                                         ariaLabel="Seleccione una fecha"
                                         value={selectedItem.EndDate!}
                                         onSelectDate={this.onSelectEndDate.bind(this)}
+                                        formatDate={onFormatDate}
                                     />
                                 </td>
                             </tr>
@@ -435,12 +473,17 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     private onCategoryChanged(item: IDropdownOption) {
         const category = this.state.viewModel.Categories.filter(x => x.ItemId === item.key as number)[0];
+        const investment = this.state.viewModel.Entity.Items[this.state.selectedIndex].Investment;
 
-        this.setState({loadingTypes: true});
-        this.setState((state) => {            
-            state.viewModel.Entity.Items[this.state.selectedIndex].Category = category;
-            state.viewModel.Entity.Items[this.state.selectedIndex].Type = null;
-            return state;
+        this.setState((prevState) => { 
+            let newState = prevState as IPromoFormState;
+
+            newState.loadingTypes = true;
+            newState.viewModel.Entity.Items[this.state.selectedIndex].Category = category;
+            newState.viewModel.Entity.Items[this.state.selectedIndex].Type = null;
+            newState.viewModel.Entity.Items[this.state.selectedIndex].Investment = category.RequiresInvestment ? investment : null;
+
+            return newState;
         });
 
         PromoService.GetTypesByCategory(category.ItemId).then((types: Type[]) => {
@@ -475,11 +518,60 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         });
     }
 
-    private onProductChanged(item: IDropdownOption) {        
-        const product = this.state.viewModel.Products.filter(x => x.ItemId === item.key as number)[0];
+    private GetFilteredProducts(): Product[] {
+        const selectedItem = this.state.viewModel.Entity.Items[this.state.selectedIndex];
+        let filteredProducts = this.state.viewModel.Products;
+        
+        if(selectedItem.BusinessUnit)
+            filteredProducts = filteredProducts.filter(x => x.BusinessUnit.ItemId === selectedItem.BusinessUnit.ItemId);
+
+        if(selectedItem.Brand)
+            filteredProducts = filteredProducts.filter(x => x.Brand.ItemId === selectedItem.Brand.ItemId);
+
+        if(selectedItem.ProductCategory)
+            filteredProducts = filteredProducts.filter(x => x.Category.ItemId === selectedItem.ProductCategory.ItemId);
+
+        return filteredProducts;
+    }
+
+    private onBusinessUnitChanged(item: IDropdownOption) {        
+        const businessUnit = this.state.viewModel.BusinessUnits.filter(x => x.ItemId === item.key as number)[0];
+
+        this.setState((state) => {         
+            state.viewModel.Entity.Items[this.state.selectedIndex].Product = null;
+            state.viewModel.Entity.Items[this.state.selectedIndex].BusinessUnit = businessUnit;
+            return state;
+        });
+    }
+
+    private onBrandChanged(item: IDropdownOption) {        
+        const brand = this.state.viewModel.Brands.filter(x => x.ItemId === item.key as number)[0];
+
+        this.setState((state) => {  
+            state.viewModel.Entity.Items[this.state.selectedIndex].Product = null;
+            state.viewModel.Entity.Items[this.state.selectedIndex].Brand = brand;
+            return state;
+        });
+    }
+
+    private onProductCategoryChanged(item: IDropdownOption) {        
+        const productCategory = this.state.viewModel.ProductCategories.filter(x => x.ItemId === item.key as number)[0];
+
+        this.setState((state) => {      
+            state.viewModel.Entity.Items[this.state.selectedIndex].Product = null;      
+            state.viewModel.Entity.Items[this.state.selectedIndex].ProductCategory = productCategory;
+            return state;
+        });
+    }
+
+    private onProductChanged(productId: number) {         
+        const product = this.state.viewModel.Products.filter(x => x.ItemId === productId)[0];
 
         this.setState((state) => {            
             state.viewModel.Entity.Items[this.state.selectedIndex].Product = product;
+            state.viewModel.Entity.Items[this.state.selectedIndex].BusinessUnit = product.BusinessUnit;
+            state.viewModel.Entity.Items[this.state.selectedIndex].Brand = product.Brand;
+            state.viewModel.Entity.Items[this.state.selectedIndex].ProductCategory = product.Category;
             return state;
         });
     }
@@ -490,7 +582,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             state.viewModel.Entity.Items[this.state.selectedIndex].StartDate = date;
             return state;
         });
-    };
+    }
 
     private onSelectEndDate (date: Date | null | undefined): void {
         console.log(date);
@@ -498,7 +590,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             state.viewModel.Entity.Items[this.state.selectedIndex].EndDate = date;
             return state;
         });
-    };
+    }
 
     private submit() {
         console.log(this.state.viewModel.Entity);
@@ -527,5 +619,5 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             }
           ]
         };
-      }
+    }
 }

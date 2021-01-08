@@ -5,3 +5,4 @@ export * from './ChannelRepository';
 export * from './TypeRepository';
 export * from './PromoItemRepository';
 export * from './ProductRepository';
+export * from './MasterDataRepository';

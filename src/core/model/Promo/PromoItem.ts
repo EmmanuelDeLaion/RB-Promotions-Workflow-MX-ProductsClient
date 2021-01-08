@@ -1,4 +1,4 @@
-import { Entity } from "../../infrastructure";
+import { Entity, LookupValue } from "../../infrastructure";
 import { Category, Product, Type } from "../Common";
 
 export class PromoItem extends Entity {
@@ -8,6 +8,9 @@ export class PromoItem extends Entity {
     public Investment?: number;
     public Type: Type;
     public CappedActivity: boolean = false;
+    public BusinessUnit: LookupValue;
+    public Brand: LookupValue;
+    public ProductCategory: LookupValue;
     public Product: Product;
     public StartDate: Date;
     public EndDate: Date;

@@ -1,6 +1,13 @@
 import { Promo, PromoStatus } from "..";
 import { Constants } from "../../..";
-import { CategoryRepository, ClientRepository, ProductRepository, PromoRepository, TypeRepository } from "../../../data";
+import { 
+    CategoryRepository, 
+    ClientRepository, 
+    MasterDataRepository, 
+    ProductRepository, 
+    PromoRepository, 
+    TypeRepository 
+} from "../../../data";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoState } from "./PromoState";
 
@@ -18,6 +25,9 @@ export class DraftPromoState extends PromoState {
 
         viewModel.Clients = await ClientRepository.GetClients();
         viewModel.Categories = await CategoryRepository.GetAll();
+        viewModel.BusinessUnits = await MasterDataRepository.GetBusinessUnits();
+        viewModel.Brands = await MasterDataRepository.GetBrands();
+        viewModel.ProductCategories = await MasterDataRepository.GetProductCategories();
         viewModel.Products = await ProductRepository.GetAll();
         
         if(this.Entity.Items.length > 0 && this.Entity.Items[0].Category)
