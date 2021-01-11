@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DialogContent, autobind } from 'office-ui-fabric-react';
+import { DialogContent } from 'office-ui-fabric-react';
 import styles from './PromoForm.module.scss';
 
 export interface IPromoFormResultResultProps {
