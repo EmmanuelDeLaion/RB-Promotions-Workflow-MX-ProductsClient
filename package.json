@@ -27,10 +27,12 @@
     "@types/react": "16.8.8",
     "@types/react-dom": "16.8.3",
     "@types/webpack-env": "1.13.1",
-    "office-ui-fabric-react": "6.189.2",
+    "office-ui-fabric-react": "^7.0.0",
     "react": "16.8.5",
     "react-dom": "16.8.5",
-    "react-select": "^3.1.1"
+    "react-select": "^3.1.1",
+    "@fluentui/react-tabs": "^0.6.21",
+    "@uifabric/example-data": "^7.1.5"
   },
   "resolutions": {
     "@types/react": "16.8.8"

@@ -168,7 +168,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         label="Objetivo de la actividad:" 
                                         required={true} 
                                         multiline={false}
-                                        onChanged={this.onActivityObjectiveChanged.bind(this)}
+                                        onChange={this.onActivityObjectiveChange.bind(this)}
                                         value={entity.ActivityObjective} 
                                         autoComplete="Off"
                                         errorMessage={this.getValidationErrorMessage(entity.ActivityObjective)}
@@ -213,7 +213,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField 
                                         label="Canal (LP):" 
                                         className={styles.readOnlyInput}
-                                        defaultValue={channel ? channel.Name : null}
+                                        value={channel ? channel.Name : null}
                                         readOnly={true}
                                     />
                                 </td>
@@ -221,7 +221,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField 
                                         label="SubCanal:"
                                         className={styles.readOnlyInput}
-                                        defaultValue={subchannel ? subchannel.Value : null} 
+                                        value={subchannel ? subchannel.Value : null} 
                                         readOnly={true}
                                     />
                                 </td>
@@ -253,7 +253,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <td colSpan={6}>
                                     <TextField 
                                         label="Descripción corta:"
-                                        onChanged={this.onShortDescriptionChanged.bind(this)}
+                                        onChange={this.onShortDescriptionChange.bind(this)}
                                         value={selectedItem ? selectedItem.ShortDescription : null} 
                                         required={true}
                                         autoComplete="Off"
@@ -277,13 +277,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <td colSpan={3} style={{verticalAlign: "top"}}>
                                     <TextField 
                                         label="Inversión ($):"
-                                        onChanged={this.onInvestmentChanged.bind(this)}
+                                        onChange={this.onInvestmentChange.bind(this)}
                                         value={selectedItem ? selectedItem.InvestmentAsString() : null} 
                                         required={selectedItem.RequiresInvestment()}
                                         autoComplete="Off"
                                         disabled={!selectedItem.RequiresInvestment() }
                                         errorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage(selectedItem.Investment) : null}
-                                        onGetErrorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString }}
+                                        onGetErrorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
                                     />
                                 </td>
                             </tr>
@@ -485,7 +485,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     //#region Header events
 
-    private onActivityObjectiveChanged(text: any) {
+    private onActivityObjectiveChange(event: any, text: any) {
         this.setState((state) => {
           state.viewModel.Entity.ActivityObjective = text;    
           return state;
@@ -502,8 +502,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
         ClientRepository.GetById(clientId).then((client) => {
             this.setState((state) => {
-                state.viewModel.Entity.Client = client;
-                return state;
+                let newState = state as IPromoFormState;
+                newState.viewModel.Entity.Client = client;
+                return newState;
             });
         });
     }
@@ -561,7 +562,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     //#region Promo item - General
 
-    private onShortDescriptionChanged(text: any) {
+    private onShortDescriptionChange(event: any, text: any) {
         this.setState((state) => {
             state.viewModel.Entity.Items[this.state.selectedIndex].ShortDescription = text;    
             return state;
@@ -592,7 +593,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         });        
     }
 
-    private onInvestmentChanged(text: any) {
+    private onInvestmentChange(event: any, text: any) {
         this.setState((state) => {
             state.viewModel.Entity.Items[this.state.selectedIndex].Investment = !isNaN(parseInt(text)) ? parseInt(text) : null;    
             return state;
@@ -678,7 +679,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     }
 
     private onSelectStartDate (date: Date | null | undefined): void {
-        console.log(date);
         this.setState((state) => {            
             state.viewModel.Entity.Items[this.state.selectedIndex].StartDate = date;
             return state;
@@ -686,7 +686,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     }
 
     private onSelectEndDate (date: Date | null | undefined): void {
-        console.log(date);
         this.setState((state) => {            
             state.viewModel.Entity.Items[this.state.selectedIndex].EndDate = date;
             return state;
@@ -744,7 +743,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             if(item.Product == null) invalidCount++;
             if(item.ProductCategory == null) invalidCount++;
             if(!CommonHelper.IsDate(item.StartDate)) invalidCount++;
-            if(!CommonHelper.IsDate(item.EndDate)) invalidCount++
+            if(!CommonHelper.IsDate(item.EndDate)) invalidCount++;
         });
 
         this.setState({ hasValidationError: invalidCount > 0});
