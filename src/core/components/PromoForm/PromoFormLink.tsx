@@ -39,5 +39,5 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, {}> {
     //     dialog.context = this.props.context;
     //     dialog.show();
     // }
-}
+    //}
 }
