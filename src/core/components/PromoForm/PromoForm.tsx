@@ -25,6 +25,7 @@ import { PromoItem } from '../../model/Promo';
 import { Constants } from '../../Constants';
 import { LookupValue } from '../../infrastructure';
 import { ProductSelector } from '../ProductSelector/ProductSelector';
+import { CommonHelper } from '../../common/CommonHelper';
 require('../PromoForm/PromoForm.overrides.scss');
 
 export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState> {    
@@ -65,8 +66,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         const subchannel = client ? client.Subchannel : null;
         const selectedItem = entity ? entity.Items[this.state.selectedIndex] : null;
 
-        console.log(selectedItem);
-
         var output = 
             <DialogContent
                 title={this.props.title}
@@ -82,6 +81,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             </DialogContent>;
 
         if (!this.state.isLoading && !this.state.formSubmitted) {
+
+            //#region Collections
+
             const clients: Array<{ key: number, text: string }> =
                 this.state.viewModel.Clients != null ?
                     (this.state.viewModel.Clients as Array<Client>).map((item): { key: number, text: string } => {
@@ -123,11 +125,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     (this.state.viewModel.Products as Array<Product>).map((item): { key: number, text: string } => {
                         return { key: item.ItemId, text: item.SKUNumber + ' - ' + item.SKUDescription };
                     }) : [];
-            
-            const onFormatDate = (date?: Date): string => {
-                console.log(date);
-                return !date ? '' : ("0" + date.getDate()).slice(-2) + '/' + ("0" + (date.getMonth() + 1)).slice(-2) + '/' + (date.getFullYear());
-            };
+
+            //#endregion
 
             output =
                 <DialogContent                    
@@ -148,6 +147,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <td colSpan={1}>
                                     <TextField 
                                         label="Promo ID:"
+                                        className={styles.readOnlyInput}
                                         readOnly={true}
                                         value={entity.PromoID}
                                     />
@@ -156,6 +156,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <td colSpan={2}>
                                     <TextField 
                                         label="Estado:"
+                                        className={styles.readOnlyInput}
                                         readOnly={true}
                                         value={entity.GetStatusText()}
                                     />
@@ -170,6 +171,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         onChanged={this.onActivityObjectiveChanged.bind(this)}
                                         value={entity.ActivityObjective} 
                                         autoComplete="Off"
+                                        errorMessage={this.getValidationErrorMessage(entity.ActivityObjective)}
+                                        onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
                                     />
                                 </td>
                             </tr>
@@ -182,6 +185,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         selectedKey={entity.Client ? entity.Client.ItemId : null}
                                         onChanged={this.onClientChanged.bind(this)}
                                         required={true}
+                                        errorMessage={this.getValidationErrorMessage(entity.Client)}
                                     />
                                 </td>
                                 <td colSpan={3}></td>
@@ -190,6 +194,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <td colSpan={3}>
                                     <TextField 
                                         label="Cabeza de canal:" 
+                                        className={styles.readOnlyInput}
                                         value={headOfChannel ? headOfChannel.Value : null}
                                         readOnly={true}
                                     />
@@ -197,6 +202,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <td colSpan={3}>
                                     <TextField 
                                         label="Gerente/Kam (LP):" 
+                                        className={styles.readOnlyInput}
                                         value={kam ? kam.Value : null}
                                         readOnly={true}
                                     />
@@ -206,6 +212,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <td colSpan={3}>
                                     <TextField 
                                         label="Canal (LP):" 
+                                        className={styles.readOnlyInput}
                                         defaultValue={channel ? channel.Name : null}
                                         readOnly={true}
                                     />
@@ -213,6 +220,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <td colSpan={3}>
                                     <TextField 
                                         label="SubCanal:"
+                                        className={styles.readOnlyInput}
                                         defaultValue={subchannel ? subchannel.Value : null} 
                                         readOnly={true}
                                     />
@@ -249,11 +257,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         value={selectedItem ? selectedItem.ShortDescription : null} 
                                         required={true}
                                         autoComplete="Off"
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.ShortDescription)}
+                                        onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
                                     />
                                 </td>
                             </tr>
                             <tr>
-                                <td colSpan={3}>
+                                <td colSpan={3} style={{verticalAlign: "top"}}>
                                     <Dropdown
                                         placeholder="Seleccione una categoría"
                                         label="Categoria de la Promoción (LD):"
@@ -261,16 +271,19 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         selectedKey={selectedItem.Category ? selectedItem.Category.ItemId : null}
                                         onChanged={this.onCategoryChanged.bind(this)}
                                         required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.Category)}
                                     />
                                 </td>
-                                <td colSpan={3}>
+                                <td colSpan={3} style={{verticalAlign: "top"}}>
                                     <TextField 
                                         label="Inversión ($):"
                                         onChanged={this.onInvestmentChanged.bind(this)}
                                         value={selectedItem ? selectedItem.InvestmentAsString() : null} 
-                                        required={true}
+                                        required={selectedItem.RequiresInvestment()}
                                         autoComplete="Off"
-                                        disabled={!selectedItem.Category || !selectedItem.Category.RequiresInvestment }
+                                        disabled={!selectedItem.RequiresInvestment() }
+                                        errorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage(selectedItem.Investment) : null}
+                                        onGetErrorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString }}
                                     />
                                 </td>
                             </tr>
@@ -348,7 +361,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         ariaLabel="Seleccione una fecha"
                                         value={selectedItem.StartDate!}
                                         onSelectDate={this.onSelectStartDate.bind(this)}   
-                                        formatDate={onFormatDate}                                   
+                                        formatDate={CommonHelper.formatDate}
                                     />
                                 </td>
                                 <td colSpan={3}>
@@ -360,7 +373,85 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         ariaLabel="Seleccione una fecha"
                                         value={selectedItem.EndDate!}
                                         onSelectDate={this.onSelectEndDate.bind(this)}
-                                        formatDate={onFormatDate}
+                                        formatDate={CommonHelper.formatDate}
+                                    />
+                                </td>
+                            </tr>
+                        </table>   
+                        <table style={{width:'100%', display: "none"}}>
+                            <tr>
+                                <td colSpan={2}>
+                                    <TextField 
+                                        label="Precio neo OFF:"
+                                        className={styles.readOnlyInput}
+                                        readOnly={true}
+                                    />
+                                </td>
+                                <td colSpan={2}>
+                                    <TextField 
+                                        label="Descuento por pieza ($):"
+                                    />
+                                </td>
+                                <td colSpan={2}>
+                                    <TextField 
+                                        label="% Descuento:"
+                                        className={styles.readOnlyInput}
+                                        readOnly={true}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={2}>
+                                    <TextField 
+                                        label="BEP NR:"
+                                        className={styles.readOnlyInput}
+                                        readOnly={true}
+                                    />
+                                </td>
+                                <td colSpan={2}>
+                                    <TextField 
+                                        label="COGS:"
+                                        className={styles.readOnlyInput}
+                                        readOnly={true}
+                                    />
+                                </td>
+                                <td colSpan={2}>
+                                    <TextField 
+                                        label="GM %NR:"
+                                        className={styles.readOnlyInput}
+                                        readOnly={true}
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={2}>
+                                    <TextField 
+                                        label="GM %NR con promo:"
+                                        className={styles.readOnlyInput}
+                                        readOnly={true}
+                                    />
+                                </td>
+                                <td colSpan={2}>
+                                    <TextField 
+                                        label="GM base unit:"
+                                        className={styles.readOnlyInput}
+                                        readOnly={true}
+                                    />
+                                </td>
+                                <td colSpan={2}>
+                                    <TextField 
+                                        label="GM promo unit:"
+                                        className={styles.readOnlyInput}
+                                        readOnly={true}
+                                    />
+                                </td>                                
+                            </tr>
+                            <tr>
+                                <td colSpan={2}>
+                                    <TextField 
+                                        label="BEP GM:"
+                                        className={styles.readOnlyInput}
+                                        readOnly={true}
                                     />
                                 </td>
                             </tr>
@@ -419,6 +510,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     //#endregion
 
+    //#region Tabs
+
     private AddPromoItem() {
         let items = this.state.viewModel.Entity.Items;
         const index = items.length + 1;
@@ -463,6 +556,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             });
         }
     }
+
+    //#endregion
+
+    //#region Promo item - General
 
     private onShortDescriptionChanged(text: any) {
         this.setState((state) => {
@@ -517,6 +614,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             return state;
         });
     }
+
+    //#endregion
+
+    //#region Promo item - Product
 
     private GetFilteredProducts(): Product[] {
         const selectedItem = this.state.viewModel.Entity.Items[this.state.selectedIndex];
@@ -592,11 +693,15 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         });
     }
 
-    private submit() {
+    //#endregion
+
+    private submit(): void {
         console.log(this.state.viewModel.Entity);
 
+        if(!this.validateFormControls()) return;
+
         this.setState({
-        enableSubmit:false
+            enableSubmit:false
         });
 
         PromoService.Save(this.state.viewModel.Entity).then(() => {
@@ -608,6 +713,43 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             console.error(err);
             this.setState({ formSubmitted: true, errorMessage: err});
         });
+    }
+    
+    private getValidationErrorMessage(value: any): string{
+        if(value == undefined)
+          return this.state.hasValidationError ? Constants.Messages.RequiredField : CommonHelper.EmptyString;
+    
+        if(typeof value === "string")
+          return this.state.hasValidationError && CommonHelper.IsNullOrEmpty(value) ? Constants.Messages.RequiredField : CommonHelper.EmptyString;
+    
+        if(CommonHelper.IsArray(value)) 
+          return this.state.hasValidationError && value.length == 0 ? Constants.Messages.RequiredField : CommonHelper.EmptyString;
+    
+        return CommonHelper.EmptyString;
+    }
+
+    private validateFormControls(): boolean{
+        var invalidCount = 0;
+
+        if(CommonHelper.IsNullOrEmpty(this.state.viewModel.Entity.ActivityObjective)) invalidCount++;
+        if(this.state.viewModel.Entity.Client == null) invalidCount++;
+
+        this.state.viewModel.Entity.Items.map((item) => {
+            if(CommonHelper.IsNullOrEmpty(item.ShortDescription)) invalidCount++;
+            if(item.Category == null) invalidCount++;
+            if(item.Category != null && item.Category.RequiresInvestment && !(item.Investment > 0)) invalidCount++;
+            if(item.Type == null) invalidCount++;
+            if(item.BusinessUnit == null) invalidCount++;
+            if(item.Brand == null) invalidCount++;
+            if(item.Product == null) invalidCount++;
+            if(item.ProductCategory == null) invalidCount++;
+            if(!CommonHelper.IsDate(item.StartDate)) invalidCount++;
+            if(!CommonHelper.IsDate(item.EndDate)) invalidCount++
+        });
+
+        this.setState({ hasValidationError: invalidCount > 0});
+
+        return invalidCount == 0;
     }
 
     private _getShimmerStyles = (props: IShimmerStyleProps): IShimmerStyles => {

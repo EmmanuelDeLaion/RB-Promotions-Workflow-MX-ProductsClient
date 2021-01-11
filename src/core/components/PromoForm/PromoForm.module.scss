@@ -12,4 +12,8 @@
         @extend .successMessageContainer;
         text-align: left;
     }
+
+    .readOnlyInput input {
+        background-color: #f4f4f4;
+    }
 }
