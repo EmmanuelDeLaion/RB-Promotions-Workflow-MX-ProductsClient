@@ -8,6 +8,7 @@ export namespace Constants {
     
     export class Messages {
         public static NotAllowedAction = "Esta acción no está permitida debido al estado actual de la promoción";
+        public static RequiredField:string = "Este campo es requerido.";
     }
 
     export class Miscellaneous{
@@ -39,6 +40,6 @@ export namespace Constants {
             prevYearAriaLabel: 'Ir al año anterior',
             nextYearAriaLabel: 'Ir al año siguiente',
             closeButtonAriaLabel: 'Cerrar'
-          };
+        };
     }
 }

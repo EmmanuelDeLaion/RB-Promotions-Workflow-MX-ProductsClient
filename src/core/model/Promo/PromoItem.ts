@@ -29,8 +29,7 @@ export class PromoItem extends Entity {
         return this.StartDate.toDateString();
     }
 
-    public EndDateAsString():string {
-        //TODO: Implementar
-        return this.StartDate.toDateString();
+    public RequiresInvestment():boolean {
+        return this.Category && this.Category.RequiresInvestment;
     }
 }
