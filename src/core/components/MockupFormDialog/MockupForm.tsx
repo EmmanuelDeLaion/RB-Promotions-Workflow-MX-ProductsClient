@@ -24,7 +24,7 @@ export const MockupForm: React.FunctionComponent = () => {
 
     return (
       <div>
-        <Modal isOpen={isModalOpen} className={contentStyles.modal}>          
+        <Modal isOpen={isModalOpen} className="{contentStyles.modal} mainModal">          
           <ModalHeader/>
           <ModalContent/>  
           <ModalBottom/>        

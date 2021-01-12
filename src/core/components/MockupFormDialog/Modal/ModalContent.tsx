@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { FirstPart } from './Content/FirstPart';
 import { SecondPart } from './Content/SecondPart';
+import { useId, useBoolean } from '@uifabric/react-hooks';
 
 import {
   Modal,
@@ -15,6 +16,9 @@ import {
   Text,
   Link,
   FontWeights,
+  DialogFooter,
+  Dialog,
+  DialogType,
 } from 'office-ui-fabric-react';
 
 
@@ -107,6 +111,27 @@ const examplePersona2: IPersonaSharedProps = {
 export const ModalContent: React.FunctionComponent = () => {
 
   const [errorMessage, setState] = useState("");
+  const [hideDialog, { toggle: toggleHideDialog }] = useBoolean(true);
+  const labelId: string = useId('dialogLabel');
+  const subTextId: string = useId('subTextLabel');
+  const dialogStyles = { main: { maxWidth: '450px' } };
+  const dialogContentProps = {
+    type: DialogType.normal,
+    title: 'Eliminar producto',
+    closeButtonAriaLabel: 'Cerrar',
+    subText: 'Esta seguro que desea eliminar este producto de la promoción?',
+  };
+
+  const modalProps = React.useMemo(
+    () => ({
+      titleAriaId: labelId,
+      subtitleAriaId: subTextId,
+      isBlocking: false,
+      styles: dialogStyles,
+      dragOptions: undefined,
+    }),
+    [labelId, subTextId],
+  );
 
   function _validationsTriggerClicked(): void {
     if (errorMessage == "")
@@ -160,7 +185,7 @@ export const ModalContent: React.FunctionComponent = () => {
                     required
                     errorMessage={errorMessage}
                     multiline
-                    rows={3}/>
+                    rows={3} />
                 </Stack>
               </Stack>
 
@@ -213,8 +238,21 @@ export const ModalContent: React.FunctionComponent = () => {
                   }}>
                   <Stack className="deleteProductContainer" horizontal horizontalAlign="end">
                     <Stack className="label">
-                      <Link><Icon iconName="MapLayers" /><span style={{ color: '#323130' }}>Borrar producto</span></Link>
+                      <Link onClick={toggleHideDialog}><Icon iconName="MapLayers" /><span style={{ color: '#323130' }}>Borrar producto</span></Link>
                     </Stack>
+
+                    <Dialog
+                      hidden={hideDialog}
+                      onDismiss={toggleHideDialog}
+                      dialogContentProps={dialogContentProps}
+                      modalProps={modalProps}
+                    >
+                      <DialogFooter>
+                        <PrimaryButton onClick={toggleHideDialog} text="Eliminar" />
+                        <DefaultButton onClick={toggleHideDialog} text="Cancelar" />
+                      </DialogFooter>
+                    </Dialog>
+
                   </Stack>
                   <FirstPart />
                   <SecondPart />

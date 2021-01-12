@@ -3,9 +3,10 @@
   "solution": {
     "name": "RB Promotions Workflow",
     "id": "46966589-82f7-457e-9b9d-68325a5c982c",
-    "version": "1.0.0.17",
+    "version": "1.0.0.20",
     "includeClientSideAssets": true,
     "isDomainIsolated": false,
+    "iconPath": "images/appIcon.png",
     "developer": {
       "name": "",
       "websiteUrl": "",
