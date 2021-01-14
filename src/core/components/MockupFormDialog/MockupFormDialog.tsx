@@ -24,7 +24,13 @@ export class MockupFormDialog extends BaseDialog {
     }
 
     protected render(): void {
-        ReactDOM.render(<MockupForm />, this.domElement);
+        ReactDOM.render(<MockupForm 
+            itemId={this.itemId}
+            title={this.title} 
+            close={ this.close }
+            submit={ this.submit }
+            context={this.context}
+            />, this.domElement);
     }
 
     private submit(): void {
