@@ -24,9 +24,15 @@
 }
 .label
 {
-    font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-16)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-segoe-ui);
-    font: normal normal normal 16px/21px Segoe UI;
+    font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-16)/var(--unnamed-line-spacing-21) var(--unnamed-font-family-segoe-ui);   
+    font-weight: 600;;
+    font-size: 16px/21px;
+    font-family: Segoe UI;
     color: #000000;
+}
+.labelNotBold
+{
+    font-weight: normal !important;
 }
 /*Modal*/
 .peopleLabel
@@ -103,6 +109,18 @@
 {
     background: #F3F2F1 0% 0% no-repeat padding-box;
 }
+
+.grayHeaderToGreen, .grayHeaderToGreen .ms-Label
+{
+    background: #125C00 0% 0% no-repeat padding-box;
+    color: white !important;
+}
+.grayHeaderToRed, .grayHeaderToRed .ms-Label
+{
+    background: #AD4146 0% 0% no-repeat padding-box;
+    color: white;
+}
+
 .toRight
 {
     margin-left: auto !important;
@@ -135,6 +153,10 @@
 {
     padding-left: 16px;
 }
+.padding-bottom
+{
+    padding-bottom: 16px;
+}
 /*Bottom Section*/
 .modalBottom
 {
@@ -148,8 +170,20 @@
     z-index: 9999;
     padding: 8px 16px;
 }
-
-.notEffectiveLabel
+.effectiveLabelContainer
+{
+    width: 100px;
+    text-align: right;
+}
+.modalBottom .effectiveLabelContainer
+{
+    text-align: left; 
+}
+.twoColumnsContentMaxWidth
+{
+    max-width: 708px;
+}
+.effectiveLabel
 {
     font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-14)/var(--unnamed-line-spacing-19) var(--unnamed-font-family-segoe-ui);
     letter-spacing: var(--unnamed-character-spacing-0);
@@ -159,10 +193,16 @@
     color: #FFFFFF;
     opacity: 1;
     background: var(--error-color) 0% 0% no-repeat padding-box;
-    background: #AD4146 0% 0% no-repeat padding-box;
+    background: #125C00 0% 0% no-repeat padding-box;
     opacity: 1;
     padding: 0px 8px 0px 8px;
+
 }
+.notEffectiveLabel
+{
+    background: #AD4146 0% 0% no-repeat padding-box;
+}
+
 .modalBottomContent > div
 {
     padding: 0px 32px 0px 0px;
@@ -229,8 +269,8 @@
 {
     min-height: 114px;
 }
-/* 
 
+/*
 .smallPadding
 {
     border: 2px solid green;

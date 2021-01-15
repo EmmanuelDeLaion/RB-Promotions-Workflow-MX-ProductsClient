@@ -3,7 +3,6 @@ import { Pivot, PivotItem, IPivotItemProps } from "@fluentui/react-tabs";
 import { TestImages } from '@uifabric/example-data';
 import { IMockupFormProps } from './IMockupFormProps';
 import { IMockupFormState } from './IMockupFormState';
-import { ResumenGeneral } from './ResumenGeneral';
 
 import {
   Modal,
@@ -210,7 +209,7 @@ const verticalSeparatorStyle = {
     }]
 };
 
-const productDeleteDialogStyles = { main: { maxWidth: '450px' } };
+const confirmationDialogStyles = { main: { maxWidth: '450px' } };
 
 {/* Fin Content */ }
 
@@ -235,7 +234,9 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
       loadingTypes: false,
       mainModalOpen: true,
       hideDeleteProductDialog: true,
-      errorMessage: ""
+      errorMessage: "",
+      hideModalConfirmationDialog: true,
+      effective: true,
       // filteredProducts: []
     };
   }
@@ -244,13 +245,19 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
 
   }
 
-  private dialogContentProps = {
+  private deleteProductDialogContentProps = {
     type: DialogType.normal,
     title: 'Eliminar producto',
     closeButtonAriaLabel: 'Cerrar',
     subText: 'Esta seguro que desea eliminar este producto de la promoción?',
   };
 
+  private closeModalDialogContentProps = {
+    type: DialogType.normal,
+    title: 'Salir sin guardar',
+    closeButtonAriaLabel: 'Cerrar',
+    subText: 'Esta seguro que desea cerrar el formulario sin guardar?',
+  };
 
   public render(): React.ReactElement<IMockupFormProps> {
 
@@ -263,15 +270,25 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
           {/* Modal Header*/}
 
           <div className={contentStyles.header}>
-            <span>Ahoro 1 - Promo descuento</span>
+            <span>Cliente 1 - Promo descuento</span>
             <IconButton
               styles={iconButtonStyles}
               iconProps={cancelIcon}
               ariaLabel="Close popup modal"
-              onClick={() => this.setState({ mainModalOpen: false })}
+              onClick={() => this.setState({ hideModalConfirmationDialog: false })}
             />
           </div>
+          <Dialog
+            hidden={this.state.hideModalConfirmationDialog}
+            dialogContentProps={this.closeModalDialogContentProps}
+            styles={confirmationDialogStyles}
+          >
+            <DialogFooter>
 
+              <DefaultButton onClick={() => this.setState({ hideModalConfirmationDialog: true })} text="Cancelar" />
+              <PrimaryButton onClick={() => this.setState({ mainModalOpen: false })} text="Salir sin guardar" />
+            </DialogFooter>
+          </Dialog>
           {/* Fin Modal Header*/}
 
           {/* Modal Content*/}
@@ -283,7 +300,7 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                   <Stack className="statusContainer smallPadding padding-right" horizontal horizontalAlign="end">
                     <Stack style={{ color: theme.palette.themePrimary, paddingRight: "4px" }}><Icon iconName="MapLayers" /></Stack>
                     <Stack className="label">Estado:</Stack>
-                    <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold", marginTop: "1px" }}>Pendiente de aprobación</Stack>
+                    <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>Pendiente de aprobación</Stack>
                   </Stack>
                   {/* Promotion section */}
                   <Stack horizontal className="padding">
@@ -296,7 +313,8 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                             label="Nombre de la promoción"
                             placeholder="Ingrese el nombre de la promoción"
                             required
-                            errorMessage={this.state.errorMessage} />
+                            errorMessage={this.state.errorMessage}
+                            value="Promo descuento" />
                         </Stack>
                         <Stack grow={6} className="padding-right controlPadding">
                           <div>
@@ -307,7 +325,8 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                               options={clientsOptions}
                               placeholder="Seleccione un cliente"
                               required
-                              errorMessage={this.state.errorMessage} />
+                              errorMessage={this.state.errorMessage}
+                              defaultSelectedKey="A" />
                           </div>
                         </Stack>
                       </Stack >
@@ -319,7 +338,8 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                           required
                           errorMessage={this.state.errorMessage}
                           multiline
-                          rows={3} />
+                          rows={3}
+                          resizable={false} />
                       </Stack>
                     </Stack>
 
@@ -336,7 +356,6 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                             presence={PersonaPresence.online}
                             hidePersonaDetails={false}
                             imageAlt="Annie Lindqvist, status is online"
-                            onClick={this._validationsTriggerClicked}
                           />
                         </Stack>
                         <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
@@ -351,11 +370,11 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                         </Stack>
                         <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
                           <Label className="peopleLabel">Canal</Label>
-                          <Label>Nombre de canal</Label>
+                          <Label className="labelNotBold">Canal 1</Label>
                         </Stack>
                         <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
                           <Label className="peopleLabel">Subcanal</Label>
-                          <Label>Nombre de subcanal</Label>
+                          <Label className="labelNotBold">Subcanal 1.1</Label>
                         </Stack>
                       </Stack>
                     </Stack>
@@ -377,8 +396,8 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
 
                           <Dialog
                             hidden={this.state.hideDeleteProductDialog}
-                            dialogContentProps={this.dialogContentProps}
-                            styles={productDeleteDialogStyles}
+                            dialogContentProps={this.deleteProductDialogContentProps}
+                            styles={confirmationDialogStyles}
                           >
                             <DialogFooter>
                               <PrimaryButton onClick={() => this.setState({ hideDeleteProductDialog: true })} text="Eliminar" />
@@ -558,7 +577,7 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                             </Stack>
                           </Stack>
                         </Stack>
-                        <Stack>
+                        <Stack className="padding-bottom">
                           <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
                             <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
                               <Icon iconName="DietPlanNotebook" />
@@ -573,9 +592,12 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                               <Label>0.92</Label>
                             </Stack>
                             <Stack grow={3} horizontalAlign="end">
-                              <Label>Efectividad</Label>
-                              <div>
-                                <span className="notEffectiveLabel">NO EFECTIVA</span>
+                              <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                              <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                                <span className="effectiveLabel">EFECTIVA</span>
+                              </div>
+                              <div hidden={this.state.effective} className="effectiveLabelContainer">
+                                <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
                               </div>
                             </Stack>
                           </Stack>
@@ -657,8 +679,341 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
               </PivotItem>
               <PivotItem onRenderItemLink={this._customPromotionSummaryPivotItemRenderer}>
                 <Stack className="summarySectionContainer">
-                  <ResumenGeneral />
-          </Stack>
+                  <Stack styles={repetitiveSectionStyle}>
+
+                    <Stack className="statusContainer smallPadding padding-right" horizontal horizontalAlign="end">
+                      <Stack style={{ color: theme.palette.themePrimary, paddingRight: "4px" }}><Icon iconName="MapLayers" /></Stack>
+                      <Stack className="label">Estado:</Stack>
+                      <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>Pendiente de aprobación</Stack>
+                    </Stack>
+
+                    <Stack horizontal className="padding">
+
+                      <Stack grow={8} verticalAlign="start">
+                        <Stack grow={12} className="grayContent padding padding-left padding-right">
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Cliente</Label>
+                            <Label className="toRight">Cliente 1</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+                          <Stack className="verticalPadding">
+                            <Label>Objetivo de la promoción</Label>
+                            <span className="twoColumnsContentMaxWidth">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</span>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+                        </Stack>
+                      </Stack>
+
+                      <Stack grow={4} horizontal>
+                        <Stack verticalFill>
+                          <Separator vertical={true} styles={verticalSeparatorStyle}></Separator>
+                        </Stack>
+                        <Stack grow={12}>
+                          <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                            <Label className="peopleLabel">Cabeza de canal</Label>
+                            <Persona
+                              {...examplePersona}
+                              size={PersonaSize.size24}
+                              presence={PersonaPresence.online}
+                              hidePersonaDetails={false}
+                              imageAlt="Annie Lindqvist, status is online"
+                            />
+                          </Stack>
+                          <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                            <Label className="peopleLabel">Gerente KAM</Label>
+                            <Persona
+                              {...examplePersona2}
+                              size={PersonaSize.size24}
+                              presence={PersonaPresence.online}
+                              hidePersonaDetails={false}
+                              imageAlt="Annie Lindqvist, status is online"
+                            />
+                          </Stack>
+                          <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                            <Label className="peopleLabel">Canal</Label>
+                            <Label className="labelNotBold">Canal 1</Label>
+                          </Stack>
+                          <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                            <Label className="peopleLabel">Subcanal</Label>
+                            <Label className="labelNotBold">Subcanal 1.1</Label>
+                          </Stack>
+                        </Stack>
+                      </Stack>
+                    </Stack>
+
+                    <Stack className="padding-bottom">
+                      <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
+                        <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
+                          <Icon iconName="DietPlanNotebook" />
+                          <Label>Pre análisis MX1.1</Label>
+                        </Stack>
+                        <Stack grow={3} horizontalAlign="end">
+                          <Label>ROI Estimado por SKU</Label>
+                          <Label>1.37</Label>
+                        </Stack>
+                        <Stack grow={3} horizontalAlign="end">
+                          <Label>ROI Estimado Total</Label>
+                          <Label>0.92</Label>
+                        </Stack>
+                        <Stack grow={3} horizontalAlign="end">
+                          <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                          <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                            <span className="effectiveLabel">EFECTIVA</span>
+                          </div>
+                          <div hidden={this.state.effective} className="effectiveLabelContainer">
+                            <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
+                          </div>
+                        </Stack>
+                      </Stack>
+                      <Stack horizontal className="grayContent padding padding-left padding-right">
+
+                        <Stack className="smallPadding padding-right controlPadding" grow={4}>
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Total volumen estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR Estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM Promo Estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Inversión adicional (MKT)</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                        </Stack>
+
+                        <Stack className="smallPadding padding-right" grow={4}>
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>% Volumen incremental</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR Incremental base estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM incremental</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                        </Stack>
+                        <Stack className="smallPadding" grow={4}>
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR Base</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM Base</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Inversión estimada</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                        </Stack>
+                      </Stack>
+                    </Stack>
+
+                    <Stack className="padding-bottom">
+                      <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
+                        <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
+                          <Icon iconName="DietPlanNotebook" />
+                          <Label>Pre análisis MX1.2</Label>
+                        </Stack>
+                        <Stack grow={3} horizontalAlign="end">
+                          <Label>ROI Estimado por SKU</Label>
+                          <Label>1.37</Label>
+                        </Stack>
+                        <Stack grow={3} horizontalAlign="end">
+                          <Label>ROI Estimado Total</Label>
+                          <Label>0.92</Label>
+                        </Stack>
+                        <Stack grow={3} horizontalAlign="end">
+                          <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                          <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                            <span className="effectiveLabel">EFECTIVA</span>
+                          </div>
+                          <div hidden={this.state.effective} className="effectiveLabelContainer">
+                            <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
+                          </div>
+                        </Stack>
+                      </Stack>
+                      <Stack horizontal className="grayContent padding padding-left padding-right">
+
+                        <Stack className="smallPadding padding-right controlPadding" grow={4}>
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Total volumen estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR Estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM Promo Estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Inversión adicional (MKT)</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                        </Stack>
+
+                        <Stack className="smallPadding padding-right" grow={4}>
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>% Volumen incremental</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR Incremental base estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM incremental</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                        </Stack>
+                        <Stack className="smallPadding" grow={4}>
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR Base</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM Base</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Inversión estimada</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                        </Stack>
+                      </Stack>
+                    </Stack>
+
+                    <Stack className="padding-bottom">
+                      <Stack  horizontal className={this.state.effective 
+                        ? "grayHeader smallPadding padding-left padding-right grayHeaderToGreen" 
+                        : "grayHeader smallPadding padding-left padding-right grayHeaderToRed"}>
+                        <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
+                          <Icon iconName="DietPlanNotebook" />
+                          <Label>Análisis general</Label>
+                        </Stack>
+                        <Stack grow={3} horizontalAlign="end">
+                          <Label>ROI Estimado por SKU</Label>
+                          <Label>1.37</Label>
+                        </Stack>
+                        <Stack grow={3} horizontalAlign="end">
+                          <Label>ROI Estimado Total</Label>
+                          <Label>0.92</Label>
+                        </Stack>
+                        <Stack grow={3} horizontalAlign="end">
+                          <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                          <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                            <span className="effectiveLabel">EFECTIVA</span>
+                          </div>
+                          <div hidden={this.state.effective} className="effectiveLabelContainer">
+                            <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
+                          </div>
+                        </Stack>
+                      </Stack>
+                      <Stack horizontal className="grayContent padding padding-left padding-right">
+
+                        <Stack className="smallPadding padding-right controlPadding" grow={4}>
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Total volumen estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR Estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                        </Stack>
+
+                        <Stack className="smallPadding padding-right" grow={4}>
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>% Volumen incremental</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR Incremental base estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                        </Stack>
+                        <Stack className="smallPadding" grow={4}>
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR Base</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM Base</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                        </Stack>
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </Stack>
               </PivotItem>
             </Pivot>
           </Stack >
@@ -672,9 +1027,12 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
             <Separator className="graySeparator separatorToTop" />
             <Stack className="modalBottomContent" horizontal grow={12}>
               <Stack grow={3}>
-                <Label className="modalBottomContentHeader">Efectividad</Label>
-                <div>
-                  <span className="notEffectiveLabel">NO EFECTIVA</span>
+                <Label className="modalBottomContentHeader" onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                  <span className="effectiveLabel">EFECTIVA</span>
+                </div>
+                <div hidden={this.state.effective} className="effectiveLabelContainer">
+                  <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
                 </div>
               </Stack>
               <Stack grow={3}>
@@ -687,10 +1045,10 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
               </Stack>
               <Stack className="modalBottomButtonsContainer" grow={3} horizontal horizontalAlign="end">
                 <Stack>
-                  <DefaultButton text="Guardar borrador" allowDisabledFocus />
+                  <DefaultButton text="Guardar borrador" allowDisabledFocus onClick={() => this.setState({ mainModalOpen: false })} />
                 </Stack>
                 <Stack>
-                  <PrimaryButton text="Enviar a aprobación" allowDisabledFocus />
+                  <PrimaryButton text="Enviar a aprobación" allowDisabledFocus onClick={this._validationsTriggerClicked} />
                 </Stack>
               </Stack>
             </Stack>
@@ -716,7 +1074,7 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
         {defaultRenderer(link)}
         <Label style={{ color: theme.palette.themePrimary }}><Icon iconName="DietPlanNotebook" /></Label>
         <Label>ID Promoción&nbsp;:&nbsp;</Label>
-        <Label style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>MX-9999</Label>
+        <Label style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>MX1</Label>
       </Stack>
     );
   }
