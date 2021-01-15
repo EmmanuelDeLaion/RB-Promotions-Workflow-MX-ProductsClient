@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2020/02/ProvisioningSchema">
   <pnp:Preferences Generator="OfficeDevPnP.Core, Version=3.28.2012.0, Culture=neutral, PublicKeyToken=5e633289e95c321a" />
-  <pnp:Templates ID="CONTAINER-TEMPLATE-100F6E81ACDC46C88A03E0C742460056">
-    <pnp:ProvisioningTemplate ID="TEMPLATE-100F6E81ACDC46C88A03E0C742460056" Version="1" BaseSiteTemplate="GROUP#0" Scope="RootSite">
+  <pnp:Templates ID="CONTAINER-TEMPLATE-CF65780ED461439299F762FE1E6D7B27">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-CF65780ED461439299F762FE1E6D7B27" Version="1" BaseSiteTemplate="GROUP#0" Scope="RootSite">
       <pnp:Lists>
         <pnp:ListInstance Title="Promo items" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/PromoItems" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PromoItems/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PromoItems/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PromoItems/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -30,6 +30,11 @@
                 <FieldRef Name="ProductCategory" />
                 <FieldRef Name="StartDate" />
                 <FieldRef Name="EndDate" />
+                <FieldRef Name="DiscountPerPiece" />
+                <FieldRef Name="NetPrice" />
+                <FieldRef Name="COGS" />
+                <FieldRef Name="DiscountPercentage" />
+                <FieldRef Name="GMPercentageNR" />
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
               <Aggregations Value="Off" />
@@ -53,7 +58,15 @@
             <Field Type="Lookup" DisplayName="Categoría" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Categorías de producto}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{6a793df2-0a6d-44ee-8ff1-b0d2196b0d09}" SourceID="{{listid:Promo items}}" StaticName="ProductCategory" Name="ProductCategory" ColName="int7" RowOrdinal="0" Version="1" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Fecha comienzo" FriendlyDisplayFormat="Disabled" Format="DateOnly" Name="StartDate" Title="Fecha comienzo" Type="DateTime" ID="{600e8312-e6fe-4c3f-9722-4a8addbb0414}" Version="2" StaticName="StartDate" SourceID="{{listid:Promo items}}" ColName="datetime1" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Fecha fin" FriendlyDisplayFormat="Disabled" Format="DateOnly" Name="EndDate" Title="Fecha fin" Type="DateTime" ID="{52169a1a-5273-46c1-97fa-dc3d808f7d91}" Version="2" StaticName="EndDate" SourceID="{{listid:Promo items}}" ColName="datetime2" RowOrdinal="0" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="0" DisplayName="Descuento por pieza ($)" Format="Dropdown" Name="DiscountPerPiece" Percentage="FALSE" Title="Descuento por pieza ($)" Type="Number" ID="{5caf607c-feff-40aa-94cf-75be8d72fd65}" Version="2" StaticName="DiscountPerPiece" SourceID="{{listid:Promo items}}" ColName="float2" RowOrdinal="0" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Precio Neto" Format="Dropdown" Name="NetPrice" Percentage="FALSE" Title="Precio Neto" Type="Number" ID="{03e1b218-494f-4d63-8080-252b0a37e768}" Version="2" StaticName="NetPrice" SourceID="{{listid:Promo items}}" ColName="float3" RowOrdinal="0" />
+            <Field CommaSeparator="TRUE" Decimals="2" DisplayName="COGS" Format="Dropdown" IsModern="TRUE" Name="COGS" Percentage="FALSE" Title="COGS" Type="Number" ID="{8b8dbd11-4ffd-4728-beb2-aa9ef9b12fc6}" SourceID="{{listid:Promo items}}" StaticName="COGS" ColName="float4" RowOrdinal="0" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="% Descuento" Format="Dropdown" Name="DiscountPercentage" Percentage="FALSE" Title="% Descuento" Type="Number" ID="{6f8ad238-2507-4b4c-b143-28b7a43a4bec}" Version="2" StaticName="DiscountPercentage" SourceID="{{listid:Promo items}}" ColName="float5" RowOrdinal="0" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="GM %NR" Format="Dropdown" Name="GMPercentageNR" Percentage="FALSE" Title="GM %NR" Type="Number" ID="{d71e6930-6769-4684-aa22-162e5203abfd}" Version="2" StaticName="GMPercentageNR" SourceID="{{listid:Promo items}}" ColName="float6" RowOrdinal="0" />
           </pnp:Fields>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://northcentralus1.pushnp.svc.ms/notifications?token=f4ab654f-808c-43d6-acfb-e5875fdf1af1" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Promociones" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Promotions" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Promotions/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Promotions/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Promotions/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -72,7 +85,6 @@
                 <FieldRef Name="ActivityObjective" />
                 <FieldRef Name="Client" />
                 <FieldRef Name="Status" />
-                <FieldRef Name="StatusId" />
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
               <Aggregations Value="Off" />
@@ -87,6 +99,9 @@
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Estado" Format="Dropdown" MaxLength="255" Name="Status" Title="Estado" Type="Text" ID="{eb1a11ed-7291-418f-90c3-12cc1d065c9d}" Version="2" StaticName="Status" SourceID="{{listid:Promociones}}" ColName="nvarchar5" RowOrdinal="0" />
             <Field CommaSeparator="TRUE" Decimals="0" DisplayName="StatusId" Format="Dropdown" IsModern="TRUE" Name="StatusId" Percentage="FALSE" Title="StatusId" Type="Number" ID="{d6e9c6fc-670d-4e21-aff5-640625eaf7ed}" SourceID="{{listid:Promociones}}" StaticName="StatusId" ColName="float1" RowOrdinal="0" />
           </pnp:Fields>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://northcentralus1.pushnp.svc.ms/notifications?token=69cdcb2b-86dc-4ae2-8442-064e9626b3eb" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Canales" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Channels" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Channels/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Channels/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Channels/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -108,15 +123,24 @@
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Canal 1</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">Drug &amp; Pharma</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Canal 2</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">Ecommerce</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Canal 3</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">Modern Channel</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">Traditional</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">US Business</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://northcentralus1.pushnp.svc.ms/notifications?token=ae691a6f-bdf3-4bd6-a860-e6f95c93b230" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Categorías" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/Categories" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Categories/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Categories/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Categories/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -128,6 +152,8 @@
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
                 <FieldRef Name="RequiresInvestment" />
+                <FieldRef Name="RequiresDiscountPerPiece" />
+                <FieldRef Name="RequiresNetPrice" />
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
               <JSLink>clienttemplates.js</JSLink>
@@ -138,16 +164,25 @@
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Requiere inversión" Format="Dropdown" Name="RequiresInvestment" Title="Requiere inversión" Type="Boolean" ID="{2f6e2bd6-6b0d-476a-a5e2-d5767c7e0d02}" Version="2" StaticName="RequiresInvestment" SourceID="{{listid:Categorías}}" ColName="bit1" RowOrdinal="0">
               <Default>0</Default>
             </Field>
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Requiere descuento por pieza" Format="Dropdown" Name="RequiresDiscountPerPiece" Title="Requiere descuento por pieza" Type="Boolean" ID="{c4cf52b0-6f7f-490e-8a54-22d4eadcec32}" Version="2" StaticName="RequiresDiscountPerPiece" SourceID="{{listid:Categorías}}" ColName="bit2" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Requiere precio neto" Format="Dropdown" Name="RequiresNetPrice" Title="Requiere precio neto" Type="Boolean" ID="{95ccb2bc-150c-420c-aed1-6b8afa5e4361}" Version="4" StaticName="RequiresNetPrice" SourceID="{{listid:Categorías}}" ColName="bit3" RowOrdinal="0">
+              <Default>0</Default>
+            </Field>
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Categoría 1</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">PERFORMANCE</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Categoría 2</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">CONSUMER PROMO</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Categoría 3</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">ROLLBACK</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">EXHIBICIONES ESPECIALES</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
         </pnp:ListInstance>
@@ -159,9 +194,9 @@
             <View Name="{6D7BC749-2672-4FFE-8ED0-74CE2CF3D33E}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Clients/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
+                <FieldRef Name="LinkTitle" />
                 <FieldRef Name="Channel" />
                 <FieldRef Name="Subchannel" />
-                <FieldRef Name="LinkTitle" />
                 <FieldRef Name="KeyAccountManager" />
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
@@ -176,26 +211,59 @@
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Cliente 1</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">AHORRO1</pnp:DataValue>
               <pnp:DataValue FieldName="Channel">1</pnp:DataValue>
               <pnp:DataValue FieldName="Subchannel">1</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Cliente 2</pnp:DataValue>
-              <pnp:DataValue FieldName="Channel">2</pnp:DataValue>
-              <pnp:DataValue FieldName="Subchannel">4</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">AHORRO2</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">1</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Cliente 3</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">AMAZON</pnp:DataValue>
               <pnp:DataValue FieldName="Channel">2</pnp:DataValue>
               <pnp:DataValue FieldName="Subchannel">3</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Cliente 4</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">CHIPERINC</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">2</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">3</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">ARTELI</pnp:DataValue>
               <pnp:DataValue FieldName="Channel">3</pnp:DataValue>
-              <pnp:DataValue FieldName="Subchannel">5</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">6</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">CADENA OXXO</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">3</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">4</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">ABARROTERA ARENAS</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">7</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">16</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">ABARROTERA AVILA</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">7</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">16</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">MIDWAY</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">8</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">18</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">VILORE</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">8</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">18</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://northcentralus1.pushnp.svc.ms/notifications?token=8b8f37b5-87d3-4918-82a6-47a3c874b2d4" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Subcanales" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/Subchannels" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Subchannels/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Subchannels/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Subchannels/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -217,28 +285,52 @@
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Subcanal 1.1</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">Chain Pharma</pnp:DataValue>
               <pnp:DataValue FieldName="Channel">1</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Subcanal 1.2</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">Drug Wholesalers</pnp:DataValue>
               <pnp:DataValue FieldName="Channel">1</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Subcanal 2.1</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">Ecommerce</pnp:DataValue>
               <pnp:DataValue FieldName="Channel">2</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Subcanal 2.2</pnp:DataValue>
-              <pnp:DataValue FieldName="Channel">2</pnp:DataValue>
-            </pnp:DataRow>
-            <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Subcanal 3.1</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">Convenience</pnp:DataValue>
               <pnp:DataValue FieldName="Channel">3</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Subcanal 3.2</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">Horecas</pnp:DataValue>
               <pnp:DataValue FieldName="Channel">3</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">National Accounts</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">3</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">Price Clubs</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">3</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">WAL MART</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">3</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">DTS</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">7</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">Mayoreo</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">7</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">Pastilleros</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">7</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">US Business</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">8</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
         </pnp:ListInstance>
@@ -262,28 +354,36 @@
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Tipo 1.1</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">PLAN DE DESEMPEÑO</pnp:DataValue>
               <pnp:DataValue FieldName="Category">1</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Tipo 1.2</pnp:DataValue>
-              <pnp:DataValue FieldName="Category">1</pnp:DataValue>
-            </pnp:DataRow>
-            <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Tipo 2.1</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">CONSUMER PROMO</pnp:DataValue>
               <pnp:DataValue FieldName="Category">2</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Tipo 2.2</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">REDEMPTION</pnp:DataValue>
               <pnp:DataValue FieldName="Category">2</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Tipo 3.1</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">DESCUENTO</pnp:DataValue>
               <pnp:DataValue FieldName="Category">3</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Tipo 3.2</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">LIQUIDACIÓN</pnp:DataValue>
               <pnp:DataValue FieldName="Category">3</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">REVALUACIÓN DE INVENTARIO</pnp:DataValue>
+              <pnp:DataValue FieldName="Category">3</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">POR MARCA</pnp:DataValue>
+              <pnp:DataValue FieldName="Category">7</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">POR SKU</pnp:DataValue>
+              <pnp:DataValue FieldName="Category">7</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
         </pnp:ListInstance>
@@ -314,30 +414,135 @@
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">3007615</pnp:DataValue>
-              <pnp:DataValue FieldName="SKUDescription">SICO SAFETY 10X9</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">1500925</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">AMOP US VSEFF COSTCO</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">3</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">3150846</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">GRND F HL 3PK 30X3EA</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">1</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">1500871</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">VEET PURE ACEITE CAME 12X100ML</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">2</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">3152567</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">AMOPE PEDIPERFECT APA 6X1EA</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">3</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">3060053</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">TEMPRA TAB 500MG 160X20EA</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">4</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">3059857</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">TEMPRA FORTE TB 650MG 160X24EA</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">4</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">3094381</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">GRNDB MX INTSV H&amp;L 144X4LZ</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">1</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">3150845</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">TMPRA 24HR 2PK 27X2</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">5</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">3134876</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">VEET MX SIDEKICK NKA</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">2</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">1500886</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">DUREX CONFORT 3PK 6X3X1EA</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">15</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">3056797</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">SICO INVISIBLE 3PK 12X3EA</pnp:DataValue>
               <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
               <pnp:DataValue FieldName="Brand">14</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">2052161</pnp:DataValue>
-              <pnp:DataValue FieldName="SKUDescription">CHM 350g Canela</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">3076851</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">K-Y GEL LUBRICANTE 12X50GM</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">16</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">2033701</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">Enfagrow 4 550g BIP</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">2</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">17</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">2036054</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">Enfagrow RTD 200ml (6-Pack)</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">2</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">18</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">2036055</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">Enfagrow RTD 200ml (Single) Tule</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">2</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">18</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">2027742</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">CHM 350g Fresa</pnp:DataValue>
               <pnp:DataValue FieldName="BusinessUnit">2</pnp:DataValue>
               <pnp:DataValue FieldName="Brand">9</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">2052974</pnp:DataValue>
-              <pnp:DataValue FieldName="SKUDescription">Enfagrow 1500g</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">2043778</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">CCT 160g</pnp:DataValue>
               <pnp:DataValue FieldName="BusinessUnit">2</pnp:DataValue>
-              <pnp:DataValue FieldName="Brand">13</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">7</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">3007616</pnp:DataValue>
-              <pnp:DataValue FieldName="SKUDescription">SICO SENSIT 12X3</pnp:DataValue>
-              <pnp:DataValue FieldName="BusinessUnit">1</pnp:DataValue>
-              <pnp:DataValue FieldName="Brand">14</pnp:DataValue>
+              <pnp:DataValue FieldName="Title">2043899</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">CCT 350g</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">2</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">7</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">2018808</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">Sin Lactosa 400g</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">2</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">19</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">2049356</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">Enfamil 1 RTD single</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">2</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">20</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">2049449</pnp:DataValue>
+              <pnp:DataValue FieldName="SKUDescription">Enfamil 2 RTD Single</pnp:DataValue>
+              <pnp:DataValue FieldName="BusinessUnit">2</pnp:DataValue>
+              <pnp:DataValue FieldName="Brand">20</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://northcentralus1.pushnp.svc.ms/notifications?token=4c7507db-0329-4d14-9088-afd3c684343a" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Unidades de negocio" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/BusinessUnits" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/BusinessUnits/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/BusinessUnits/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/BusinessUnits/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -361,9 +566,6 @@
               <pnp:DataValue FieldName="Title">NUTRITION</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
-          <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://northcentralus1.pushnp.svc.ms/notifications?token=b6687e4a-25c1-489b-9ef4-da11e65f4eb7" ExpiresInDays="1" />
-          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Marcas" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/Brands" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Brands/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Brands/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Brands/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -402,36 +604,33 @@
               <pnp:DataValue FieldName="Title">Tempra 24 Hrs</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">AR</pnp:DataValue>
-            </pnp:DataRow>
-            <pnp:DataRow>
               <pnp:DataValue FieldName="Title">Cal-C-Tose</pnp:DataValue>
-            </pnp:DataRow>
-            <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Cal-C-Tose US</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">Choco Milk</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Choco Milk US</pnp:DataValue>
-            </pnp:DataRow>
-            <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Confort</pnp:DataValue>
-            </pnp:DataRow>
-            <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Confort 2</pnp:DataValue>
-            </pnp:DataRow>
-            <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Enfagrow 3</pnp:DataValue>
-            </pnp:DataRow>
-            <pnp:DataRow>
               <pnp:DataValue FieldName="Title">Sico</pnp:DataValue>
             </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">Durex</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">K-Y</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">Enfagrow 4</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">Enfagrow RTD</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">Sin Lactosa</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">Enfamil 1 RTD</pnp:DataValue>
+            </pnp:DataRow>
           </pnp:DataRows>
-          <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://northcentralus1.pushnp.svc.ms/notifications?token=2a859b99-8f38-469d-8c99-e907cc59cb00" ExpiresInDays="1" />
-          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Categorías de producto" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/ProductCategories" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/ProductCategories/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/ProductCategories/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/ProductCategories/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -470,21 +669,9 @@
               <pnp:DataValue FieldName="Title">Rutina</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">S&amp;S</pnp:DataValue>
-            </pnp:DataRow>
-            <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">S&amp;S wo/Nutra</pnp:DataValue>
-            </pnp:DataRow>
-            <pnp:DataRow>
               <pnp:DataValue FieldName="Title">SWB</pnp:DataValue>
             </pnp:DataRow>
-            <pnp:DataRow>
-              <pnp:DataValue FieldName="Title">Lactum</pnp:DataValue>
-            </pnp:DataRow>
           </pnp:DataRows>
-          <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://northcentralus1.pushnp.svc.ms/notifications?token=a4c8726e-668b-4e8c-8107-fe383d4205e0" ExpiresInDays="1" />
-          </pnp:Webhooks>
         </pnp:ListInstance>
       </pnp:Lists>
     </pnp:ProvisioningTemplate>
