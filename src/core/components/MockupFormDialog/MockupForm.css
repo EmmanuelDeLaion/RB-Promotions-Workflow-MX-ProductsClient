@@ -58,6 +58,9 @@
     width: 100%;
     max-width: 1200px !important;
     min-width: 550px;
+    display: 'flex';
+    flex-Flow: 'column nowrap';
+    align-Items: 'stretch';
 }
 /*Content Section*/
 .statusContainer

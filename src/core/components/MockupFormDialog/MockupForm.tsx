@@ -56,11 +56,6 @@ const theme = getTheme();
 
 {/* Modal */ }
 const contentStyles = mergeStyleSets({
-  modal: {
-    display: 'flex',
-    flexFlow: 'column nowrap',
-    alignItems: 'stretch'
-  },
   header: [
     // eslint-disable-next-line deprecation/deprecation
     theme.fonts.xLargePlus,
@@ -282,14 +277,14 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
       if (!newValue || newValue.length <= 50) {
         this.setState({ promotionTitle: (newValue || '') });
       }
-    };
+    }
 
   public render(): React.ReactElement<IMockupFormProps> {
 
     return (
       <div>
         <Modal isOpen={this.state.mainModalOpen}
-          className="{contentStyles.modal} mainModal">
+          className="mainModal">
 
           <Shimmer
               width="100%"
@@ -1176,7 +1171,7 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
 
           {/* Fin Modal Bottom*/}
           </Shimmer>
-        </Modal>
+          </Modal>
       </div>
     );
   }
@@ -1253,5 +1248,5 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
         />
       </div>
     );
-  };
+  }
 }
