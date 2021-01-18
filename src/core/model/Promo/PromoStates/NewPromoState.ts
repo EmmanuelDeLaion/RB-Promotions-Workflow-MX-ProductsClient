@@ -7,6 +7,8 @@ import {
     ProductRepository,
     MasterDataRepository,
 } from "../../../data";
+import { LookupValue } from "../../../infrastructure";
+import { Client } from "../../Common";
 import { PromoStatus } from "../PromoStatus";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoState } from "./PromoState";
@@ -29,6 +31,10 @@ export class NewPromoState extends PromoState {
         viewModel.Brands = await MasterDataRepository.GetBrands();
         viewModel.ProductCategories = await MasterDataRepository.GetProductCategories();
         viewModel.Products = await ProductRepository.GetAll();
+
+        viewModel.BusinessUnits.unshift(new LookupValue());
+        viewModel.Brands.unshift(new LookupValue());
+        viewModel.ProductCategories.unshift(new LookupValue());
 
         return viewModel;
     }    

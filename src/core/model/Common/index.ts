@@ -3,3 +3,4 @@ export * from './Channel';
 export * from './Category';
 export * from './Type';
 export * from './Product';
+export * from './ClientProduct';

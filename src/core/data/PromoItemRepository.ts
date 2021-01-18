@@ -27,7 +27,10 @@ export class PromoItemRepository {
                 "ProductCategory/Title",
                 "ProductId",
                 "StartDate",
-                "EndDate"
+                "EndDate",
+                "DiscountPerPiece",
+                "NetPrice",
+                "COGS"
             ).expand("Type", "BusinessUnit", "Brand", "ProductCategory").filter(`PromoId eq ${promoId}`).get();
         
         //TODO: revisar y mejorar este query
@@ -62,7 +65,15 @@ export class PromoItemRepository {
                 ProductCategoryId: entity.ProductCategory ? entity.ProductCategory.ItemId : null,
                 ProductId: entity.Product ? entity.Product.ItemId : null,
                 StartDate: entity.StartDate,
-                EndDate: entity.EndDate
+                EndDate: entity.EndDate,
+                DiscountPerPiece: entity.DiscountPerPiece,
+                NetPrice: entity.NetPrice,
+                COGS: entity.COGS,
+                DiscountPercentage: entity.GetDiscountPercentage(),
+                GMPercentageNR: entity.GetGMPercentageNR(),
+                GMPercentageNRWithPromo: entity.GetGMPercentageNRWithPromo(),
+                GMBaseUnit: entity.GetGMBaseUnit(),
+                GMPromoUnit: entity.GetGMPromoUnit()
             };
 
             if(entity.ItemId)
@@ -90,6 +101,9 @@ export class PromoItemRepository {
         entity.Product = product;
         entity.StartDate = new Date(item.StartDate);
         entity.EndDate = new Date(item.EndDate);
+        entity.DiscountPerPiece = item.DiscountPerPiece;
+        entity.NetPrice= item.NetPrice;
+        entity.COGS = item.COGS;
   
         return entity;
     }

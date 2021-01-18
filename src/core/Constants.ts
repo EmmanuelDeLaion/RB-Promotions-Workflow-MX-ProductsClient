@@ -39,7 +39,11 @@ export namespace Constants {
             nextMonthAriaLabel: 'Ir al mes siguiente',
             prevYearAriaLabel: 'Ir al año anterior',
             nextYearAriaLabel: 'Ir al año siguiente',
-            closeButtonAriaLabel: 'Cerrar'
+            closeButtonAriaLabel: 'Cerrar',
+
+            isRequiredErrorMessage: 'Este campo es requerido.',
+
+            invalidInputErrorMessage: 'Formato de fecha inválido.'
         };
     }
 }

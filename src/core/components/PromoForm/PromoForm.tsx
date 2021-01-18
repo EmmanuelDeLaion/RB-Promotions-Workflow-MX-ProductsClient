@@ -19,13 +19,14 @@ import {
   } from 'office-ui-fabric-react';
 import { Promo } from '../../model/Promo/Promo';
 import styles from './PromoForm.module.scss';
-import { Category, Client, Product, Type } from '../../model/Common';
+import { Category, Client, ClientProduct, Product, Type } from '../../model/Common';
 import { ClientRepository } from '../../data';
 import { PromoItem } from '../../model/Promo';
 import { Constants } from '../../Constants';
 import { LookupValue } from '../../infrastructure';
 import { ProductSelector } from '../ProductSelector/ProductSelector';
 import { CommonHelper } from '../../common/CommonHelper';
+import { ClientProductRepository } from '../../data/ClientProductRepository';
 require('../PromoForm/PromoForm.overrides.scss');
 
 export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState> {    
@@ -297,6 +298,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         selectedKey={selectedItem.Type ? selectedItem.Type.ItemId : null}
                                         onChanged={this.onTypeChanged.bind(this)}
                                         required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.Type)}
                                     />
                                 </td>
                                 <td colSpan={2}>&nbsp;</td>
@@ -311,7 +313,14 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 </td>
                             </tr>
                             <tr>
-                                <td colSpan={3}>
+                                <td colSpan={3} style={{verticalAlign: "top"}}>
+                                    <ProductSelector 
+                                        products={this.GetFilteredProducts()}
+                                        onChanged={this.onProductChanged.bind(this)}
+                                        value={selectedItem.Product}
+                                    />
+                                </td>
+                                <td colSpan={3} style={{verticalAlign: "top"}}>
                                     <Dropdown
                                         placeholder="Seleccione un negocio"
                                         label="BU:"
@@ -319,9 +328,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         selectedKey={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.ItemId : null}
                                         onChanged={this.onBusinessUnitChanged.bind(this)}
                                         required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.BusinessUnit)}
                                     />
                                 </td>
-                                <td colSpan={3}>
+                            </tr>
+                            <tr>
+                                <td colSpan={3} style={{verticalAlign: "top"}}>
                                     <Dropdown
                                         placeholder="Seleccione una marca"
                                         label="Marca:"
@@ -329,15 +341,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         selectedKey={selectedItem.Brand ? selectedItem.Brand.ItemId : null}
                                         onChanged={this.onBrandChanged.bind(this)}
                                         required={true}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3}>
-                                    <ProductSelector 
-                                        products={this.GetFilteredProducts()}
-                                        onChanged={this.onProductChanged.bind(this)}
-                                        value={selectedItem.Product}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.Brand)}
                                     />
                                 </td>
                                 <td colSpan={3}>
@@ -348,11 +352,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         selectedKey={selectedItem.ProductCategory ? selectedItem.ProductCategory.ItemId : null}
                                         onChanged={this.onProductCategoryChanged.bind(this)}
                                         required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.ProductCategory)}
                                     />
                                 </td>
                             </tr>
                             <tr>
-                                <td colSpan={3}>
+                                <td colSpan={3} style={{verticalAlign: "top"}}>
                                     <DatePicker
                                         label="Fecha comienzo"
                                         firstDayOfWeek={DayOfWeek.Monday}
@@ -362,9 +367,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         value={selectedItem.StartDate!}
                                         onSelectDate={this.onSelectStartDate.bind(this)}   
                                         formatDate={CommonHelper.formatDate}
+                                        isRequired={true}
                                     />
                                 </td>
-                                <td colSpan={3}>
+                                <td colSpan={3} style={{verticalAlign: "top"}}>
                                     <DatePicker
                                         label="Fecha fin"
                                         firstDayOfWeek={DayOfWeek.Monday}
@@ -374,28 +380,40 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         value={selectedItem.EndDate!}
                                         onSelectDate={this.onSelectEndDate.bind(this)}
                                         formatDate={CommonHelper.formatDate}
+                                        isRequired={true}
                                     />
                                 </td>
                             </tr>
                         </table>   
-                        <table style={{width:'100%', display: "none"}}>
+                        <table style={{width:'100%'}}>
                             <tr>
                                 <td colSpan={2}>
                                     <TextField 
-                                        label="Precio neo OFF:"
+                                        label="Descuento por pieza ($):"
+                                        onChange={this.onDiscountPerPieceChange.bind(this)}
+                                        value={selectedItem ? selectedItem.DiscountPerPieceAsString() : null}
+                                        required={selectedItem.RequiresDiscountPerPiece()}
+                                        autoComplete="Off"
+                                        disabled={!selectedItem.RequiresDiscountPerPiece() }
+                                        errorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage(selectedItem.DiscountPerPiece) : null}
+                                        onGetErrorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
+                                    />
+                                </td>
+                                <td colSpan={2} style={{verticalAlign: "top"}}>
+                                    <TextField 
+                                        label="Precio neto OFF:"
                                         className={styles.readOnlyInput}
+                                        value={selectedItem ? selectedItem.NetPriceAsString() : null}
+                                        disabled={!selectedItem.RequiresNetPrice()}
                                         readOnly={true}
                                     />
                                 </td>
-                                <td colSpan={2}>
-                                    <TextField 
-                                        label="Descuento por pieza ($):"
-                                    />
-                                </td>
-                                <td colSpan={2}>
+                                <td colSpan={2} style={{verticalAlign: "top"}}>
                                     <TextField 
                                         label="% Descuento:"
                                         className={styles.readOnlyInput}
+                                        value={selectedItem ? selectedItem.DiscountPercentageAsString() : null}
+                                        disabled={!selectedItem.RequiresDiscountPerPiece() }
                                         readOnly={true}
                                     />
                                 </td>
@@ -412,13 +430,15 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField 
                                         label="COGS:"
                                         className={styles.readOnlyInput}
+                                        value={selectedItem ? selectedItem.COGSAsString() : null}
                                         readOnly={true}
                                     />
                                 </td>
                                 <td colSpan={2}>
                                     <TextField 
-                                        label="GM %NR:"
+                                        label="GM % NR:"
                                         className={styles.readOnlyInput}
+                                        value={selectedItem ? selectedItem.GMPercentageNRAsString() : null}
                                         readOnly={true}
                                     />
                                 </td>
@@ -428,6 +448,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField 
                                         label="GM %NR con promo:"
                                         className={styles.readOnlyInput}
+                                        value={selectedItem ? selectedItem.GMPercentageNRWithPromoAsString() : null}
+                                        disabled={!selectedItem.RequiresDiscountPerPiece() }
                                         readOnly={true}
                                     />
                                 </td>
@@ -435,6 +457,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField 
                                         label="GM base unit:"
                                         className={styles.readOnlyInput}
+                                        value={selectedItem ? selectedItem.GMBaseUnitAsString() : null}
                                         readOnly={true}
                                     />
                                 </td>
@@ -442,6 +465,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField 
                                         label="GM promo unit:"
                                         className={styles.readOnlyInput}
+                                        value={selectedItem ? selectedItem.GMPromoUnitAsString() : null}
                                         readOnly={true}
                                     />
                                 </td>                                
@@ -498,6 +522,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         this.setState((state) => {
             state.viewModel.Entity.Client = new Client({ ItemId: clientId });
             return state;
+        }, () => {
+            this.state.viewModel.Entity.Items.map((item: PromoItem, index: number) => {
+                this.updateClientProductFields(index);
+            });
         });
 
         ClientRepository.GetById(clientId).then((client) => {
@@ -517,7 +545,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         let items = this.state.viewModel.Entity.Items;
         const index = items.length + 1;
         
-        items.push(new PromoItem({AdditionalID: this.state.viewModel.Entity.PromoID + "." + index}));
+        items.push(new PromoItem({AdditionalID: this.state.viewModel.Entity.PromoID + "." + index}));        
 
         this.setState((state) => {
             let newState = state as IPromoFormState;
@@ -571,7 +599,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     private onCategoryChanged(item: IDropdownOption) {
         const category = this.state.viewModel.Categories.filter(x => x.ItemId === item.key as number)[0];
-        const investment = this.state.viewModel.Entity.Items[this.state.selectedIndex].Investment;
+        const promoItem = this.state.viewModel.Entity.Items[this.state.selectedIndex];
+        const investment = promoItem.Investment;
+        const discountPerPiece = promoItem.DiscountPerPiece;
 
         this.setState((prevState) => { 
             let newState = prevState as IPromoFormState;
@@ -579,10 +609,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             newState.loadingTypes = true;
             newState.viewModel.Entity.Items[this.state.selectedIndex].Category = category;
             newState.viewModel.Entity.Items[this.state.selectedIndex].Type = null;
-            newState.viewModel.Entity.Items[this.state.selectedIndex].Investment = category.RequiresInvestment ? investment : null;
+            newState.viewModel.Entity.Items[this.state.selectedIndex].Investment = category && category.RequiresInvestment ? investment : null;
+            newState.viewModel.Entity.Items[this.state.selectedIndex].DiscountPerPiece = category && category.RequiresDiscountPerPiece ? discountPerPiece : null;
 
             return newState;
-        });
+        }, () => {
+            this.updateClientProductFields(this.state.selectedIndex);
+        });        
 
         PromoService.GetTypesByCategory(category.ItemId).then((types: Type[]) => {
             this.setState({loadingTypes: false});
@@ -590,7 +623,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                 state.viewModel.Types = types;
                 return state;
             });            
-        });        
+        });
     }
 
     private onInvestmentChange(event: any, text: any) {
@@ -641,7 +674,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
         this.setState((state) => {         
             state.viewModel.Entity.Items[this.state.selectedIndex].Product = null;
-            state.viewModel.Entity.Items[this.state.selectedIndex].BusinessUnit = businessUnit;
+            state.viewModel.Entity.Items[this.state.selectedIndex].BusinessUnit = businessUnit.ItemId ? businessUnit : null;
             return state;
         });
     }
@@ -651,7 +684,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
         this.setState((state) => {  
             state.viewModel.Entity.Items[this.state.selectedIndex].Product = null;
-            state.viewModel.Entity.Items[this.state.selectedIndex].Brand = brand;
+            state.viewModel.Entity.Items[this.state.selectedIndex].Brand = brand.ItemId ? brand : null;
             return state;
         });
     }
@@ -661,7 +694,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
         this.setState((state) => {      
             state.viewModel.Entity.Items[this.state.selectedIndex].Product = null;      
-            state.viewModel.Entity.Items[this.state.selectedIndex].ProductCategory = productCategory;
+            state.viewModel.Entity.Items[this.state.selectedIndex].ProductCategory = productCategory.ItemId ? productCategory : null;
             return state;
         });
     }
@@ -675,6 +708,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             state.viewModel.Entity.Items[this.state.selectedIndex].Brand = product.Brand;
             state.viewModel.Entity.Items[this.state.selectedIndex].ProductCategory = product.Category;
             return state;
+        }, () => {
+            this.updateClientProductFields(this.state.selectedIndex);
         });
     }
 
@@ -692,7 +727,41 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         });
     }
 
+    private updateClientProductFields(itemIndex: number) {
+        let promoItem = this.state.viewModel.Entity.Items[itemIndex];
+        const client = this.state.viewModel.Entity.Client;        
+        const product = promoItem.Product;        
+
+        if(client && product) {
+            ClientProductRepository.GetByClientAndProduct(client.ItemId, product.ItemId).then((item: ClientProduct) => {
+                promoItem.NetPrice = promoItem.RequiresNetPrice() && item ? item.Price : null;
+                promoItem.COGS = item ? item.COGS : null;
+
+                this.setState((state) => {
+                    state.viewModel.Entity.Items[itemIndex] = promoItem;
+                    return state;
+                });
+            });
+        }
+        else {
+            promoItem.NetPrice = null;
+            promoItem.COGS = null;
+
+            this.setState((state) => {
+                state.viewModel.Entity.Items[itemIndex] = promoItem;
+                return state;
+            });
+        }
+    }
+
     //#endregion
+
+    private onDiscountPerPieceChange(event: any, text: any) {
+        this.setState((state) => {
+            state.viewModel.Entity.Items[this.state.selectedIndex].DiscountPerPiece = !isNaN(parseInt(text)) ? parseInt(text) : null;;
+            return state;
+        });
+    }
 
     private submit(): void {
         console.log(this.state.viewModel.Entity);
