@@ -34,7 +34,18 @@ import {
   DayOfWeek,
   DatePicker,
   IDatePickerStrings,
-  Toggle
+  Toggle,
+  TooltipHost,
+  Tooltip,
+  FocusZone,
+  DialogContent,
+  Spinner,
+  IShimmerStyles,
+  IShimmerStyleProps,
+  Shimmer,
+  ShimmerElementsGroup,
+  ShimmerElementType,
+  mergeStyles
 } from 'office-ui-fabric-react';
 
 require('./MockupForm.css');
@@ -146,7 +157,7 @@ const brandOptions: IComboBoxOption[] = [
   { key: 'C', text: 'Marca 3' },
 ];
 
-const investmentOptions: IComboBoxOption[] = [
+const aditionalInvestmentOptions: IComboBoxOption[] = [
   { key: 'A', text: 'Inversión 1' },
   { key: 'B', text: 'Inversión 2' },
   { key: 'C', text: 'Inversión 3' },
@@ -237,6 +248,9 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
       errorMessage: "",
       hideModalConfirmationDialog: true,
       effective: true,
+      promotionTitle: "",
+      client: "",
+      hideSavingSpinnerConfirmationDialog: true,
       // filteredProducts: []
     };
   }
@@ -259,23 +273,42 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
     subText: 'Esta seguro que desea cerrar el formulario sin guardar?',
   };
 
+  private savingSpinnerModalDialogContentProps = {
+    type: DialogType.largeHeader,
+  };
+
+  private onChangePromotionTitleTextFieldValue =
+    (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
+      if (!newValue || newValue.length <= 50) {
+        this.setState({ promotionTitle: (newValue || '') });
+      }
+    };
+
   public render(): React.ReactElement<IMockupFormProps> {
 
     return (
       <div>
-        <Modal
-          isOpen={this.state.mainModalOpen}
+        <Modal isOpen={this.state.mainModalOpen}
           className="{contentStyles.modal} mainModal">
 
+          <Shimmer
+              width="100%"
+              styles={this._getShimmerStyles}
+              customElementsGroup={this.getCustomShimmerElementsGroup()}
+              isDataLoaded={!this.state.isLoading}
+              onClick={() => this.setState({ isLoading: false })}
+          >
+            
           {/* Modal Header*/}
 
           <div className={contentStyles.header}>
-            <span>Cliente 1 - Promo descuento</span>
+            <span>{this.state.client} - {this.state.promotionTitle}</span>
             <IconButton
               styles={iconButtonStyles}
               iconProps={cancelIcon}
               ariaLabel="Close popup modal"
               onClick={() => this.setState({ hideModalConfirmationDialog: false })}
+              autoFocus={false}
             />
           </div>
           <Dialog
@@ -293,7 +326,7 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
 
           {/* Modal Content*/}
 
-          <Stack className="mainPdding">
+          <Stack className="mainPadding">
             <Pivot aria-label="Main Pivot" className="mainPivot" overflowBehavior="menu">
               <PivotItem onRenderItemLink={this._customPromotionPivotItemRenderer}>
                 <Stack styles={repetitiveSectionStyle}>
@@ -311,10 +344,13 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                           <TextField
                             id="promoName"
                             label="Nombre de la promoción"
+                            value={this.state.promotionTitle}
                             placeholder="Ingrese el nombre de la promoción"
                             required
                             errorMessage={this.state.errorMessage}
-                            value="Promo descuento" />
+                            autoFocus={true}
+                            onChange={this.onChangePromotionTitleTextFieldValue}
+                          />
                         </Stack>
                         <Stack grow={6} className="padding-right controlPadding">
                           <div>
@@ -326,7 +362,7 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                               placeholder="Seleccione un cliente"
                               required
                               errorMessage={this.state.errorMessage}
-                              defaultSelectedKey="A" />
+                              defaultSelectedKey="A"/>
                           </div>
                         </Stack>
                       </Stack >
@@ -432,12 +468,10 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                                     errorMessage={this.state.errorMessage} />
                                 </Stack>
                                 <Stack className="padding-right controlPadding">
-                                  <ComboBox
-                                    label="Tipo de la promoción"
-                                    allowFreeform
-                                    autoComplete="on"
-                                    options={promotionTypesOptions}
-                                    placeholder="Seleccione el tipo"
+                                  <TextField
+                                    id="shortDescription"
+                                    label="Descripción corta"
+                                    placeholder="Ingrese una descripción"
                                     required
                                     errorMessage={this.state.errorMessage} />
                                 </Stack>
@@ -446,52 +480,6 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                                     id="bu"
                                     placeholder="Ingrese la unidad de negocios"
                                     label="BU"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <TextField
-                                    id="sku"
-                                    placeholder="Ingrese el SKU"
-                                    label="SKU"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <DatePicker
-                                    label="Fecha de inicio"
-                                    firstDayOfWeek={firstDayOfWeek}
-                                    strings={DayPickerStrings}
-                                    placeholder="Seleccione una fecha..."
-                                    ariaLabel="Seleccione una fecha"
-                                    isRequired={true}
-                                  />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <TextField
-                                    id="discaoutPerUnit"
-                                    placeholder="Ingrese el descuento por pieza"
-                                    label="Descuento por pieza"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                              </Stack>
-                              <Stack className="smallPadding" grow={6}>
-                                <Stack className="padding-right controlPadding">
-                                  <ComboBox
-                                    label="Inversión"
-                                    allowFreeform
-                                    autoComplete="on"
-                                    options={investmentOptions}
-                                    placeholder="Ingrese una inversión"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <TextField
-                                    id="shortDescription"
-                                    label="Descripción corta"
-                                    placeholder="Ingrese una descripción"
                                     required
                                     errorMessage={this.state.errorMessage} />
                                 </Stack>
@@ -506,6 +494,50 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                                     errorMessage={this.state.errorMessage} />
                                 </Stack>
                                 <Stack className="padding-right controlPadding">
+                                  <TextField
+                                    id="discaoutPerUnit"
+                                    placeholder="Ingrese el descuento por pieza"
+                                    label="Descuento por pieza"
+                                    required
+                                    errorMessage={this.state.errorMessage} />
+                                </Stack>
+                                <Stack className="padding-right controlPadding">
+                                  <ComboBox
+                                    label="Inversión adicional"
+                                    allowFreeform
+                                    autoComplete="on"
+                                    options={aditionalInvestmentOptions}
+                                    placeholder="Ingrese una inversión adicional"
+                                    required
+                                    errorMessage={this.state.errorMessage} />
+                                </Stack>
+                                <Stack className="padding-right controlPadding">
+                                  <DatePicker
+                                    label="Fecha de inicio"
+                                    firstDayOfWeek={firstDayOfWeek}
+                                    strings={DayPickerStrings}
+                                    placeholder="Seleccione una fecha..."
+                                    ariaLabel="Seleccione una fecha"
+                                    isRequired={true}
+                                  />
+                                </Stack>
+
+                              </Stack>
+                              <Stack className="smallPadding" grow={6}>
+                                <Stack className="padding-right controlPadding">
+                                  <ComboBox
+                                    label="Tipo de la promoción"
+                                    allowFreeform
+                                    autoComplete="on"
+                                    options={promotionTypesOptions}
+                                    placeholder="Seleccione el tipo"
+                                    required
+                                    errorMessage={this.state.errorMessage} />
+                                </Stack>
+                                <Stack className="padding-right controlPadding">
+
+                                </Stack>
+                                <Stack className="padding-right controlPadding">
                                   <ComboBox
                                     label="Categoría"
                                     allowFreeform
@@ -514,6 +546,26 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                                     placeholder="Ingrese una categoría"
                                     required
                                     errorMessage={this.state.errorMessage} />
+                                </Stack>
+                                <Stack className="padding-right controlPadding">
+                                  <TextField
+                                    id="sku"
+                                    placeholder="Ingrese el SKU"
+                                    label="SKU"
+                                    required
+                                    errorMessage={this.state.errorMessage}
+                                  />
+                                </Stack>
+                                <Stack className="padding-right controlPadding">
+                                  <TextField
+                                    id="discaoutPerUnit"
+                                    placeholder="Ingrese el porcentaje"
+                                    label="Redención"
+                                    required
+                                    errorMessage={this.state.errorMessage} />
+                                </Stack>
+                                <Stack className="padding-right controlPadding">
+
                                 </Stack>
                                 <Stack className="padding-right controlPadding">
                                   <DatePicker
@@ -537,41 +589,37 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                                   <Label>Detalles de la promoción</Label>
                                 </Stack>
                                 <Stack className="grayContent smallPadding padding-left padding-right" verticalFill>
-                                  <Stack horizontal className="verticalPadding" verticalFill verticalAlign="center">
+                                  <Stack horizontal className="verticalPadding controlPadding" verticalAlign="center">
                                     <Label>BEP NR</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding" verticalFill verticalAlign="center">
-                                    <Label>COS</Label>
-                                    <Label className="toRight">Valor</Label>
-                                  </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding" verticalFill verticalAlign="center">
+                                  <Stack horizontal className="verticalPadding controlPadding" verticalAlign="center">
                                     <Label>GM %NR</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding" verticalFill verticalAlign="center">
+                                  <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
                                     <Label>GM NR con promo</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding" verticalFill verticalAlign="center">
+                                  <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
                                     <Label>GM Base Unit</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding" verticalFill verticalAlign="center">
+                                  <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
                                     <Label>GM Promo Unit</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding" verticalFill verticalAlign="center">
+                                  <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
                                     <Label>BEP GM</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
+                                  <Stack verticalFill></Stack>
                                 </Stack>
                               </Stack>
                             </Stack>
@@ -601,64 +649,96 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                               </div>
                             </Stack>
                           </Stack>
-                          <Stack horizontal className="grayContent padding padding-left padding-right">
-                            <Stack className="smallPadding padding-right controlPadding" grow={4}>
-                              <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
-                              <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                          <Stack className="grayContent padding padding-left padding-right">
+                            <Stack horizontal>
+                              <Stack grow={4} className="smallPadding padding-right controlPadding">
+                                <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
+                                <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                              </Stack>
+                              <Stack grow={4} className="smallPadding padding-right controlPadding">
+                                <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
+                                <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                              </Stack>
+                              <Stack grow={4} className="smallPadding padding-right controlPadding">
+                                <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
+                                <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                              </Stack>
                             </Stack>
-                            <Stack className="smallPadding padding-right" grow={4}>
-                              <Stack horizontal className="verticalPadding">
-                                <Label>Total volumen estimado</Label>
-                                <Label className="toRight">Valor</Label>
+                            <Stack horizontal>
+                              <Stack className="smallPadding padding-right controlPadding" grow={4}>
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Volumen base</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>NR base</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>GM base</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Inversión estimada</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
                               </Stack>
-                              <Separator className="graySeparator separatorToTop" />
-                              <Stack horizontal className="verticalPadding">
-                                <Label>NR Base</Label>
-                                <Label className="toRight">Valor</Label>
+
+                              <Stack className="smallPadding padding-right" grow={4}>
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Volumen estimado</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>NR estimado</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>GM estimado</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Inversión adicional (MKT)</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
                               </Stack>
-                              <Separator className="graySeparator separatorToTop" />
-                              <Stack horizontal className="verticalPadding">
-                                <Label>NR Incremental base estimado</Label>
-                                <Label className="toRight">Valor</Label>
+                              <Stack className="smallPadding" grow={4}>
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>% volumen incremental</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>% NR incremental</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>% GM incremental</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
                               </Stack>
-                              <Separator className="graySeparator separatorToTop" />
-                              <Stack horizontal className="verticalPadding">
-                                <Label>GM promo estimado</Label>
-                                <Label className="toRight">Valor</Label>
-                              </Stack>
-                              <Separator className="graySeparator separatorToTop" />
-                              <Stack horizontal className="verticalPadding">
-                                <Label>Inversión estimada</Label>
-                                <Label className="toRight">Valor</Label>
-                              </Stack>
-                              <Separator className="graySeparator separatorToTop" />
-                            </Stack>
-                            <Stack className="smallPadding" grow={4}>
-                              <Stack horizontal className="verticalPadding">
-                                <Label>% volumen incremental</Label>
-                                <Label className="toRight">Valor</Label>
-                              </Stack>
-                              <Separator className="graySeparator separatorToTop" />
-                              <Stack horizontal className="verticalPadding">
-                                <Label>NR estimado</Label>
-                                <Label className="toRight">Valor</Label>
-                              </Stack>
-                              <Separator className="graySeparator separatorToTop" />
-                              <Stack horizontal className="verticalPadding">
-                                <Label>GM base</Label>
-                                <Label className="toRight">Valor</Label>
-                              </Stack>
-                              <Separator className="graySeparator separatorToTop" />
-                              <Stack horizontal className="verticalPadding">
-                                <Label>GM Incremental</Label>
-                                <Label className="toRight">Valor</Label>
-                              </Stack>
-                              <Separator className="graySeparator separatorToTop" />
-                              <Stack horizontal className="verticalPadding">
-                                <Label>Invesión adicional (MKT)</Label>
-                                <Label className="toRight">Valor</Label>
-                              </Stack>
-                              <Separator className="graySeparator separatorToTop" />
                             </Stack>
                           </Stack>
                         </Stack>
@@ -769,19 +849,46 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
 
                         <Stack className="smallPadding padding-right controlPadding" grow={4}>
                           <Stack horizontal className="verticalPadding">
-                            <Label>Total volumen estimado</Label>
+                            <Label>Volumen base</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>NR Estimado</Label>
+                            <Label>NR base</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>GM Promo Estimado</Label>
+                            <Label>GM base</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Inversión estimada</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+                        </Stack>
+
+                        <Stack className="smallPadding padding-right" grow={4}>
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Volumen estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM estimado</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
@@ -793,44 +900,22 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                           <Separator className="graySeparator separatorToTop" />
 
                         </Stack>
-
-                        <Stack className="smallPadding padding-right" grow={4}>
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% Volumen incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>NR Incremental base estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>GM incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                        </Stack>
                         <Stack className="smallPadding" grow={4}>
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>NR Base</Label>
+                            <Label>% volumen incremental</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>GM Base</Label>
+                            <Label>% NR incremental</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>Inversión estimada</Label>
+                            <Label>% GM incremental</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
@@ -864,22 +949,48 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                         </Stack>
                       </Stack>
                       <Stack horizontal className="grayContent padding padding-left padding-right">
-
                         <Stack className="smallPadding padding-right controlPadding" grow={4}>
                           <Stack horizontal className="verticalPadding">
-                            <Label>Total volumen estimado</Label>
+                            <Label>Volumen base</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>NR Estimado</Label>
+                            <Label>NR base</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>GM Promo Estimado</Label>
+                            <Label>GM base</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Inversión estimada</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+                        </Stack>
+
+                        <Stack className="smallPadding padding-right" grow={4}>
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Volumen estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>NR estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM estimado</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
@@ -891,44 +1002,22 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                           <Separator className="graySeparator separatorToTop" />
 
                         </Stack>
-
-                        <Stack className="smallPadding padding-right" grow={4}>
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% Volumen incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>NR Incremental base estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>GM incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                        </Stack>
                         <Stack className="smallPadding" grow={4}>
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>NR Base</Label>
+                            <Label>% volumen incremental</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>GM Base</Label>
+                            <Label>% NR incremental</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>Inversión estimada</Label>
+                            <Label>% GM incremental</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
@@ -938,16 +1027,12 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                     </Stack>
 
                     <Stack className="padding-bottom">
-                      <Stack  horizontal className={this.state.effective 
-                        ? "grayHeader smallPadding padding-left padding-right grayHeaderToGreen" 
+                      <Stack horizontal className={this.state.effective
+                        ? "grayHeader smallPadding padding-left padding-right grayHeaderToGreen"
                         : "grayHeader smallPadding padding-left padding-right grayHeaderToRed"}>
-                        <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
+                        <Stack grow={6} horizontal className="verticalPadding preAnalisisPadding">
                           <Icon iconName="DietPlanNotebook" />
                           <Label>Análisis general</Label>
-                        </Stack>
-                        <Stack grow={3} horizontalAlign="end">
-                          <Label>ROI Estimado por SKU</Label>
-                          <Label>1.37</Label>
                         </Stack>
                         <Stack grow={3} horizontalAlign="end">
                           <Label>ROI Estimado Total</Label>
@@ -964,32 +1049,54 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                         </Stack>
                       </Stack>
                       <Stack horizontal className="grayContent padding padding-left padding-right">
-
                         <Stack className="smallPadding padding-right controlPadding" grow={4}>
                           <Stack horizontal className="verticalPadding">
-                            <Label>Total volumen estimado</Label>
+                            <Label>Volumen base</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>NR Estimado</Label>
+                            <Label>NR base</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM base</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Inversión estimada</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
                         </Stack>
 
                         <Stack className="smallPadding padding-right" grow={4}>
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>% Volumen incremental</Label>
+                            <Label>Volumen estimado</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>NR Incremental base estimado</Label>
+                            <Label>NR estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>GM estimado</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>Inversión adicional (MKT)</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
@@ -998,18 +1105,25 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                         <Stack className="smallPadding" grow={4}>
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>NR Base</Label>
+                            <Label>% volumen incremental</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                           <Stack horizontal className="verticalPadding">
-                            <Label>GM Base</Label>
+                            <Label>% NR incremental</Label>
+                            <Label className="toRight">Valor</Label>
+                          </Stack>
+                          <Separator className="graySeparator separatorToTop" />
+
+                          <Stack horizontal className="verticalPadding">
+                            <Label>% GM incremental</Label>
                             <Label className="toRight">Valor</Label>
                           </Stack>
                           <Separator className="graySeparator separatorToTop" />
 
                         </Stack>
+
                       </Stack>
                     </Stack>
                   </Stack>
@@ -1026,7 +1140,7 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
             <Label>Estado general de la promoción</Label>
             <Separator className="graySeparator separatorToTop" />
             <Stack className="modalBottomContent" horizontal grow={12}>
-              <Stack grow={3}>
+              <Stack grow={6}>
                 <Label className="modalBottomContentHeader" onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
                 <div hidden={!this.state.effective} className="effectiveLabelContainer">
                   <span className="effectiveLabel">EFECTIVA</span>
@@ -1036,16 +1150,22 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
                 </div>
               </Stack>
               <Stack grow={3}>
-                <Label className="modalBottomContentHeader">ROI Estimado por SKU</Label>
-                <Label className="modalBottomContentValue">1.37</Label>
-              </Stack>
-              <Stack grow={3}>
                 <Label className="modalBottomContentHeader">ROI Estimado total</Label>
                 <Label className="modalBottomContentValue">0.92</Label>
               </Stack>
-              <Stack className="modalBottomButtonsContainer" grow={3} horizontal horizontalAlign="end">
+              <Stack grow={3} className="modalBottomButtonsContainer" horizontal horizontalAlign="end">
                 <Stack>
-                  <DefaultButton text="Guardar borrador" allowDisabledFocus onClick={() => this.setState({ mainModalOpen: false })} />
+                  <DefaultButton text="Guardar borrador" allowDisabledFocus onClick={() => this.setState({ hideSavingSpinnerConfirmationDialog: false })} />
+
+                  <Dialog
+                    hidden={this.state.hideSavingSpinnerConfirmationDialog}
+                    dialogContentProps={this.savingSpinnerModalDialogContentProps}
+                    styles={confirmationDialogStyles}
+                  >
+                    <div>
+                      <Spinner label="Estamos guardando los datos..." />
+                    </div>
+                  </Dialog>
                 </Stack>
                 <Stack>
                   <PrimaryButton text="Enviar a aprobación" allowDisabledFocus onClick={this._validationsTriggerClicked} />
@@ -1055,7 +1175,7 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
           </div>
 
           {/* Fin Modal Bottom*/}
-
+          </Shimmer>
         </Modal>
       </div>
     );
@@ -1088,4 +1208,50 @@ export class MockupForm extends React.Component<IMockupFormProps, IMockupFormSta
       </Stack>
     );
   }
+
+  private _getShimmerStyles = (props: IShimmerStyleProps): IShimmerStyles => {
+    return {
+      shimmerWrapper: [
+        {
+          backgroundColor: '#deecf9',
+          backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #c7e0f4 50%, rgba(255, 255, 255, 0) 100%)'
+        }
+      ]
+    };
+  }
+
+  private wrapperClass = mergeStyles({
+    padding: 2,
+    selectors: {
+      '& > .ms-Shimmer-container': {
+        margin: '10px 0',
+      },
+    },
+  });
+
+  private getCustomShimmerElementsGroup = (): JSX.Element => {
+    return (
+      <div style={{ display: 'flex' }} className={this.wrapperClass}>
+        {/* <ShimmerElementsGroup
+          shimmerElements={[
+            { type: ShimmerElementType.gap, width: 10, height: 80 },
+            { type: ShimmerElementType.circle, height: 80 },
+            { type: ShimmerElementType.gap, width: 10, height: 80 },
+          ]}
+        /> */}
+        <ShimmerElementsGroup
+          flexWrap
+          className="padding"
+          shimmerElements={[
+            { type: ShimmerElementType.line, width: 360, height: 30 },
+             { type: ShimmerElementType.gap, width: 30, height: 30 },
+             { type: ShimmerElementType.line, width: 360, height: 30 },
+             { type: ShimmerElementType.gap, width: 30, height: 30 },
+             { type: ShimmerElementType.line, width: 360, height: 30 },
+            // { type: ShimmerElementType.line, width: 500, height: 20 },
+          ]}
+        />
+      </div>
+    );
+  };
 }

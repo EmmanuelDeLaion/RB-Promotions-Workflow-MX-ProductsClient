@@ -15,6 +15,9 @@ export interface IMockupFormState {
 
     mainModalOpen: boolean;
     hideDeleteProductDialog: boolean;
+    hideSavingSpinnerConfirmationDialog: boolean;
     hideModalConfirmationDialog: boolean;
     effective: boolean;
+    promotionTitle: string;
+    client: string;
 }
