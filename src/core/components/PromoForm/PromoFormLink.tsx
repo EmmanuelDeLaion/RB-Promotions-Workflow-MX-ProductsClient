@@ -3,8 +3,8 @@ import { ExtensionContext } from "@microsoft/sp-extension-base";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { PromoFormDialog } from '.';
 import { Stack, 
-        DefaultButton, 
-        getTheme } from "office-ui-fabric-react";
+        getTheme, 
+        PrimaryButton} from "office-ui-fabric-react";
 import { CommonHelper } from "../../common/CommonHelper";
 
 import { initializeTheme } from './Theme';
@@ -27,12 +27,12 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, {}> {
     };
 
     private headerStyles = {
-        font: "normal normal 600 32px/64px Segoe UI",
+        font: "normal normal 600 32px/48px Segoe UI",
         color: "#FFFFFF",
     };
 
     private subHeaderStyles = {
-        font: "normal normal normal 18px/38px Segoe UI",
+        font: "normal normal normal 18px/24px Segoe UI",
         color: "#FFFFFF",
     };
 
@@ -48,7 +48,7 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, {}> {
                     <span style={this.subHeaderStyles}>Portal de carga y aprobaciones de Promociones</span>
                 </Stack>
                 <Stack verticalAlign="end" horizontal>
-                    <DefaultButton 
+                    <PrimaryButton 
                         onClick={() => this.openPromoFormDialog()} 
                         style={this.openPromotionButtonStyles} 
                         text="Nueva promoción" 
