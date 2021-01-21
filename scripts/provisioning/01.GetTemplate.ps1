@@ -1,8 +1,8 @@
 $siteUrl = "https://spme.sharepoint.com/sites/RB-Promociones"
-$UserName = "testuser.nine@spme.onmicrosoft.com"
+$userName = "testuser.nine@spme.onmicrosoft.com"
 $pwd = "Password1"
 
-$Credentials = New-Object System.Management.Automation.PSCredential ($UserName, (ConvertTo-SecureString $pwd -AsPlainText -Force))
+$Credentials = New-Object System.Management.Automation.PSCredential ($userName, (ConvertTo-SecureString $pwd -AsPlainText -Force))
 Connect-PnPOnline -Url $siteUrl –Credentials $Credentials
 
 Get-PnPProvisioningTemplate -Out template.xml -Handlers Lists -ListsToExtract "Canales", "Categorías", "Clientes", "Promo items", "Promociones", "Subcanales", "Tipos", "Productos", "Unidades de negocio", "Marcas", "Categorías de producto"

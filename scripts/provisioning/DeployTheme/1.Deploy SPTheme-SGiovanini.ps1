@@ -1,9 +1,8 @@
-$siteUrl = "https://devbf2019.sharepoint.com/sites/RBPromociones"
+$siteUrl = "https://sgiovannini-admin.sharepoint.com"
+$userName = "administrator@sgiovannini.onmicrosoft.com"
+$pwd = "Spdevteam4"
 
-$username = "adminshp@devbf2019.onmicrosoft.com"
-$password = "baufest_123"
-
-$cred = New-Object -TypeName System.Management.Automation.PSCredential -argumentlist $userName, $(convertto-securestring $Password -asplaintext -force)
+$cred = New-Object -TypeName System.Management.Automation.PSCredential -argumentlist $userName, $(convertto-securestring $pwd -asplaintext -force)
 Connect-SPOService -Url $siteUrl -Credential $cred
 
 $themepalette = @{
@@ -31,4 +30,4 @@ $themepalette = @{
     "white" = "#ffffff";
  }
 
-Add-SPOTheme -Identity "RB Theme" -Palette $themepalette -IsInverted $false
+Add-SPOTheme -Identity "RB Pink" -Palette $themepalette -IsInverted $false
