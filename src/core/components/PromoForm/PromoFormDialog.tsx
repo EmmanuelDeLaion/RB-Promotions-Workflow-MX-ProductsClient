@@ -1,10 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { BaseDialog } from '@microsoft/sp-dialog';
-import { PromoForm } from '.';
+import { PromoForm } from './PromoForm';
 import { ExtensionContext } from "@microsoft/sp-extension-base";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
-
 
 export class PromoFormDialog extends BaseDialog {
     public title: string;
@@ -24,7 +23,8 @@ export class PromoFormDialog extends BaseDialog {
     }
 
     protected render(): void {
-        ReactDOM.render(<div>
+        ReactDOM.render(
+        <div>
             <PromoForm                 
                 itemId={this.itemId}
                 title={this.title} 
@@ -32,7 +32,8 @@ export class PromoFormDialog extends BaseDialog {
                 submit={ this.submit }
                 context={this.context}                
             />
-            </div>, this.domElement);
+            </div>
+            , this.domElement);
     }
 
     private submit(): void {

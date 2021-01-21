@@ -12,4 +12,12 @@ export interface IPromoFormState {
     selectedIndex: number;
     loadingTypes: boolean;
     filteredProducts: Product[];
+
+    mainModalOpen: boolean;
+    hideDeleteProductDialog: boolean;
+    hideSavingSpinnerConfirmationDialog: boolean;
+    hideModalConfirmationDialog: boolean;
+    effective: boolean;
+    promotionTitle: string;
+    client: string;
 }
