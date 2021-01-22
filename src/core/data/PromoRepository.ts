@@ -3,7 +3,6 @@ import { ClientRepository } from ".";
 import { Client } from "../model/Common";
 import { PromoItem, PromoStatus } from "../model/Promo";
 import { Promo } from "../model/Promo/Promo";
-import { DraftPromoState } from "../model/Promo/PromoStates/DraftPromoState";
 import { PromoItemRepository } from "./PromoItemRepository";
 
 export class PromoRepository {
@@ -13,7 +12,7 @@ export class PromoRepository {
     //TODO: Optimizar consulta
     public static async GetById(id: number): Promise<Promo> {
       const item = await sp.web.lists.getByTitle(PromoRepository.LIST_NAME)
-        .items.getById(id).select("ID", "Title", "ActivityObjective", "ClientId", "StatusId").get();  
+        .items.getById(id).select("ID", "Title", "PromoName", "ActivityObjective", "ClientId", "StatusId").get();  
         
       const items = await PromoItemRepository.GetByPromo(item.ID);
       const client = item.ClientId ? await ClientRepository.GetById(item.ClientId) : null;
@@ -22,7 +21,8 @@ export class PromoRepository {
     }
 
     public static async SaveOrUpdate(entity: Promo): Promise<void> {
-      const data = {        
+      const data = {       
+        PromoName: entity.Name, 
         ActivityObjective: entity.ActivityObjective,
         ClientId: entity.Client ? entity.Client.ItemId : null,
         Status: entity.GetStatusText(),
@@ -51,6 +51,7 @@ export class PromoRepository {
       let entity = new Promo();
 
       entity.ItemId = item.ID;
+      entity.Name = item.PromoName;
       entity.PromoID = item.Title;
       entity.ActivityObjective = item.ActivityObjective;
       entity.Client = client;

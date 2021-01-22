@@ -6,6 +6,7 @@ import { PromoItem } from "./PromoItem";
 
 export class Promo extends Entity {
     public PromoID: string = "MX--";
+    public Name: string;
     public ActivityObjective: string;
     public Client: Client;
     public Items: PromoItem[] = [new PromoItem({AdditionalID: this.PromoID + ".1"})];

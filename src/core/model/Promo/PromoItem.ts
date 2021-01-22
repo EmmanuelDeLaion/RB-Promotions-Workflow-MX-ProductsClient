@@ -14,9 +14,9 @@ export class PromoItem extends Entity {
     public Product: Product;
     public StartDate: Date;
     public EndDate: Date;
-    public DiscountPerPiece?: number;
-    public NetPrice?: number;
-    public COGS: number;
+    public DiscountPerPiece?: number = null;
+    public NetPrice?: number = null;
+    public COGS: number = null;
 
     public constructor(init?:Partial<PromoItem>) {
         super();
@@ -42,11 +42,10 @@ export class PromoItem extends Entity {
     //#region Calculated values
 
     public GetDiscountPercentage(): Number {
-        //TODO: Agregar campo RequiresDiscountPercentage
         if(this.RequiresDiscountPerPiece() && this.NetPrice > 0)
             return (this.DiscountPerPiece / this.NetPrice) * 100;
 
-        return null;    
+        return null;
     }
 
     public GetGMPercentageNR(): Number {
