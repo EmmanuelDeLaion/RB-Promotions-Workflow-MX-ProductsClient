@@ -2,49 +2,45 @@ import * as React from 'react';
 import { IPromoFormProps, IPromoFormState, PromoFormResult } from '.';
 import { PromoService } from '../../services/PromoService';
 import {
-    PrimaryButton,
-    DefaultButton,
-    TextField,    
-    DialogContent,
-    Shimmer,
-    IShimmerStyleProps,
-    IShimmerStyles,
-    DialogFooter,
-    Dropdown,
-    IDropdownOption,
-    Toggle,
-    DayOfWeek,
-    DatePicker,
-    Label,
-    
-    Modal,
-    IconButton,
-    Dialog,
-    ComboBox,
-    Stack,
-    Persona,
-    Separator,
-    PersonaSize,
-    Link,
-    Icon,
-    mergeStyles,
-    getTheme,
-    IComboBoxOption,
-    IPersonaSharedProps,
-    IStackStyles,
-    FontWeights,
-    mergeStyleSets,
-    Spinner,
-    PersonaPresence,
-    DialogType,
-    ShimmerElementType,
-    IStyleSet,
-    ILabelStyles,
-    IIconProps,
-    IDatePickerStrings,
-    
-  } from 'office-ui-fabric-react';
-import { Promo } from '../../model/Promo/Promo';
+  PrimaryButton,
+  DefaultButton,
+  TextField,    
+  DialogContent,
+  Shimmer,
+  IShimmerStyleProps,
+  IShimmerStyles,
+  DialogFooter,
+  Dropdown,
+  IDropdownOption,
+  Toggle,
+  DayOfWeek,
+  DatePicker,
+  Label,  
+  Modal,
+  IconButton,
+  Dialog,
+  ComboBox,
+  Stack,
+  Persona,
+  Separator,
+  PersonaSize,
+  Link,
+  Icon,
+  mergeStyles,
+  getTheme,
+  IComboBoxOption,
+  IPersonaSharedProps,
+  IStackStyles,
+  FontWeights,
+  mergeStyleSets,
+  Spinner,
+  PersonaPresence,
+  DialogType,
+  IStyleSet,
+  ILabelStyles,
+  IIconProps,
+  IDatePickerStrings  
+} from 'office-ui-fabric-react';
 import styles from './PromoForm.module.scss';
 import { Category, Client, ClientProduct, Product, Type } from '../../model/Common';
 import { ClientRepository } from '../../data';
@@ -56,505 +52,673 @@ import { CommonHelper } from '../../common/CommonHelper';
 import { ClientProductRepository } from '../../data/ClientProductRepository';
 import { IPivotItemProps, Pivot, PivotItem } from '@fluentui/react-tabs';
 require('../PromoForm/PromoForm.overrides.scss');
-
 require('./PromoForm.css');
-
 import { initializeTheme } from './Theme';
 import { TestImages } from '@uifabric/example-data';
+import { IItemAddResult, sp } from "@pnp/sp/presets/all";
+
 initializeTheme();
 const theme = getTheme();
 
 export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState> {    
 
-    constructor(props: IPromoFormProps) {
-        super(props);
-        this.state = {
-            isLoading: true,
-            hasValidationError: false,
-            enableSubmit: false,
-            formSubmitted: false,
-            resultIsOK: false,
-            selectedIndex: 0,
-            loadingTypes: false,
-            filteredProducts: [],
-            
-            mainModalOpen: true,
-            hideDeleteProductDialog: true,
-            errorMessage: "",
-            hideModalConfirmationDialog: true,
-            effective: true,
-            promotionTitle: "",
-            client: "",
-            hideSavingSpinnerConfirmationDialog: true
-        };
-    }
+  constructor(props: IPromoFormProps) {
+    super(props);
+    this.state = {
+      isLoading: true,
+      hasValidationError: false,
+      enableSubmit: false,
+      formSubmitted: false,
+      resultIsOK: false,
+      selectedIndex: 0,
+      loadingTypes: false,
+      filteredProducts: [],            
+      mainModalOpen: true,
+      hideDeleteProductDialog: true,
+      errorMessage: "",
+      hideModalConfirmationDialog: true,
+      effective: true,
+      promotionTitle: "",
+      client: "",
+      hideSavingSpinnerConfirmationDialog: true
+    };
+  }
 
-    public componentDidMount() {
-        PromoService.GetViewModel(this.props.itemId).then((viewModel) => {           
-            this.setState({
-                isLoading: false,
-                enableSubmit: true,
-                viewModel: viewModel
-            });
-        }).catch((err) => {
-            console.error(err);
-            this.setState({ formSubmitted: true, isLoading: false, errorMessage: err});
-        });
-    }    
+  public componentDidMount() {
+    PromoService.GetViewModel(this.props.itemId).then((viewModel) => {           
+      this.setState({
+          isLoading: false,
+          enableSubmit: true,
+          viewModel: viewModel
+      });
+    }).catch((err) => {
+      console.error(err);
+      this.setState({ formSubmitted: true, isLoading: false, errorMessage: err});
+    });
+  }    
 
-    public render(): React.ReactElement<IPromoFormProps> {
-        const entity = this.state.viewModel ? this.state.viewModel.Entity : null;
-        const client = entity ? entity.Client : null;
-        const channel = client ? client.Channel : null;
-        const headOfChannel = channel ? channel.HeadOfChannel : null;
-        const kam = client ? client.KeyAccountManager : null;
-        const subchannel = client ? client.Subchannel : null;
-        const selectedItem = entity ? entity.Items[this.state.selectedIndex] : null;
+  public render(): React.ReactElement<IPromoFormProps> {
+    const entity = this.state.viewModel ? this.state.viewModel.Entity : null;
+    const client = entity ? entity.Client : null;
+    const channel = client ? client.Channel : null;
+    const headOfChannel = channel ? channel.HeadOfChannel : null;
+    const kam = client ? client.KeyAccountManager : null;
+    const subchannel = client ? client.Subchannel : null;
+    const selectedItem = entity ? entity.Items[this.state.selectedIndex] : null;
 
-        var output = 
-            <DialogContent
-                title={this.props.title}
-                subText="Cargando formulario..."
-                onDismiss={this.props.close}
-                showCloseButton={true}>
-                <div className={styles.promoForm}>
-                    <Shimmer
-                        width="100%"
-                        styles={this._getShimmerStyles}
-                    />
-                </div>
-            </DialogContent>;
-
-        if (!this.state.isLoading && !this.state.formSubmitted) {
-
-            //#region Collections
-
-            const clients: Array<{ key: number, text: string }> =
-                this.state.viewModel.Clients != null ?
-                    (this.state.viewModel.Clients as Array<Client>).map((item): { key: number, text: string } => {
-                        return { key: item.ItemId, text: item.Name };
-                    }) : [];
-
-            const categories: Array<{ key: number, text: string }> =
-                this.state.viewModel.Categories != null ?
-                    (this.state.viewModel.Categories as Array<Category>).map((item): { key: number, text: string } => {
-                        return { key: item.ItemId, text: item.Name };
-                    }) : [];
-                        
-            const types: Array<{ key: number, text: string }> =
-                this.state.viewModel.Types != null ?
-                    (this.state.viewModel.Types as Array<Type>).map((item): { key: number, text: string } => {
-                        return { key: item.ItemId, text: item.Name };
-                    }) : [];
-
-            const businessUnits: Array<{ key: number, text: string }> =
-                this.state.viewModel.BusinessUnits != null ?
-                    (this.state.viewModel.BusinessUnits as Array<LookupValue>).map((item): { key: number, text: string } => {
-                        return { key: item.ItemId, text: item.Value };
-                    }) : [];
-
-            const brands: Array<{ key: number, text: string }> =
-                this.state.viewModel.Brands != null ?
-                    (this.state.viewModel.Brands as Array<LookupValue>).map((item): { key: number, text: string } => {
-                        return { key: item.ItemId, text: item.Value };
-                    }) : [];
-
-            const productCategories: Array<{ key: number, text: string }> =
-                this.state.viewModel.ProductCategories != null ?
-                    (this.state.viewModel.ProductCategories as Array<LookupValue>).map((item): { key: number, text: string } => {
-                        return { key: item.ItemId, text: item.Value };
-                    }) : [];
-
-            const products: Array<{ key: number, text: string }> =
-                this.state.viewModel.Products != null ?
-                    (this.state.viewModel.Products as Array<Product>).map((item): { key: number, text: string } => {
-                        return { key: item.ItemId, text: item.SKUNumber + ' - ' + item.SKUDescription };
-                    }) : [];
-
-            //#endregion
-
-            output =
-            <div>
-        <Modal isOpen={this.state.mainModalOpen}
-          className="mainModal">
-
+    let output = 
+      <DialogContent
+        title={this.props.title}
+        subText="Cargando formulario..."
+        onDismiss={this.props.close}
+        showCloseButton={true}>
+        <div className={styles.promoForm}>
           <Shimmer
-              width="100%"
-              styles={this._getShimmerStyles}
-              customElementsGroup={this.getCustomShimmerElementsGroup()}
-              isDataLoaded={!this.state.isLoading}
-              onClick={() => this.setState({ isLoading: false })}
-          >
-            
-          {/* Modal Header*/}
+            width="100%"
+            styles={this._getShimmerStyles}
+          />
+        </div>
+      </DialogContent>;
 
-          <div className={this.contentStyles.header}>
-            <span>this.state.client - this.state.promotionTitle</span>
-            <IconButton
-              styles={this.iconButtonStyles}
-              iconProps={this.cancelIcon}
-              ariaLabel="Close popup modal"
-              onClick={() => this.setState({ hideModalConfirmationDialog: false })}
-              autoFocus={false}
-            />
-          </div>
-          <Dialog
-            hidden={this.state.hideModalConfirmationDialog}
-            dialogContentProps={this.closeModalDialogContentProps}
-            styles={this.confirmationDialogStyles}
-          >
-            <DialogFooter>
-              <DefaultButton 
-                onClick={() => this.setState({ hideModalConfirmationDialog: true })} 
-                text="Cancelar" />
-              <PrimaryButton 
-                onClick={this.props.close} 
-                text="Salir sin guardar" />
-            </DialogFooter>
-          </Dialog>
-          {/* Fin Modal Header*/}
+      if (!this.state.isLoading && !this.state.formSubmitted) {
 
-          {/* Modal Content*/}
+        //#region Collections
 
-          <Stack className="mainPadding">
-            <Pivot aria-label="Main Pivot" className="mainPivot" overflowBehavior="menu">
-              <PivotItem onRenderItemLink={this._customPromotionPivotItemRenderer}>
-                <Stack styles={this.repetitiveSectionStyle}>
-                  <Stack className="statusContainer smallPadding padding-right" horizontal horizontalAlign="end">
-                    <Stack style={{ color: theme.palette.themePrimary, paddingRight: "4px" }}><Icon iconName="MapLayers" /></Stack>
-                    <Stack className="label">Estado:</Stack>
-                    <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>Pendiente de aprobación</Stack>
-                  </Stack>
-                  {/* Promotion section */}
-                  <Stack horizontal className="padding">
+        const clients: Array<{ key: number, text: string }> =
+          this.state.viewModel.Clients != null ?
+            (this.state.viewModel.Clients as Array<Client>).map((item): { key: number, text: string } => {
+              return { key: item.ItemId, text: item.Name };
+            }) : [];
 
-                    <Stack grow={8} verticalAlign="start">
-                      <Stack grow={12} horizontal className="smallPadding">
-                        <Stack grow={6} className="padding-right controlPadding">
-                          <TextField
-                            id="promoName"
-                            label="Nombre de la promoción"
-                            value={this.state.promotionTitle}
-                            placeholder="Ingrese el nombre de la promoción"
-                            required
-                            errorMessage={this.state.errorMessage}
-                            autoFocus={true}
-                            onChange={this.onChangePromotionTitleTextFieldValue}
-                          />
+        const categories: Array<{ key: number, text: string }> =
+          this.state.viewModel.Categories != null ?
+            (this.state.viewModel.Categories as Array<Category>).map((item): { key: number, text: string } => {
+              return { key: item.ItemId, text: item.Name };
+            }) : [];
+                        
+        const types: Array<{ key: number, text: string }> =
+          this.state.viewModel.Types != null ?
+            (this.state.viewModel.Types as Array<Type>).map((item): { key: number, text: string } => {
+              return { key: item.ItemId, text: item.Name };
+            }) : [];
+
+        const businessUnits: Array<{ key: number, text: string }> =
+          this.state.viewModel.BusinessUnits != null ?
+            (this.state.viewModel.BusinessUnits as Array<LookupValue>).map((item): { key: number, text: string } => {
+              return { key: item.ItemId, text: item.Value };
+            }) : [];
+
+        const brands: Array<{ key: number, text: string }> =
+          this.state.viewModel.Brands != null ?
+            (this.state.viewModel.Brands as Array<LookupValue>).map((item): { key: number, text: string } => {
+              return { key: item.ItemId, text: item.Value };
+            }) : [];
+
+        const productCategories: Array<{ key: number, text: string }> =
+          this.state.viewModel.ProductCategories != null ?
+            (this.state.viewModel.ProductCategories as Array<LookupValue>).map((item): { key: number, text: string } => {
+              return { key: item.ItemId, text: item.Value };
+            }) : [];
+
+        const products: Array<{ key: number, text: string }> =
+          this.state.viewModel.Products != null ?
+            (this.state.viewModel.Products as Array<Product>).map((item): { key: number, text: string } => {
+              return { key: item.ItemId, text: item.SKUNumber + ' - ' + item.SKUDescription };
+            }) : [];
+
+        //#endregion
+
+        output =
+          <div>
+            <Modal isOpen={this.state.mainModalOpen} className="mainModal">
+              <Shimmer
+                width="100%"
+                styles={this._getShimmerStyles}
+                customElementsGroup={this.getCustomShimmerElementsGroup()}
+                isDataLoaded={!this.state.isLoading}
+                onClick={() => this.setState({ isLoading: false })}>
+              
+                {/* Modal Header*/}
+              
+                <div className={this.contentStyles.header}>
+                  <span>{this.state.viewModel.GetPromotionTitle()}</span>
+                  <IconButton
+                    styles={this.iconButtonStyles}
+                    iconProps={this.cancelIcon}
+                    ariaLabel="Close popup modal"
+                    onClick={() => this.setState({ hideModalConfirmationDialog: false })}
+                    autoFocus={false}
+                  />
+                </div>
+                <Dialog
+                  hidden={this.state.hideModalConfirmationDialog}
+                  dialogContentProps={this.closeModalDialogContentProps}
+                  styles={this.confirmationDialogStyles}>
+                  <DialogFooter>
+                    <DefaultButton 
+                      onClick={() => this.setState({ hideModalConfirmationDialog: true })} 
+                      text="Cancelar" />
+                    <PrimaryButton 
+                      onClick={this.props.close} 
+                      text="Salir sin guardar" />
+                  </DialogFooter>
+                </Dialog>
+
+                {/* Fin Modal Header*/}
+
+                {/* Modal Content*/}
+
+                <Stack className="mainPadding">
+                  <Pivot aria-label="Main Pivot" className="mainPivot" overflowBehavior="menu">
+                    <PivotItem onRenderItemLink={this._customPromotionPivotItemRenderer.bind(this, entity.PromoID)}>
+                      <Stack styles={this.repetitiveSectionStyle}>
+                        <Stack className="statusContainer smallPadding padding-right" horizontal horizontalAlign="end">
+                          <Stack style={{ color: theme.palette.themePrimary, paddingRight: "4px" }}><Icon iconName="MapLayers" /></Stack>
+                          <Stack className="label">Estado:</Stack>
+                          <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>{entity.GetStatusText()}</Stack>
                         </Stack>
-                        <Stack grow={6} className="padding-right controlPadding">
-                          <div>
-                            <ComboBox
-                              label="Cliente"
-                              allowFreeform
-                              autoComplete="on"
-                              options={this.clientsOptions}
-                              placeholder="Seleccione un cliente"
-                              required
-                              errorMessage={this.state.errorMessage}
-                              defaultSelectedKey="A"/>
-                          </div>
-                        </Stack>
-                      </Stack >
-                      <Stack grow={12} className="padding-right multilineControlPadding">
-                        <TextField
-                          id="activityObjective"
-                          label="Objetivo de la actividad"
-                          placeholder="Ingrese el objetivo"
-                          required
-                          errorMessage={this.state.errorMessage}
-                          multiline
-                          rows={3}
-                          resizable={false} />
-                      </Stack>
-                    </Stack>
-
-                    <Stack grow={4} horizontal>
-                      <Stack verticalFill>
-                        <Separator vertical={true} styles={this.verticalSeparatorStyle}></Separator>
-                      </Stack>
-                      <Stack grow={12}>
-                        <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
-                          <Label className="peopleLabel">Cabeza de canal</Label>
-                          <Persona
-                            {...this.examplePersona}
-                            size={PersonaSize.size24}
-                            presence={PersonaPresence.online}
-                            hidePersonaDetails={false}
-                            imageAlt="Annie Lindqvist, status is online"
-                          />
-                        </Stack>
-                        <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
-                          <Label className="peopleLabel">Gerente KAM</Label>
-                          <Persona
-                            {...this.examplePersona2}
-                            size={PersonaSize.size24}
-                            presence={PersonaPresence.online}
-                            hidePersonaDetails={false}
-                            imageAlt="Annie Lindqvist, status is online"
-                          />
-                        </Stack>
-                        <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
-                          <Label className="peopleLabel">Canal</Label>
-                          <Label className="labelNotBold">Canal 1</Label>
-                        </Stack>
-                        <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
-                          <Label className="peopleLabel">Subcanal</Label>
-                          <Label className="labelNotBold">Subcanal 1.1</Label>
-                        </Stack>
-                      </Stack>
-                    </Stack>
-                  </Stack>
-
-                  {/* Repetitive section */}
-                  <Stack>
-                    <Pivot className="innerPivot" aria-label="Inner Pivot" overflowBehavior="menu">
-                      <PivotItem
-                        headerText="MX1.1"
-                        headerButtonProps={{
-                          'data-order': 1,
-                          'data-title': 'MX1.1',
-                        }}>
-                        <Stack className="deleteProductContainer" horizontal horizontalAlign="end">
-                          <Stack className="label">
-                            <Link onClick={() => this.setState({ hideDeleteProductDialog: false })}><Icon iconName="MapLayers" /><span style={{ color: '#323130' }}>Borrar producto</span></Link>
-                          </Stack>
-
-                          <Dialog
-                            hidden={this.state.hideDeleteProductDialog}
-                            dialogContentProps={this.deleteProductDialogContentProps}
-                            styles={this.confirmationDialogStyles}
-                          >
-                            <DialogFooter>
-                              <PrimaryButton onClick={() => this.setState({ hideDeleteProductDialog: true })} text="Eliminar" />
-                              <DefaultButton onClick={() => this.setState({ hideDeleteProductDialog: true })} text="Cancelar" />
-                            </DialogFooter>
-                          </Dialog>
-
-                        </Stack>
-
-                        <Stack horizontal styles={this.repetitiveSectionStyle} className="padding">
-                          <Stack grow={8}>
-                            <Stack styles={{ root: { maxHeight: "30px" } }} className="smallPadding padding-right" grow={6}>
-                              <Stack horizontal className="actividadTopadaContainer smallPadding-left">
-                                <Stack>
-                                  <Label>Actividad Topada</Label>
-                                </Stack>
-                                <Stack className="toRight smallPadding actividadTopadaToggle">
-                                  <Toggle onText="Si" offText="No" />
-                                </Stack>
+                        {/* Promotion section */}
+                        <Stack horizontal className="padding">
+                          <Stack grow={8} verticalAlign="start">
+                            <Stack grow={12} horizontal className="smallPadding">
+                              <Stack grow={6} className="padding-right controlPadding">
+                                <TextField
+                                  label="Nombre de la promoción"
+                                  value={entity.Name}
+                                  placeholder="Ingrese el nombre de la promoción"
+                                  required={true}
+                                  errorMessage={this.getValidationErrorMessage(entity.Name)}
+                                  autoFocus={true}
+                                  onChange={this.onNameChange.bind(this)}
+                                />
                               </Stack>
-                            </Stack>
-                            <Stack horizontal grow={12} styles={{ root: { paddingTop: "16px" } }}>
-                              <Stack className="smallPadding" grow={6}>
-                                <Stack className="padding-right controlPadding">
-                                  <ComboBox
-                                    label="Categoría de la promoción"
-                                    allowFreeform
-                                    autoComplete="on"
-                                    options={this.promotionCategoryOptions}
-                                    placeholder="Seleccion la categoría"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <TextField
-                                    id="shortDescription"
-                                    label="Descripción corta"
-                                    placeholder="Ingrese una descripción"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <TextField
-                                    id="bu"
-                                    placeholder="Ingrese la unidad de negocios"
-                                    label="BU"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <ComboBox
-                                    label="Marca"
-                                    allowFreeform
-                                    autoComplete="on"
-                                    options={this.brandOptions}
-                                    placeholder="Ingrese una marca"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <TextField
-                                    id="discaoutPerUnit"
-                                    placeholder="Ingrese el descuento por pieza"
-                                    label="Descuento por pieza"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <ComboBox
-                                    label="Inversión adicional"
-                                    allowFreeform
-                                    autoComplete="on"
-                                    options={this.aditionalInvestmentOptions}
-                                    placeholder="Ingrese una inversión adicional"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <DatePicker
-                                    label="Fecha de inicio"
-                                    firstDayOfWeek={this.firstDayOfWeek}
-                                    strings={this.DayPickerStrings}
-                                    placeholder="Seleccione una fecha..."
-                                    ariaLabel="Seleccione una fecha"
-                                    isRequired={true}
-                                  />
-                                </Stack>
-
+                              <Stack grow={6} className="padding-right controlPadding">
+                                <Dropdown
+                                  placeholder="Seleccione un cliente"
+                                  label="Cliente:"
+                                  options={clients}
+                                  selectedKey={entity.Client ? entity.Client.ItemId : null}
+                                  onChanged={this.onClientChanged.bind(this)}
+                                  required={true}
+                                  errorMessage={this.getValidationErrorMessage(entity.Client)}
+                                />
                               </Stack>
-                              <Stack className="smallPadding" grow={6}>
-                                <Stack className="padding-right controlPadding">
-                                  <ComboBox
-                                    label="Tipo de la promoción"
-                                    allowFreeform
-                                    autoComplete="on"
-                                    options={this.promotionTypesOptions}
-                                    placeholder="Seleccione el tipo"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <ComboBox
-                                    label="Categoría"
-                                    allowFreeform
-                                    autoComplete="on"
-                                    options={this.categoryOptions}
-                                    placeholder="Ingrese una categoría"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <TextField
-                                    id="sku"
-                                    placeholder="Ingrese el SKU"
-                                    label="SKU"
-                                    required
-                                    errorMessage={this.state.errorMessage}
-                                  />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <TextField
-                                    id="discaoutPerUnit"
-                                    placeholder="Ingrese el porcentaje"
-                                    label="Redención"
-                                    required
-                                    errorMessage={this.state.errorMessage} />
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-
-                                </Stack>
-                                <Stack className="padding-right controlPadding">
-                                  <DatePicker
-                                    label="Fecha de finalización"
-                                    firstDayOfWeek={this.firstDayOfWeek}
-                                    strings={this.DayPickerStrings}
-                                    placeholder="Seleccione una fecha..."
-                                    ariaLabel="Seleccione una fecha"
-                                    isRequired={true}
-                                  />
-                                </Stack>
-                              </Stack>
+                            </Stack >
+                            <Stack grow={12} className="padding-right multilineControlPadding">
+                              <TextField 
+                                label="Objetivo de la actividad:" 
+                                required={true} 
+                                multiline={true}
+                                rows={3}
+                                onChange={this.onActivityObjectiveChange.bind(this)}
+                                value={entity.ActivityObjective} 
+                                autoComplete="Off"
+                                errorMessage={this.getValidationErrorMessage(entity.ActivityObjective)}
+                                onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
+                              />
                             </Stack>
                           </Stack>
-                          <Stack grow={4}>
-                            <Stack className="smallPadding" grow={4} horizontal>
+                          <Stack grow={4} horizontal>
+                            <Stack verticalFill>
                               <Separator vertical={true} styles={this.verticalSeparatorStyle}></Separator>
-                              <Stack grow={12}>
-                                <Stack horizontal className="grayHeader padding padding-left padding-right">
-                                  <Icon iconName="DietPlanNotebook" />
-                                  <Label>Detalles de la promoción</Label>
+                            </Stack>
+                            <Stack grow={12}>
+                              <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                                <Label className="peopleLabel">Cabeza de canal</Label>
+                                <div style={{display: headOfChannel ? "block" : "none"}}>
+                                  <Persona
+                                    //TODO: Cargar imagen y account name
+                                    //{...this.examplePersona}
+                                    text= {headOfChannel ? headOfChannel.Value : null}
+                                    size={PersonaSize.size24}
+                                    //presence={PersonaPresence.online}
+                                    hidePersonaDetails={false}
+                                    imageAlt={headOfChannel ? headOfChannel.Value : null}                                    
+                                  />
+                                </div>
+                              </Stack>
+                              <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                                <Label className="peopleLabel">Gerente/Kam (LP)</Label>
+                                <div style={{display: kam ? "block" : "none"}}>
+                                  <Persona
+                                    //TODO: Cargar imagen y account name
+                                    text={kam ? kam.Value : null}
+                                    size={PersonaSize.size24}
+                                    //presence={PersonaPresence.online}
+                                    hidePersonaDetails={false}
+                                    imageAlt={kam ? kam.Value : null}
+                                  />
+                                </div>
+                              </Stack>
+                              <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                                <Label className="peopleLabel">Canal (LP)</Label>
+                                <Label className="labelNotBold">{channel ? channel.Name : null}</Label>
+                              </Stack>
+                              <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                                <Label className="peopleLabel">Subcanal</Label>
+                                <Label className="labelNotBold">{subchannel ? subchannel.Value : null}</Label>
+                              </Stack>
+                            </Stack>
+                          </Stack>
+                        </Stack>
+
+                        {/* Repetitive section */}
+                        <Stack>
+                          <Pivot 
+                            className="innerPivot" 
+                            aria-label="Inner Pivot" 
+                            overflowBehavior="menu" 
+                            onLinkClick={this.onTabLinkClicked.bind(this)}
+                            selectedKey={this.state.selectedIndex.toString()}>
+                            {entity.Items.map((item, index) => { return (
+                              <PivotItem 
+                                headerText={item.AdditionalID} 
+                                headerButtonProps={{'data-order': index + 1, 'data-title': item.AdditionalID}} 
+                                itemKey={index.toString()}>
+                              </PivotItem>
+                            );})}
+{/*                             <PivotItem headerText="MX1.2">
+                              <Stack styles={this.repetitiveSectionStyle}>
+                                <Label styles={this.labelStyles}>MX1.2</Label>
+                              </Stack>
+                            </PivotItem> */}
+                            <PivotItem headerText="Nuevo" itemIcon="Add" onClick={this.AddPromoItem.bind(this)} itemKey="ADD">
+{/*                               <Stack styles={this.repetitiveSectionStyle}>
+                                <Label styles={this.labelStyles}>Nuevo</Label>
+                              </Stack> */}
+                            </PivotItem>
+                          </Pivot>
+                          <Stack className="deleteProductContainer" horizontal horizontalAlign="end">
+                            <Stack className="label">
+                              <div style={{display: entity.Items.length > 1 ? "block" : "none"}}>
+                                <Link onClick={() => this.setState({ hideDeleteProductDialog: false })}><Icon iconName="MapLayers" /><span style={{ color: '#323130' }}>Borrar producto</span></Link>
+                              </div>
+                            </Stack>
+                            <Dialog
+                              hidden={this.state.hideDeleteProductDialog}
+                              dialogContentProps={this.deleteProductDialogContentProps}
+                              styles={this.confirmationDialogStyles}>
+                              <DialogFooter>
+                                <PrimaryButton onClick={this.RemovePromoItem.bind(this)} text="Eliminar" />
+                                <DefaultButton onClick={() => this.setState({ hideDeleteProductDialog: true })} text="Cancelar" />
+                              </DialogFooter>
+                            </Dialog>
+                          </Stack>
+                          <Stack horizontal styles={this.repetitiveSectionStyle} className="padding">
+                            <Stack grow={8}>
+                              <Stack styles={{ root: { maxHeight: "30px" } }} className="smallPadding padding-right" grow={6}>
+                                <Stack horizontal className="actividadTopadaContainer smallPadding-left">
+                                  <Stack>
+                                    <Label>Actividad Topada</Label>
+                                  </Stack>
+                                  <Stack className="toRight smallPadding actividadTopadaToggle">
+                                    <Toggle onText="Si" offText="No" />
+                                  </Stack>
                                 </Stack>
-                                <Stack className="grayContent smallPadding padding-left padding-right" verticalFill>
-                                  <Stack horizontal className="verticalPadding controlPadding" verticalAlign="center">
-                                    <Label>BEP NR</Label>
+                              </Stack>
+                              <Stack horizontal grow={12} styles={{ root: { paddingTop: "16px" } }}>
+                                <Stack className="smallPadding" grow={6}>
+                                  <Stack className="padding-right controlPadding">
+                                    <ComboBox
+                                      label="Categoría de la promoción"
+                                      allowFreeform
+                                      autoComplete="on"
+                                      options={this.promotionCategoryOptions}
+                                      placeholder="Seleccion la categoría"
+                                      required
+                                      errorMessage={this.state.errorMessage} />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <TextField
+                                      id="shortDescription"
+                                      label="Descripción corta"
+                                      placeholder="Ingrese una descripción"
+                                      required
+                                      errorMessage={this.state.errorMessage} />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <TextField
+                                      id="bu"
+                                      placeholder="Ingrese la unidad de negocios"
+                                      label="BU"
+                                      required
+                                      errorMessage={this.state.errorMessage} />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <ComboBox
+                                      label="Marca"
+                                      allowFreeform
+                                      autoComplete="on"
+                                      options={this.brandOptions}
+                                      placeholder="Ingrese una marca"
+                                      required
+                                      errorMessage={this.state.errorMessage} />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <TextField
+                                      id="discaoutPerUnit"
+                                      placeholder="Ingrese el descuento por pieza"
+                                      label="Descuento por pieza"
+                                      required
+                                      errorMessage={this.state.errorMessage} />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <ComboBox
+                                      label="Inversión adicional"
+                                      allowFreeform
+                                      autoComplete="on"
+                                      options={this.aditionalInvestmentOptions}
+                                      placeholder="Ingrese una inversión adicional"
+                                      required
+                                      errorMessage={this.state.errorMessage} />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <DatePicker
+                                      label="Fecha de inicio"
+                                      firstDayOfWeek={this.firstDayOfWeek}
+                                      strings={this.DayPickerStrings}
+                                      placeholder="Seleccione una fecha..."
+                                      ariaLabel="Seleccione una fecha"
+                                      isRequired={true}/>
+                                  </Stack>
+                                </Stack>
+                                <Stack className="smallPadding" grow={6}>
+                                  <Stack className="padding-right controlPadding">
+                                    <ComboBox
+                                      label="Tipo de la promoción"
+                                      allowFreeform
+                                      autoComplete="on"
+                                      options={this.promotionTypesOptions}
+                                      placeholder="Seleccione el tipo"
+                                      required
+                                      errorMessage={this.state.errorMessage} />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <ComboBox
+                                      label="Categoría"
+                                      allowFreeform
+                                      autoComplete="on"
+                                      options={this.categoryOptions}
+                                      placeholder="Ingrese una categoría"
+                                      required
+                                      errorMessage={this.state.errorMessage} />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <TextField
+                                      id="sku"
+                                      placeholder="Ingrese el SKU"
+                                      label="SKU"
+                                      required
+                                      errorMessage={this.state.errorMessage}
+                                    />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <TextField
+                                      id="discaoutPerUnit"
+                                      placeholder="Ingrese el porcentaje"
+                                      label="Redención"
+                                      required
+                                      errorMessage={this.state.errorMessage} />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <DatePicker
+                                      label="Fecha de finalización"
+                                      firstDayOfWeek={this.firstDayOfWeek}
+                                      strings={this.DayPickerStrings}
+                                      placeholder="Seleccione una fecha..."
+                                      ariaLabel="Seleccione una fecha"
+                                      isRequired={true}
+                                    />
+                                  </Stack>
+                                </Stack>
+                              </Stack>
+                            </Stack>
+                            <Stack grow={4}>
+                              <Stack className="smallPadding" grow={4} horizontal>
+                                <Separator vertical={true} styles={this.verticalSeparatorStyle}></Separator>
+                                <Stack grow={12}>
+                                  <Stack horizontal className="grayHeader padding padding-left padding-right">
+                                    <Icon iconName="DietPlanNotebook" />
+                                    <Label>Detalles de la promoción</Label>
+                                  </Stack>
+                                  <Stack className="grayContent smallPadding padding-left padding-right" verticalFill>
+                                    <Stack horizontal className="verticalPadding controlPadding" verticalAlign="center">
+                                      <Label>BEP NR</Label>
+                                      <Label className="toRight">Valor</Label>
+                                    </Stack>
+                                    <Separator className="graySeparator separatorToTop" />
+                                    <Stack horizontal className="verticalPadding controlPadding" verticalAlign="center">
+                                      <Label>GM %NR</Label>
+                                      <Label className="toRight">Valor</Label>
+                                    </Stack>
+                                    <Separator className="graySeparator separatorToTop" />
+                                    <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
+                                      <Label>GM NR con promo</Label>
+                                      <Label className="toRight">Valor</Label>
+                                    </Stack>
+                                    <Separator className="graySeparator separatorToTop" />
+                                    <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
+                                      <Label>GM Base Unit</Label>
+                                      <Label className="toRight">Valor</Label>
+                                    </Stack>
+                                    <Separator className="graySeparator separatorToTop" />
+                                    <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
+                                      <Label>GM Promo Unit</Label>
+                                      <Label className="toRight">Valor</Label>
+                                    </Stack>
+                                    <Separator className="graySeparator separatorToTop" />
+                                    <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
+                                      <Label>BEP GM</Label>
+                                      <Label className="toRight">Valor</Label>
+                                    </Stack>
+                                    <Separator className="graySeparator separatorToTop" />
+                                    <Stack verticalFill></Stack>
+                                  </Stack>
+                                </Stack>
+                              </Stack>
+                            </Stack>
+                          </Stack>
+                          <Stack className="padding-bottom">
+                            <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
+                              <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
+                                <Icon iconName="DietPlanNotebook" />
+                                <Label>Pre análisis</Label>
+                              </Stack>
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label>ROI Estimado por SKU</Label>
+                                <Label>1.37</Label>
+                              </Stack>
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label>ROI Estimado Total</Label>
+                                <Label>0.92</Label>
+                              </Stack>
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                                <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                                  <span className="effectiveLabel">EFECTIVA</span>
+                                </div>
+                                <div hidden={this.state.effective} className="effectiveLabelContainer">
+                                  <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
+                                </div>
+                              </Stack>
+                            </Stack>
+                            <Stack className="grayContent padding padding-left padding-right">
+                              <Stack horizontal>
+                                <Stack grow={4} className="smallPadding padding-right controlPadding">
+                                  <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
+                                  <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                                </Stack>
+                                <Stack grow={4} className="smallPadding padding-right controlPadding">
+                                  <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
+                                  <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                                </Stack>
+                                <Stack grow={4} className="smallPadding padding-right controlPadding">
+                                  <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
+                                  <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                                </Stack>
+                              </Stack>
+                              <Stack horizontal>
+                                <Stack className="smallPadding padding-right controlPadding" grow={4}>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Volumen base</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding controlPadding" verticalAlign="center">
-                                    <Label>GM %NR</Label>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>NR base</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
-                                    <Label>GM NR con promo</Label>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>GM base</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
-                                    <Label>GM Base Unit</Label>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Inversión estimada</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
-                                    <Label>GM Promo Unit</Label>
+                                </Stack>
+                                <Stack className="smallPadding padding-right" grow={4}>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Volumen estimado</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
-                                    <Label>BEP GM</Label>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>NR estimado</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack verticalFill></Stack>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>GM estimado</Label>
+                                    <Label className="toRight">Valor</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Inversión adicional (MKT)</Label>
+                                    <Label className="toRight">Valor</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                </Stack>
+                                <Stack className="smallPadding" grow={4}>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>% volumen incremental</Label>
+                                    <Label className="toRight">Valor</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>% NR incremental</Label>
+                                    <Label className="toRight">Valor</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>% GM incremental</Label>
+                                    <Label className="toRight">Valor</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
                               </Stack>
                             </Stack>
                           </Stack>
                         </Stack>
-                        <Stack className="padding-bottom">
-                          <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
-                            <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
-                              <Icon iconName="DietPlanNotebook" />
-                              <Label>Pre análisis</Label>
+                      </Stack>
+                    </PivotItem>
+                    <PivotItem onRenderItemLink={this._customPromotionSummaryPivotItemRenderer}>
+                      <Stack className="summarySectionContainer">
+                        <Stack styles={this.repetitiveSectionStyle}>
+
+                          <Stack className="statusContainer smallPadding padding-right" horizontal horizontalAlign="end">
+                            <Stack style={{ color: theme.palette.themePrimary, paddingRight: "4px" }}><Icon iconName="MapLayers" /></Stack>
+                            <Stack className="label">Estado:</Stack>
+                            <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>Pendiente de aprobación</Stack>
+                          </Stack>
+
+                          <Stack horizontal className="padding">
+
+                            <Stack grow={8} verticalAlign="start">
+                              <Stack grow={12} className="grayContent padding padding-left padding-right">
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Cliente</Label>
+                                  <Label className="toRight">Cliente 1</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+                                <Stack className="verticalPadding">
+                                  <Label>Objetivo de la promoción</Label>
+                                  <span className="twoColumnsContentMaxWidth">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</span>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+                              </Stack>
                             </Stack>
-                            <Stack grow={3} horizontalAlign="end">
-                              <Label>ROI Estimado por SKU</Label>
-                              <Label>1.37</Label>
-                            </Stack>
-                            <Stack grow={3} horizontalAlign="end">
-                              <Label>ROI Estimado Total</Label>
-                              <Label>0.92</Label>
-                            </Stack>
-                            <Stack grow={3} horizontalAlign="end">
-                              <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                              <div hidden={!this.state.effective} className="effectiveLabelContainer">
-                                <span className="effectiveLabel">EFECTIVA</span>
-                              </div>
-                              <div hidden={this.state.effective} className="effectiveLabelContainer">
-                                <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
-                              </div>
+
+                            <Stack grow={4} horizontal>
+                              <Stack verticalFill>
+                                <Separator vertical={true} styles={this.verticalSeparatorStyle}></Separator>
+                              </Stack>
+                              <Stack grow={12}>
+                                <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                                  <Label className="peopleLabel">Cabeza de canal</Label>
+                                  <Persona
+                                    {...this.examplePersona}
+                                    size={PersonaSize.size24}
+                                    presence={PersonaPresence.online}
+                                    hidePersonaDetails={false}
+                                    imageAlt="Annie Lindqvist, status is online"
+                                  />
+                                </Stack>
+                                <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                                  <Label className="peopleLabel">Gerente KAM</Label>
+                                  <Persona
+                                    {...this.examplePersona2}
+                                    size={PersonaSize.size24}
+                                    presence={PersonaPresence.online}
+                                    hidePersonaDetails={false}
+                                    imageAlt="Annie Lindqvist, status is online"
+                                  />
+                                </Stack>
+                                <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                                  <Label className="peopleLabel">Canal</Label>
+                                  <Label className="labelNotBold">Canal 1</Label>
+                                </Stack>
+                                <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                                  <Label className="peopleLabel">Subcanal</Label>
+                                  <Label className="labelNotBold">Subcanal 1.1</Label>
+                                </Stack>
+                              </Stack>
                             </Stack>
                           </Stack>
-                          <Stack className="grayContent padding padding-left padding-right">
-                            <Stack horizontal>
-                              <Stack grow={4} className="smallPadding padding-right controlPadding">
-                                <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
-                                <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+
+                          <Stack className="padding-bottom">
+                            <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
+                              <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
+                                <Icon iconName="DietPlanNotebook" />
+                                <Label>Pre análisis MX1.1</Label>
                               </Stack>
-                              <Stack grow={4} className="smallPadding padding-right controlPadding">
-                                <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
-                                <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label>ROI Estimado por SKU</Label>
+                                <Label>1.37</Label>
                               </Stack>
-                              <Stack grow={4} className="smallPadding padding-right controlPadding">
-                                <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
-                                <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label>ROI Estimado Total</Label>
+                                <Label>0.92</Label>
+                              </Stack>
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                                <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                                  <span className="effectiveLabel">EFECTIVA</span>
+                                </div>
+                                <div hidden={this.state.effective} className="effectiveLabelContainer">
+                                  <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
+                                </div>
                               </Stack>
                             </Stack>
-                            <Stack horizontal>
+                            <Stack horizontal className="grayContent padding padding-left padding-right">
+
                               <Stack className="smallPadding padding-right controlPadding" grow={4}>
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Volumen base</Label>
@@ -631,539 +795,262 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               </Stack>
                             </Stack>
                           </Stack>
-                        </Stack>
-                      </PivotItem>
-                      <PivotItem headerText="MX1.2">
-                        <Stack styles={this.repetitiveSectionStyle}>
-                          <Label styles={this.labelStyles}>MX1.2</Label>
-                        </Stack>
-                      </PivotItem>
-                      <PivotItem headerText="Nuevo" itemIcon="Add">
-                        <Stack styles={this.repetitiveSectionStyle}>
-                          <Label styles={this.labelStyles}>Nuevo</Label>
-                        </Stack>
-                      </PivotItem>
-                    </Pivot>
-                  </Stack>
-                </Stack>
-              </PivotItem>
-              <PivotItem onRenderItemLink={this._customPromotionSummaryPivotItemRenderer}>
-                <Stack className="summarySectionContainer">
-                  <Stack styles={this.repetitiveSectionStyle}>
 
-                    <Stack className="statusContainer smallPadding padding-right" horizontal horizontalAlign="end">
-                      <Stack style={{ color: theme.palette.themePrimary, paddingRight: "4px" }}><Icon iconName="MapLayers" /></Stack>
-                      <Stack className="label">Estado:</Stack>
-                      <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>Pendiente de aprobación</Stack>
+                          <Stack className="padding-bottom">
+                            <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
+                              <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
+                                <Icon iconName="DietPlanNotebook" />
+                                <Label>Pre análisis MX1.2</Label>
+                              </Stack>
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label>ROI Estimado por SKU</Label>
+                                <Label>1.37</Label>
+                              </Stack>
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label>ROI Estimado Total</Label>
+                                <Label>0.92</Label>
+                              </Stack>
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                                <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                                  <span className="effectiveLabel">EFECTIVA</span>
+                                </div>
+                                <div hidden={this.state.effective} className="effectiveLabelContainer">
+                                  <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
+                                </div>
+                              </Stack>
+                            </Stack>
+                            <Stack horizontal className="grayContent padding padding-left padding-right">
+                              <Stack className="smallPadding padding-right controlPadding" grow={4}>
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Volumen base</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>NR base</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>GM base</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Inversión estimada</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+                              </Stack>
+
+                              <Stack className="smallPadding padding-right" grow={4}>
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Volumen estimado</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>NR estimado</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>GM estimado</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Inversión adicional (MKT)</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                              </Stack>
+                              <Stack className="smallPadding" grow={4}>
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>% volumen incremental</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>% NR incremental</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>% GM incremental</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                              </Stack>
+                            </Stack>
+                          </Stack>
+
+                          <Stack className="padding-bottom">
+                            <Stack horizontal className={this.state.effective
+                              ? "grayHeader smallPadding padding-left padding-right grayHeaderToGreen"
+                              : "grayHeader smallPadding padding-left padding-right grayHeaderToRed"}>
+                              <Stack grow={6} horizontal className="verticalPadding preAnalisisPadding">
+                                <Icon iconName="DietPlanNotebook" />
+                                <Label>Análisis general</Label>
+                              </Stack>
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label>ROI Estimado Total</Label>
+                                <Label>0.92</Label>
+                              </Stack>
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                                <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                                  <span className="effectiveLabel">EFECTIVA</span>
+                                </div>
+                                <div hidden={this.state.effective} className="effectiveLabelContainer">
+                                  <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
+                                </div>
+                              </Stack>
+                            </Stack>
+                            <Stack horizontal className="grayContent padding padding-left padding-right">
+                              <Stack className="smallPadding padding-right controlPadding" grow={4}>
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Volumen base</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>NR base</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>GM base</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Inversión estimada</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+                              </Stack>
+
+                              <Stack className="smallPadding padding-right" grow={4}>
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Volumen estimado</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>NR estimado</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>GM estimado</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>Inversión adicional (MKT)</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                              </Stack>
+                              <Stack className="smallPadding" grow={4}>
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>% volumen incremental</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>% NR incremental</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                                <Stack horizontal className="verticalPadding">
+                                  <Label>% GM incremental</Label>
+                                  <Label className="toRight">Valor</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+
+                              </Stack>
+
+                            </Stack>
+                          </Stack>
+                        </Stack>
+                      </Stack>
+                    </PivotItem>
+                  </Pivot>
+                </Stack >
+
+                {/* Fin Modal Content*/}
+
+                {/* Modal Bottom*/}
+
+                <div className="modalBottom">
+                  <Label>Estado general de la promoción</Label>
+                  <Separator className="graySeparator separatorToTop" />
+                  <Stack className="modalBottomContent" horizontal grow={12}>
+                    <Stack grow={6}>
+                      <Label className="modalBottomContentHeader" onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                      <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                        <span className="effectiveLabel">EFECTIVA</span>
+                      </div>
+                      <div hidden={this.state.effective} className="effectiveLabelContainer">
+                        <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
+                      </div>
                     </Stack>
-
-                    <Stack horizontal className="padding">
-
-                      <Stack grow={8} verticalAlign="start">
-                        <Stack grow={12} className="grayContent padding padding-left padding-right">
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Cliente</Label>
-                            <Label className="toRight">Cliente 1</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-                          <Stack className="verticalPadding">
-                            <Label>Objetivo de la promoción</Label>
-                            <span className="twoColumnsContentMaxWidth">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</span>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-                        </Stack>
-                      </Stack>
-
-                      <Stack grow={4} horizontal>
-                        <Stack verticalFill>
-                          <Separator vertical={true} styles={this.verticalSeparatorStyle}></Separator>
-                        </Stack>
-                        <Stack grow={12}>
-                          <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
-                            <Label className="peopleLabel">Cabeza de canal</Label>
-                            <Persona
-                              {...this.examplePersona}
-                              size={PersonaSize.size24}
-                              presence={PersonaPresence.online}
-                              hidePersonaDetails={false}
-                              imageAlt="Annie Lindqvist, status is online"
-                            />
-                          </Stack>
-                          <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
-                            <Label className="peopleLabel">Gerente KAM</Label>
-                            <Persona
-                              {...this.examplePersona2}
-                              size={PersonaSize.size24}
-                              presence={PersonaPresence.online}
-                              hidePersonaDetails={false}
-                              imageAlt="Annie Lindqvist, status is online"
-                            />
-                          </Stack>
-                          <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
-                            <Label className="peopleLabel">Canal</Label>
-                            <Label className="labelNotBold">Canal 1</Label>
-                          </Stack>
-                          <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
-                            <Label className="peopleLabel">Subcanal</Label>
-                            <Label className="labelNotBold">Subcanal 1.1</Label>
-                          </Stack>
-                        </Stack>
-                      </Stack>
+                    <Stack grow={3}>
+                      <Label className="modalBottomContentHeader">ROI Estimado total</Label>
+                      <Label className="modalBottomContentValue">0.92</Label>
                     </Stack>
-
-                    <Stack className="padding-bottom">
-                      <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
-                        <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
-                          <Icon iconName="DietPlanNotebook" />
-                          <Label>Pre análisis MX1.1</Label>
-                        </Stack>
-                        <Stack grow={3} horizontalAlign="end">
-                          <Label>ROI Estimado por SKU</Label>
-                          <Label>1.37</Label>
-                        </Stack>
-                        <Stack grow={3} horizontalAlign="end">
-                          <Label>ROI Estimado Total</Label>
-                          <Label>0.92</Label>
-                        </Stack>
-                        <Stack grow={3} horizontalAlign="end">
-                          <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                          <div hidden={!this.state.effective} className="effectiveLabelContainer">
-                            <span className="effectiveLabel">EFECTIVA</span>
+                    <Stack grow={3} className="modalBottomButtonsContainer" horizontal horizontalAlign="end">
+                      <Stack>
+                        <DefaultButton text="Guardar borrador" allowDisabledFocus onClick={() => this.setState({ hideSavingSpinnerConfirmationDialog: false })} />
+                        <Dialog
+                          hidden={this.state.hideSavingSpinnerConfirmationDialog}
+                          dialogContentProps={this.savingSpinnerModalDialogContentProps}
+                          styles={this.confirmationDialogStyles} >
+                          <div>
+                            <Spinner label="Estamos guardando los datos..." />
                           </div>
-                          <div hidden={this.state.effective} className="effectiveLabelContainer">
-                            <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
-                          </div>
-                        </Stack>
+                        </Dialog>
                       </Stack>
-                      <Stack horizontal className="grayContent padding padding-left padding-right">
-
-                        <Stack className="smallPadding padding-right controlPadding" grow={4}>
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Volumen base</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>NR base</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>GM base</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Inversión estimada</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-                        </Stack>
-
-                        <Stack className="smallPadding padding-right" grow={4}>
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Volumen estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>NR estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>GM estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Inversión adicional (MKT)</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                        </Stack>
-                        <Stack className="smallPadding" grow={4}>
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% volumen incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% NR incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% GM incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                        </Stack>
-                      </Stack>
-                    </Stack>
-
-                    <Stack className="padding-bottom">
-                      <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
-                        <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
-                          <Icon iconName="DietPlanNotebook" />
-                          <Label>Pre análisis MX1.2</Label>
-                        </Stack>
-                        <Stack grow={3} horizontalAlign="end">
-                          <Label>ROI Estimado por SKU</Label>
-                          <Label>1.37</Label>
-                        </Stack>
-                        <Stack grow={3} horizontalAlign="end">
-                          <Label>ROI Estimado Total</Label>
-                          <Label>0.92</Label>
-                        </Stack>
-                        <Stack grow={3} horizontalAlign="end">
-                          <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                          <div hidden={!this.state.effective} className="effectiveLabelContainer">
-                            <span className="effectiveLabel">EFECTIVA</span>
-                          </div>
-                          <div hidden={this.state.effective} className="effectiveLabelContainer">
-                            <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
-                          </div>
-                        </Stack>
-                      </Stack>
-                      <Stack horizontal className="grayContent padding padding-left padding-right">
-                        <Stack className="smallPadding padding-right controlPadding" grow={4}>
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Volumen base</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>NR base</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>GM base</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Inversión estimada</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-                        </Stack>
-
-                        <Stack className="smallPadding padding-right" grow={4}>
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Volumen estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>NR estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>GM estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Inversión adicional (MKT)</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                        </Stack>
-                        <Stack className="smallPadding" grow={4}>
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% volumen incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% NR incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% GM incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                        </Stack>
-                      </Stack>
-                    </Stack>
-
-                    <Stack className="padding-bottom">
-                      <Stack horizontal className={this.state.effective
-                        ? "grayHeader smallPadding padding-left padding-right grayHeaderToGreen"
-                        : "grayHeader smallPadding padding-left padding-right grayHeaderToRed"}>
-                        <Stack grow={6} horizontal className="verticalPadding preAnalisisPadding">
-                          <Icon iconName="DietPlanNotebook" />
-                          <Label>Análisis general</Label>
-                        </Stack>
-                        <Stack grow={3} horizontalAlign="end">
-                          <Label>ROI Estimado Total</Label>
-                          <Label>0.92</Label>
-                        </Stack>
-                        <Stack grow={3} horizontalAlign="end">
-                          <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                          <div hidden={!this.state.effective} className="effectiveLabelContainer">
-                            <span className="effectiveLabel">EFECTIVA</span>
-                          </div>
-                          <div hidden={this.state.effective} className="effectiveLabelContainer">
-                            <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
-                          </div>
-                        </Stack>
-                      </Stack>
-                      <Stack horizontal className="grayContent padding padding-left padding-right">
-                        <Stack className="smallPadding padding-right controlPadding" grow={4}>
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Volumen base</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>NR base</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>GM base</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Inversión estimada</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-                        </Stack>
-
-                        <Stack className="smallPadding padding-right" grow={4}>
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Volumen estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>NR estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>GM estimado</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>Inversión adicional (MKT)</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                        </Stack>
-                        <Stack className="smallPadding" grow={4}>
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% volumen incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% NR incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                          <Stack horizontal className="verticalPadding">
-                            <Label>% GM incremental</Label>
-                            <Label className="toRight">Valor</Label>
-                          </Stack>
-                          <Separator className="graySeparator separatorToTop" />
-
-                        </Stack>
-
+                      <Stack>
+                        <PrimaryButton 
+                          text="Enviar a aprobación" 
+                          allowDisabledFocus 
+                          onClick={this.submit.bind(this)} 
+                          disabled={!this.state.enableSubmit} />
                       </Stack>
                     </Stack>
                   </Stack>
-                </Stack>
-              </PivotItem>
-            </Pivot>
-          </Stack >
-
-          {/* Fin Modal Content*/}
-
-          {/* Modal Bottom*/}
-
-          <div className="modalBottom">
-            <Label>Estado general de la promoción</Label>
-            <Separator className="graySeparator separatorToTop" />
-            <Stack className="modalBottomContent" horizontal grow={12}>
-              <Stack grow={6}>
-                <Label className="modalBottomContentHeader" onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                <div hidden={!this.state.effective} className="effectiveLabelContainer">
-                  <span className="effectiveLabel">EFECTIVA</span>
                 </div>
-                <div hidden={this.state.effective} className="effectiveLabelContainer">
-                  <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
-                </div>
-              </Stack>
-              <Stack grow={3}>
-                <Label className="modalBottomContentHeader">ROI Estimado total</Label>
-                <Label className="modalBottomContentValue">0.92</Label>
-              </Stack>
-              <Stack grow={3} className="modalBottomButtonsContainer" horizontal horizontalAlign="end">
-                <Stack>
-                  <DefaultButton text="Guardar borrador" allowDisabledFocus onClick={() => this.setState({ hideSavingSpinnerConfirmationDialog: false })} />
 
-                  <Dialog
-                    hidden={this.state.hideSavingSpinnerConfirmationDialog}
-                    dialogContentProps={this.savingSpinnerModalDialogContentProps}
-                    styles={this.confirmationDialogStyles}
-                  >
-                    <div>
-                      <Spinner label="Estamos guardando los datos..." />
-                    </div>
-                  </Dialog>
-                </Stack>
-                <Stack>
-                  <PrimaryButton 
-                    text="Enviar a aprobación" 
-                    allowDisabledFocus 
-                    onClick={this.submit.bind(this)} 
-                    disabled={!this.state.enableSubmit} />
-                </Stack>
-              </Stack>
-            </Stack>
-          </div>
+                {/* Fin Modal Bottom*/}
 
-          {/* Fin Modal Bottom*/}
-
-          <div className={styles.promoForm}>
-                        <table style={{width:'100%'}}>
-                            <tr>
-                                <td style={{width:'100px'}}></td>
-                                <td style={{width:'100px'}}></td>
-                                <td style={{width:'100px'}}></td>
-                                <td style={{width:'100px'}}></td>
-                                <td style={{width:'100px'}}></td>
-                                <td style={{width:'100px'}}></td>                                
-                            </tr>
-                            <tr>
-                                <td colSpan={1}>
-                                    <TextField 
-                                        label="Promo ID:"
-                                        className={styles.readOnlyInput}
-                                        readOnly={true}
-                                        value={entity.PromoID}
-                                    />
-                                </td>
-                                <td colSpan={3}>&nbsp;</td>
-                                <td colSpan={2}>
-                                    <TextField 
-                                        label="Estado:"
-                                        className={styles.readOnlyInput}
-                                        readOnly={true}
-                                        value={entity.GetStatusText()}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={6}>
-                                    <TextField 
-                                        label="Objetivo de la actividad:" 
-                                        required={true} 
-                                        multiline={false}
-                                        onChange={this.onActivityObjectiveChange.bind(this)}
-                                        value={entity.ActivityObjective} 
-                                        autoComplete="Off"
-                                        errorMessage={this.getValidationErrorMessage(entity.ActivityObjective)}
-                                        onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3}>
-                                    <Dropdown
-                                        placeholder="Seleccione un cliente"
-                                        label="Cliente:"
-                                        options={clients}
-                                        selectedKey={entity.Client ? entity.Client.ItemId : null}
-                                        onChanged={this.onClientChanged.bind(this)}
-                                        required={true}
-                                        errorMessage={this.getValidationErrorMessage(entity.Client)}
-                                    />
-                                </td>
-                                <td colSpan={3}></td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3}>
-                                    <TextField 
-                                        label="Cabeza de canal:" 
-                                        className={styles.readOnlyInput}
-                                        value={headOfChannel ? headOfChannel.Value : null}
-                                        readOnly={true}
-                                    />
-                                </td>
-                                <td colSpan={3}>
-                                    <TextField 
-                                        label="Gerente/Kam (LP):" 
-                                        className={styles.readOnlyInput}
-                                        value={kam ? kam.Value : null}
-                                        readOnly={true}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3}>
-                                    <TextField 
-                                        label="Canal (LP):" 
-                                        className={styles.readOnlyInput}
-                                        value={channel ? channel.Name : null}
-                                        readOnly={true}
-                                    />
-                                </td>
-                                <td colSpan={3}>
-                                    <TextField 
-                                        label="SubCanal:"
-                                        className={styles.readOnlyInput}
-                                        value={subchannel ? subchannel.Value : null} 
-                                        readOnly={true}
-                                    />
-                                </td>
-                            </tr>
-                        </table>
+                <div className={styles.promoForm}>
                         <ul style={{paddingLeft:'5px', marginBottom: '0px'}}>
                             {entity.Items.map((item, index) => { return (
                                 <li style={{display:'inline', minWidth: '50px', fontWeight: index == this.state.selectedIndex ? 'bold' : 'inherit'}}>
@@ -1417,18 +1304,18 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             </tr>
                         </table>
                     </div>
-          </Shimmer>
-          </Modal>
-      </div>;
+              </Shimmer>
+            </Modal>
+          </div>;
         }
 
         if (this.state.formSubmitted) {
-            output = 
-            <PromoFormResult 
-                title={this.props.title}
-                close={this.props.close} 
-                message={this.state.resultIsOK ? 'La operación se completó correctamente.' : 'Error al ejecutar la operación: ' + this.state.errorMessage}
-                isSuccess={this.state.resultIsOK} />;
+          output = 
+          <PromoFormResult 
+            title={this.props.title}
+            close={this.props.close} 
+            message={this.state.resultIsOK ? 'La operación se completó correctamente.' : 'Error al ejecutar la operación: ' + this.state.errorMessage}
+            isSuccess={this.state.resultIsOK} />;
         }
 
         return output;  
@@ -1436,18 +1323,31 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     //#region Header events
 
+    private onNameChange (event: any, text?: string) {
+      const client = this.state.viewModel.Entity.Client;
+
+      this.setState((state) => {
+        let newState = state as IPromoFormState;
+
+        newState.promotionTitle = client && text ? client.Name + " - " + text : "Nueva promoción";
+        newState.viewModel.Entity.Name = text;    
+
+        return newState;
+      });
+    }
+
     private onActivityObjectiveChange(event: any, text: any) {
-        this.setState((state) => {
-          state.viewModel.Entity.ActivityObjective = text;    
-          return state;
-        });
+      this.setState((state) => {
+        state.viewModel.Entity.ActivityObjective = text;    
+        return state;
+      });
     }
 
     private onClientChanged(item: IDropdownOption) {
         const clientId = item.key as number;
 
         this.setState((state) => {
-            state.viewModel.Entity.Client = new Client({ ItemId: clientId });
+            state.viewModel.Entity.Client = new Client({ ItemId: clientId, Name: item.text });
             return state;
         }, () => {
             this.state.viewModel.Entity.Items.map((promoItem: PromoItem, index: number) => {
@@ -1479,20 +1379,33 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             newState.viewModel.Entity.Items = items;
             newState.selectedIndex = items.length - 1;
             return newState;
-        });        
+        });
     }
 
     private RemovePromoItem() {
         let items = this.state.viewModel.Entity.Items;
 
-        items.splice(-1,1);
+        items.splice(this.state.selectedIndex,1);
+
+        items.map((item, index) => {
+          item.AdditionalID = this.state.viewModel.Entity.PromoID + "." + (index + 1);
+        });
 
         this.setState((state) => {
             let newState = state as IPromoFormState;
             newState.viewModel.Entity.Items = items;
             newState.selectedIndex = 0;
+            newState.hideDeleteProductDialog = true;
             return newState;
         });        
+    }
+
+    private onTabLinkClicked(item?: PivotItem) {      
+      if(item.props.itemKey == "ADD") {
+        this.AddPromoItem();
+      } else {
+        this.changeSelectedItem(parseInt(item.props.itemKey));
+      }
     }
 
     private changeSelectedItem(index: number) {
@@ -1693,7 +1606,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     private submit(): void {
         console.log(this.state.viewModel.Entity);
 
-        if(!this.validateFormControls()) return;
+/*         if(!this.validateFormControls()) return;
 
         this.setState({
             enableSubmit:false
@@ -1707,7 +1620,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         }).catch((err) => {
             console.error(err);
             this.setState({ formSubmitted: true, errorMessage: err});
-        });
+        }); */
     }
     
     private getValidationErrorMessage(value: any): string{
@@ -1757,7 +1670,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
           ]
         };
     }
-
 
     // New part
 
@@ -1921,16 +1833,16 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
           this.setState({ errorMessage: "" });
       }
     
-      private _customPromotionPivotItemRenderer(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {
-        return (
-          <Stack horizontal>
-            {defaultRenderer(link)}
-            <Label style={{ color: theme.palette.themePrimary }}><Icon iconName="DietPlanNotebook" /></Label>
-            <Label>ID Promoción&nbsp;:&nbsp;</Label>
-            <Label style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>MX1</Label>
-          </Stack>
-        );
-      }
+  private _customPromotionPivotItemRenderer(promoID: string, link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {
+    return (
+      <Stack horizontal>
+        {defaultRenderer(link)}
+        <Label style={{ color: theme.palette.themePrimary }}><Icon iconName="DietPlanNotebook" /></Label>
+        <Label>ID Promoción&nbsp;:&nbsp;</Label>
+        <Label style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>{promoID}</Label>
+      </Stack>
+    );
+  }
     
       private _customPromotionSummaryPivotItemRenderer(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {
         return (
@@ -1994,11 +1906,4 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       private savingSpinnerModalDialogContentProps = {
         type: DialogType.largeHeader,
       };
-    
-      private onChangePromotionTitleTextFieldValue =
-        (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) => {
-          if (!newValue || newValue.length <= 50) {
-            this.setState({ promotionTitle: (newValue || '') });
-          }
-        }
 }

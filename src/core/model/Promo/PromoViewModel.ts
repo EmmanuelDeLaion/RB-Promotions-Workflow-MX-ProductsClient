@@ -9,16 +9,6 @@ export class PromoViewModel {
         this.Entity = entity;
     }
 
-    //#region Fields Configuration
-
-    public ActivityObjectiveDisplayMode: FieldDisplayMode;
-    public ClientDisplayMode: FieldDisplayMode;
-    public HeadOfChannelDisplayMode: FieldDisplayMode;
-    //public ShortDescriptionDisplayMode: FieldDisplayMode;
-    //public PromoCategoryDisplayMode: FieldDisplayMode;
-
-    //#endregion
-
     //#region Collections
 
     public Clients: Client[];
@@ -30,4 +20,11 @@ export class PromoViewModel {
     public Products: Product[];
 
     //#endregion
+
+    public GetPromotionTitle(): string {
+        if(this.Entity != null && this.Entity.Name && this.Entity.Client != null)
+            return this.Entity.Client.Name + " - " + this.Entity.Name;
+
+        return "Nueva promoción";
+    }
 }
