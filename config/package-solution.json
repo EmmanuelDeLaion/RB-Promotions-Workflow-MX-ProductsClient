@@ -3,7 +3,7 @@
   "solution": {
     "name": "RB Promotions Workflow",
     "id": "46966589-82f7-457e-9b9d-68325a5c982c",
-    "version": "1.0.0.38",
+    "version": "1.0.0.90",
     "includeClientSideAssets": true,
     "isDomainIsolated": false,
     "iconPath": "images/appIcon.png",
@@ -13,7 +13,20 @@
       "privacyUrl": "",
       "termsOfUseUrl": "",
       "mpnId": ""
-    }
+    },
+    "features": [
+      {
+        "title": "RB Promotions Workflow Feature",
+        "description": "",
+        "id": "09554790-ef02-4673-897a-d38dfac5c8b5",
+        "version": "1.0.0.0",
+        "assets": {
+          "elementManifests": [
+            "elements.xml"
+          ]
+        }
+      }
+    ]
   },
   "paths": {
     "zippedPackage": "solution/rb-promotions-workflow.sppkg"

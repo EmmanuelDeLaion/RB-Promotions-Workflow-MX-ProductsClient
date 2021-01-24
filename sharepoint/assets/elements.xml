@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+    <Field ID="{657ed1dc-c746-4a0d-be50-3126fa45d47e}"
+            Name="PromoLink"
+            DisplayName="Link a promocion"
+            Type="Number"
+            Min="0"
+            Required="FALSE"
+            Group="RB Promotions Workflow"
+            ClientSideComponentId="ffb341b3-c717-40a2-95d3-86b0bbb5ec81">
+    </Field>
+</Elements>
