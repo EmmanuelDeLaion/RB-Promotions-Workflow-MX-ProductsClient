@@ -14,7 +14,7 @@ export class PromoRepository {
       const item = await sp.web.lists.getByTitle(PromoRepository.LIST_NAME)
         .items.getById(id).select("ID", "Title", "PromoName", "ActivityObjective", "ClientId", "StatusId").get();  
         
-      const items = await PromoItemRepository.GetByPromo(item.ID);
+      const items = await PromoItemRepository.GetByPromo(item.ID, item.ClientId);
       const client = item.ClientId ? await ClientRepository.GetById(item.ClientId) : null;
 
       return PromoRepository.BuildEntity(item, items, client);

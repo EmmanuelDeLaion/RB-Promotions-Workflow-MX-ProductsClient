@@ -56,6 +56,8 @@ require('./PromoForm.css');
 import { initializeTheme } from './Theme';
 import { TestImages } from '@uifabric/example-data';
 import { IItemAddResult, sp } from "@pnp/sp/presets/all";
+import { LastYearVolumesRepository } from '../../data/LastYearVolumesRepository';
+import { LastYearVolumes } from '../../model/Common/LastYearVolumes';
 
 initializeTheme();
 const theme = getTheme();
@@ -230,6 +232,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   errorMessage={this.getValidationErrorMessage(entity.Name)}
                                   autoFocus={true}
                                   onChange={this.onNameChange.bind(this)}
+                                  autoComplete="Off"
                                 />
                               </Stack>
                               <Stack grow={6} className="padding-right controlPadding">
@@ -317,16 +320,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 itemKey={index.toString()}>
                               </PivotItem>
                             );})}
-{/*                             <PivotItem headerText="MX1.2">
-                              <Stack styles={this.repetitiveSectionStyle}>
-                                <Label styles={this.labelStyles}>MX1.2</Label>
-                              </Stack>
-                            </PivotItem> */}
-                            <PivotItem headerText="Nuevo" itemIcon="Add" onClick={this.AddPromoItem.bind(this)} itemKey="ADD">
-{/*                               <Stack styles={this.repetitiveSectionStyle}>
-                                <Label styles={this.labelStyles}>Nuevo</Label>
-                              </Stack> */}
-                            </PivotItem>
+                            <PivotItem headerText="Nuevo" itemIcon="Add" onClick={this.AddPromoItem.bind(this)} itemKey="ADD" />                            
                           </Pivot>
                           <Stack className="deleteProductContainer" horizontal horizontalAlign="end">
                             <Stack className="label">
@@ -352,126 +346,153 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <Label>Actividad Topada</Label>
                                   </Stack>
                                   <Stack className="toRight smallPadding actividadTopadaToggle">
-                                    <Toggle onText="Si" offText="No" />
+                                    <Toggle                                        
+                                        onText="Si" 
+                                        offText="No" 
+                                        onChange={this.onCappedActivityChanged.bind(this)} 
+                                        checked={selectedItem.CappedActivity}
+                                    />
                                   </Stack>
                                 </Stack>
                               </Stack>
                               <Stack horizontal grow={12} styles={{ root: { paddingTop: "16px" } }}>
                                 <Stack className="smallPadding" grow={6}>
                                   <Stack className="padding-right controlPadding">
-                                    <ComboBox
-                                      label="Categoría de la promoción"
-                                      allowFreeform
-                                      autoComplete="on"
-                                      options={this.promotionCategoryOptions}
-                                      placeholder="Seleccion la categoría"
-                                      required
-                                      errorMessage={this.state.errorMessage} />
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                    <TextField
-                                      id="shortDescription"
-                                      label="Descripción corta"
-                                      placeholder="Ingrese una descripción"
-                                      required
-                                      errorMessage={this.state.errorMessage} />
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                    <TextField
-                                      id="bu"
-                                      placeholder="Ingrese la unidad de negocios"
-                                      label="BU"
-                                      required
-                                      errorMessage={this.state.errorMessage} />
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                    <ComboBox
-                                      label="Marca"
-                                      allowFreeform
-                                      autoComplete="on"
-                                      options={this.brandOptions}
-                                      placeholder="Ingrese una marca"
-                                      required
-                                      errorMessage={this.state.errorMessage} />
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                    <TextField
-                                      id="discaoutPerUnit"
-                                      placeholder="Ingrese el descuento por pieza"
-                                      label="Descuento por pieza"
-                                      required
-                                      errorMessage={this.state.errorMessage} />
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                    <ComboBox
-                                      label="Inversión adicional"
-                                      allowFreeform
-                                      autoComplete="on"
-                                      options={this.aditionalInvestmentOptions}
-                                      placeholder="Ingrese una inversión adicional"
-                                      required
-                                      errorMessage={this.state.errorMessage} />
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                    <DatePicker
-                                      label="Fecha de inicio"
-                                      firstDayOfWeek={this.firstDayOfWeek}
-                                      strings={this.DayPickerStrings}
-                                      placeholder="Seleccione una fecha..."
-                                      ariaLabel="Seleccione una fecha"
-                                      isRequired={true}/>
-                                  </Stack>
-                                </Stack>
-                                <Stack className="smallPadding" grow={6}>
-                                  <Stack className="padding-right controlPadding">
-                                    <ComboBox
-                                      label="Tipo de la promoción"
-                                      allowFreeform
-                                      autoComplete="on"
-                                      options={this.promotionTypesOptions}
-                                      placeholder="Seleccione el tipo"
-                                      required
-                                      errorMessage={this.state.errorMessage} />
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                    <ComboBox
-                                      label="Categoría"
-                                      allowFreeform
-                                      autoComplete="on"
-                                      options={this.categoryOptions}
-                                      placeholder="Ingrese una categoría"
-                                      required
-                                      errorMessage={this.state.errorMessage} />
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                    <TextField
-                                      id="sku"
-                                      placeholder="Ingrese el SKU"
-                                      label="SKU"
-                                      required
-                                      errorMessage={this.state.errorMessage}
+                                    <Dropdown
+                                      placeholder="Seleccione una categoría"
+                                      label="Categoria de la Promoción (LD):"
+                                      options={categories}
+                                      selectedKey={selectedItem.Category ? selectedItem.Category.ItemId : null}
+                                      onChanged={this.onCategoryChanged.bind(this)}
+                                      required={true}
+                                      errorMessage={this.getValidationErrorMessage(selectedItem.Category)}
                                     />
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
                                     <TextField
-                                      id="discaoutPerUnit"
-                                      placeholder="Ingrese el porcentaje"
-                                      label="Redención"
-                                      required
-                                      errorMessage={this.state.errorMessage} />
+                                      label="Descripción corta:"
+                                      onChange={this.onShortDescriptionChange.bind(this)}
+                                      value={selectedItem ? selectedItem.ShortDescription : null} 
+                                      required={true}
+                                      autoComplete="Off"
+                                      errorMessage={this.getValidationErrorMessage(selectedItem.ShortDescription)}
+                                      onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
+                                    />
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
+                                    <ProductSelector 
+                                      products={this.GetFilteredProducts()}
+                                      onChanged={this.onProductChanged.bind(this)}
+                                      value={selectedItem.Product}
+                                    />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <Dropdown
+                                      placeholder="Seleccione un negocio"
+                                      label="BU:"
+                                      options={businessUnits}
+                                      selectedKey={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.ItemId : null}
+                                      onChanged={this.onBusinessUnitChanged.bind(this)}
+                                      required={true}
+                                      errorMessage={this.getValidationErrorMessage(selectedItem.BusinessUnit)}
+                                    />
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
                                     <DatePicker
-                                      label="Fecha de finalización"
-                                      firstDayOfWeek={this.firstDayOfWeek}
-                                      strings={this.DayPickerStrings}
+                                      label="Fecha de comienzo"
+                                      firstDayOfWeek={DayOfWeek.Monday}
+                                      strings={Constants.Miscellaneous.DayPickerStrings}
                                       placeholder="Seleccione una fecha..."
                                       ariaLabel="Seleccione una fecha"
+                                      value={selectedItem.StartDate!}
+                                      onSelectDate={this.onSelectStartDate.bind(this)}   
+                                      formatDate={CommonHelper.formatDate}
                                       isRequired={true}
+                                    />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <TextField 
+                                      label="Descuento por pieza ($):"
+                                      onChange={this.onDiscountPerPieceChange.bind(this)}
+                                      value={selectedItem.GetDiscountPerPieceAsString()}
+                                      required={selectedItem.RequiresDiscountPerPiece()}
+                                      autoComplete="Off"
+                                      disabled={!selectedItem.RequiresDiscountPerPiece() }
+                                      errorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage(selectedItem.DiscountPerPiece) : null}
+                                      onGetErrorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
+                                    />
+                                  </Stack>
+                                </Stack>
+                                <Stack className="smallPadding" grow={6}>
+                                  <Stack className="padding-right controlPadding">
+                                    <Dropdown
+                                      placeholder="Seleccione un tipo"
+                                      label="Tipo de Promocion (LD):"
+                                      options={types}
+                                      disabled={this.state.loadingTypes || types.length === 0}
+                                      selectedKey={selectedItem.Type ? selectedItem.Type.ItemId : null}
+                                      onChanged={this.onTypeChanged.bind(this)}
+                                      required={true}
+                                      errorMessage={this.getValidationErrorMessage(selectedItem.Type)}
+                                    />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <TextField 
+                                      label="Inversión ($):"
+                                      onChange={this.onInvestmentChange.bind(this)}
+                                      value={selectedItem ? selectedItem.GetInvestmentAsString() : null} 
+                                      required={selectedItem.RequiresInvestment()}
+                                      autoComplete="Off"
+                                      disabled={!selectedItem.RequiresInvestment() }
+                                      errorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage(selectedItem.Investment) : null}
+                                      onGetErrorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
+                                    />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <Dropdown
+                                      placeholder="Seleccione una marca"
+                                      label="Marca:"
+                                      options={brands}
+                                      selectedKey={selectedItem.Brand ? selectedItem.Brand.ItemId : null}
+                                      onChanged={this.onBrandChanged.bind(this)}
+                                      required={true}
+                                      errorMessage={this.getValidationErrorMessage(selectedItem.Brand)}
+                                    />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <Dropdown
+                                      placeholder="Seleccione una categoría"
+                                      label="Categoría:"
+                                      options={productCategories}
+                                      selectedKey={selectedItem.ProductCategory ? selectedItem.ProductCategory.ItemId : null}
+                                      onChanged={this.onProductCategoryChanged.bind(this)}
+                                      required={true}
+                                      errorMessage={this.getValidationErrorMessage(selectedItem.ProductCategory)}
+                                    />
+                                  </Stack>
+                                  <Stack className="padding-right controlPadding">
+                                    <DatePicker
+                                      label="Fecha fin"
+                                      firstDayOfWeek={DayOfWeek.Monday}
+                                      strings={Constants.Miscellaneous.DayPickerStrings}
+                                      placeholder="Seleccione una fecha..."
+                                      ariaLabel="Seleccione una fecha"
+                                      value={selectedItem.EndDate!}
+                                      onSelectDate={this.onSelectEndDate.bind(this)}
+                                      formatDate={CommonHelper.formatDate}
+                                      isRequired={true}
+                                    />
+                                  </Stack>                                  
+                                  <Stack className="padding-right controlPadding">
+                                    <TextField
+                                      label="% Redención"
+                                      onChange={this.onRedemptionChange.bind(this)}
+                                      value={selectedItem.GetRedemptionAsString()}                                      
+                                      required={selectedItem.RequiresRedemption()}
+                                      autoComplete="Off"
+                                      disabled={!selectedItem.RequiresRedemption()}
+                                      errorMessage={selectedItem.RequiresRedemption() ? this.getValidationErrorMessage(selectedItem.Redemption) : null}
+                                      onGetErrorMessage={selectedItem.RequiresRedemption() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }} 
                                     />
                                   </Stack>
                                 </Stack>
@@ -486,32 +507,47 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <Label>Detalles de la promoción</Label>
                                   </Stack>
                                   <Stack className="grayContent smallPadding padding-left padding-right" verticalFill>
-                                    <Stack horizontal className="verticalPadding controlPadding" verticalAlign="center">
+                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                      <Label>Precio neto OFF</Label>
+                                      <Label className="toRight">{selectedItem.RequiresNetPrice() ? ("$" + selectedItem.GetNetPriceAsString()) : "N/A"}</Label>
+                                    </Stack>
+                                    <Separator className="graySeparator separatorToTop" />
+                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                      <Label>% Descuento</Label>
+                                      <Label className="toRight">{selectedItem.RequiresDiscountPerPiece() ? (selectedItem.GetDiscountPercentageAsString() + "%") : "N/A"}</Label>
+                                    </Stack>
+                                    <Separator className="graySeparator separatorToTop" />
+                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                       <Label>BEP NR</Label>
                                       <Label className="toRight">Valor</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding controlPadding" verticalAlign="center">
+                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                      <Label>COGS</Label>
+                                      <Label className="toRight">{selectedItem.GetCOGSAsString()}</Label>
+                                    </Stack>
+                                    <Separator className="graySeparator separatorToTop" />
+                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                       <Label>GM %NR</Label>
-                                      <Label className="toRight">Valor</Label>
+                                      <Label className="toRight">{selectedItem.GetGMPercentageNRAsString() + "%"}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
-                                      <Label>GM NR con promo</Label>
-                                      <Label className="toRight">Valor</Label>
+                                    <Stack horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
+                                      <Label>GM %NR con promo</Label>
+                                      <Label className="toRight">{selectedItem.RequiresDiscountPerPiece() ? selectedItem.GetGMPercentageNRWithPromoAsString() + "%" : "N/A"}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
+                                    <Stack horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
                                       <Label>GM Base Unit</Label>
-                                      <Label className="toRight">Valor</Label>
+                                      <Label className="toRight">{"$" + selectedItem.GetGMBaseUnitAsString()}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
+                                    <Stack horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
                                       <Label>GM Promo Unit</Label>
-                                      <Label className="toRight">Valor</Label>
+                                      <Label className="toRight">{"$" + selectedItem.GetGMPromoUnitAsString()}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding controlPadding " verticalAlign="center">
+                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                       <Label>BEP GM</Label>
                                       <Label className="toRight">Valor</Label>
                                     </Stack>
@@ -548,77 +584,87 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             </Stack>
                             <Stack className="grayContent padding padding-left padding-right">
                               <Stack horizontal>
-                                <Stack grow={4} className="smallPadding padding-right controlPadding">
-                                  <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
-                                  <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                                <Stack grow={4} className="smallPadding padding-right controlPadding">                                  
+                                  <TextField
+                                      label="Volumen base"
+                                      onChange={this.onBaseVolumeChange.bind(this)}
+                                      value={selectedItem.GetBaseVolumeAsString()} 
+                                      required={true}
+                                      autoComplete="Off"
+                                      errorMessage={this.getValidationErrorMessage(selectedItem.BaseVolume)}
+                                      onGetErrorMessage={this.getValidationErrorMessage.bind(this)} />
                                 </Stack>
                                 <Stack grow={4} className="smallPadding padding-right controlPadding">
-                                  <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
-                                  <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                                  <TextField
+                                      label="Volumen incremental estimado"
+                                      onChange={this.onEstimatedIncrementalVolumeChange.bind(this)}
+                                      value={selectedItem.GetEstimatedIncrementalVolumeAsString()} 
+                                      required={true}
+                                      autoComplete="Off"
+                                      errorMessage={this.getValidationErrorMessage(selectedItem.EstimatedIncrementalVolume)}
+                                      onGetErrorMessage={this.getValidationErrorMessage.bind(this)} />
                                 </Stack>
-                                <Stack grow={4} className="smallPadding padding-right controlPadding">
-                                  <Label htmlFor="estimatedIncrementalVolume">Volumen incremental Estimado</Label>
-                                  <TextField id="estimatedIncrementalVolume" placeholder="Ingrese el volumen estimado" />
+                                <Stack grow={4} className="smallPadding padding-right controlPadding">                                  
+                                  <TextField
+                                      label="Inversión adicional (MKT)"
+                                      onChange={this.onAdditionalInvestmentChange.bind(this)}
+                                      value={selectedItem.GetAdditionalInvestmentAsString()} 
+                                      autoComplete="Off" />
                                 </Stack>
-                              </Stack>
+                              </Stack>                              
                               <Stack horizontal>
                                 <Stack className="smallPadding padding-right controlPadding" grow={4}>
                                   <Stack horizontal className="verticalPadding">
-                                    <Label>Volumen base</Label>
+                                    <Label>Volume LY</Label>
+                                    <Label className="toRight">{selectedItem.GetLastYearVolumeAsString()}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>% Volume Incremental</Label>
+                                    <Label className="toRight">{selectedItem.RequiresIncrementalVolumePercentage() ? (selectedItem.GetIncrementalVolumePercentageAsString() + "%") : "N/A"}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>NR incremental estimado</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
-                                    <Label>NR base</Label>
-                                    <Label className="toRight">Valor</Label>
-                                  </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
-                                    <Label>GM base</Label>
-                                    <Label className="toRight">Valor</Label>
-                                  </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
-                                    <Label>Inversión estimada</Label>
+                                    <Label>GM incremental</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
                                 <Stack className="smallPadding padding-right" grow={4}>
                                   <Stack horizontal className="verticalPadding">
-                                    <Label>Volumen estimado</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label>Volume Average L 3 Months</Label>
+                                    <Label className="toRight">{selectedItem.GetAverageVolumeL3MonthsAsString()}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
-                                    <Label>NR estimado</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label>NR base</Label>
+                                    <Label className="toRight">{selectedItem.RequiresBaseNR() ? ("$" + selectedItem.GetBaseNRAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
-                                    <Label>GM estimado</Label>
-                                    <Label className="toRight">Valor</Label>
-                                  </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
-                                    <Label>Inversión adicional (MKT)</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label>GM base</Label>
+                                    <Label className="toRight">{selectedItem.RequiresBaseGM() ? ("$" + selectedItem.GetBaseGMAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
                                 <Stack className="smallPadding" grow={4}>
                                   <Stack horizontal className="verticalPadding">
-                                    <Label>% volumen incremental</Label>
+                                    <Label>Total volumen estimado</Label>
+                                    <Label className="toRight">{selectedItem.RequiresTotalEstimatedVolume() ? selectedItem.GetTotalEstimatedVolumeAsString() : "N/A"}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>NR Estimado</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
-                                    <Label>% NR incremental</Label>
-                                    <Label className="toRight">Valor</Label>
-                                  </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
-                                    <Label>% GM incremental</Label>
+                                    <Label>GM promo estimado</Label>
                                     <Label className="toRight">Valor</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
@@ -632,15 +678,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     <PivotItem onRenderItemLink={this._customPromotionSummaryPivotItemRenderer}>
                       <Stack className="summarySectionContainer">
                         <Stack styles={this.repetitiveSectionStyle}>
-
                           <Stack className="statusContainer smallPadding padding-right" horizontal horizontalAlign="end">
                             <Stack style={{ color: theme.palette.themePrimary, paddingRight: "4px" }}><Icon iconName="MapLayers" /></Stack>
                             <Stack className="label">Estado:</Stack>
                             <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>Pendiente de aprobación</Stack>
                           </Stack>
-
                           <Stack horizontal className="padding">
-
                             <Stack grow={8} verticalAlign="start">
                               <Stack grow={12} className="grayContent padding padding-left padding-right">
                                 <Stack horizontal className="verticalPadding">
@@ -655,7 +698,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Separator className="graySeparator separatorToTop" />
                               </Stack>
                             </Stack>
-
                             <Stack grow={4} horizontal>
                               <Stack verticalFill>
                                 <Separator vertical={true} styles={this.verticalSeparatorStyle}></Separator>
@@ -692,7 +734,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               </Stack>
                             </Stack>
                           </Stack>
-
                           <Stack className="padding-bottom">
                             <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
                               <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
@@ -718,84 +759,69 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               </Stack>
                             </Stack>
                             <Stack horizontal className="grayContent padding padding-left padding-right">
-
                               <Stack className="smallPadding padding-right controlPadding" grow={4}>
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Volumen base</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>NR base</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>GM base</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Inversión estimada</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                               </Stack>
-
                               <Stack className="smallPadding padding-right" grow={4}>
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Volumen estimado</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>NR estimado</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>GM estimado</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Inversión adicional (MKT)</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                               </Stack>
                               <Stack className="smallPadding" grow={4}>
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>% volumen incremental</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>% NR incremental</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>% GM incremental</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                               </Stack>
                             </Stack>
                           </Stack>
-
                           <Stack className="padding-bottom">
                             <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
                               <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
@@ -827,77 +853,63 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>NR base</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>GM base</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Inversión estimada</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                               </Stack>
-
                               <Stack className="smallPadding padding-right" grow={4}>
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Volumen estimado</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>NR estimado</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>GM estimado</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Inversión adicional (MKT)</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                               </Stack>
                               <Stack className="smallPadding" grow={4}>
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>% volumen incremental</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>% NR incremental</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>% GM incremental</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                               </Stack>
                             </Stack>
                           </Stack>
-
                           <Stack className="padding-bottom">
                             <Stack horizontal className={this.state.effective
                               ? "grayHeader smallPadding padding-left padding-right grayHeaderToGreen"
@@ -927,7 +939,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>NR base</Label>
                                   <Label className="toRight">Valor</Label>
@@ -939,63 +950,51 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Inversión estimada</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                               </Stack>
-
                               <Stack className="smallPadding padding-right" grow={4}>
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Volumen estimado</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>NR estimado</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>GM estimado</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Inversión adicional (MKT)</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                               </Stack>
                               <Stack className="smallPadding" grow={4}>
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>% volumen incremental</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>% NR incremental</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                                 <Stack horizontal className="verticalPadding">
                                   <Label>% GM incremental</Label>
                                   <Label className="toRight">Valor</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
-
                               </Stack>
-
                             </Stack>
                           </Stack>
                         </Stack>
@@ -1049,261 +1048,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                 </div>
 
                 {/* Fin Modal Bottom*/}
-
-                <div className={styles.promoForm}>
-                        <ul style={{paddingLeft:'5px', marginBottom: '0px'}}>
-                            {entity.Items.map((item, index) => { return (
-                                <li style={{display:'inline', minWidth: '50px', fontWeight: index == this.state.selectedIndex ? 'bold' : 'inherit'}}>
-                                    <a onClick={this.changeSelectedItem.bind(this, index)} style={{cursor: 'pointer'}}>{item.AdditionalID} | </a>
-                                </li>
-                            );})}
-                            <li style={{display:'inline', minWidth: '50px'}}>
-                                <a onClick={this.AddPromoItem.bind(this)} style={{cursor: 'pointer'}}> + | </a>
-                            </li>
-                            <li style={{display: entity.Items.length > 1 ? 'inline' : 'none', minWidth: '50px'}}>
-                                <a onClick={this.RemovePromoItem.bind(this)} style={{cursor: 'pointer'}}> - | </a>
-                            </li>
-                        </ul>
-                        <table style={{width:'100%'}}>
-                            <tr>
-                                <td style={{width:'100px'}}></td>
-                                <td style={{width:'100px'}}></td>
-                                <td style={{width:'100px'}}></td>
-                                <td style={{width:'100px'}}></td>
-                                <td style={{width:'100px'}}></td>
-                                <td style={{width:'100px'}}></td>   
-                            </tr>
-                            <tr>
-                                <td colSpan={6}>
-                                    <TextField 
-                                        label="Descripción corta:"
-                                        onChange={this.onShortDescriptionChange.bind(this)}
-                                        value={selectedItem ? selectedItem.ShortDescription : null} 
-                                        required={true}
-                                        autoComplete="Off"
-                                        errorMessage={this.getValidationErrorMessage(selectedItem.ShortDescription)}
-                                        onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3} style={{verticalAlign: "top"}}>
-                                    <Dropdown
-                                        placeholder="Seleccione una categoría"
-                                        label="Categoria de la Promoción (LD):"
-                                        options={categories}
-                                        selectedKey={selectedItem.Category ? selectedItem.Category.ItemId : null}
-                                        onChanged={this.onCategoryChanged.bind(this)}
-                                        required={true}
-                                        errorMessage={this.getValidationErrorMessage(selectedItem.Category)}
-                                    />
-                                </td>
-                                <td colSpan={3} style={{verticalAlign: "top"}}>
-                                    <TextField 
-                                        label="Inversión ($):"
-                                        onChange={this.onInvestmentChange.bind(this)}
-                                        value={selectedItem ? selectedItem.InvestmentAsString() : null} 
-                                        required={selectedItem.RequiresInvestment()}
-                                        autoComplete="Off"
-                                        disabled={!selectedItem.RequiresInvestment() }
-                                        errorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage(selectedItem.Investment) : null}
-                                        onGetErrorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3}>
-                                    <Dropdown
-                                        placeholder="Seleccione un tipo"
-                                        label="Tipo de Promocion (LD):"
-                                        options={types}
-                                        disabled={this.state.loadingTypes || types.length === 0}
-                                        selectedKey={selectedItem.Type ? selectedItem.Type.ItemId : null}
-                                        onChanged={this.onTypeChanged.bind(this)}
-                                        required={true}
-                                        errorMessage={this.getValidationErrorMessage(selectedItem.Type)}
-                                    />
-                                </td>
-                                <td colSpan={2}>&nbsp;</td>
-                                <td colSpan={1}>
-                                    <Toggle 
-                                        label="Actividad topada" 
-                                        onText="Si" 
-                                        offText="No" 
-                                        onChange={this.onCappedActivityChanged.bind(this)} 
-                                        checked={selectedItem.CappedActivity}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3} style={{verticalAlign: "top"}}>
-                                    <ProductSelector 
-                                        products={this.GetFilteredProducts()}
-                                        onChanged={this.onProductChanged.bind(this)}
-                                        value={selectedItem.Product}
-                                    />
-                                </td>
-                                <td colSpan={3} style={{verticalAlign: "top"}}>
-                                    <Dropdown
-                                        placeholder="Seleccione un negocio"
-                                        label="BU:"
-                                        options={businessUnits}
-                                        selectedKey={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.ItemId : null}
-                                        onChanged={this.onBusinessUnitChanged.bind(this)}
-                                        required={true}
-                                        errorMessage={this.getValidationErrorMessage(selectedItem.BusinessUnit)}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3} style={{verticalAlign: "top"}}>
-                                    <Dropdown
-                                        placeholder="Seleccione una marca"
-                                        label="Marca:"
-                                        options={brands}
-                                        selectedKey={selectedItem.Brand ? selectedItem.Brand.ItemId : null}
-                                        onChanged={this.onBrandChanged.bind(this)}
-                                        required={true}
-                                        errorMessage={this.getValidationErrorMessage(selectedItem.Brand)}
-                                    />
-                                </td>
-                                <td colSpan={3}>
-                                    <Dropdown
-                                        placeholder="Seleccione una categoría"
-                                        label="Categoría:"
-                                        options={productCategories}
-                                        selectedKey={selectedItem.ProductCategory ? selectedItem.ProductCategory.ItemId : null}
-                                        onChanged={this.onProductCategoryChanged.bind(this)}
-                                        required={true}
-                                        errorMessage={this.getValidationErrorMessage(selectedItem.ProductCategory)}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={3} style={{verticalAlign: "top"}}>
-                                    <DatePicker
-                                        label="Fecha comienzo"
-                                        firstDayOfWeek={DayOfWeek.Monday}
-                                        strings={Constants.Miscellaneous.DayPickerStrings}
-                                        placeholder="Seleccione una fecha..."
-                                        ariaLabel="Seleccione una fecha"
-                                        value={selectedItem.StartDate!}
-                                        onSelectDate={this.onSelectStartDate.bind(this)}   
-                                        formatDate={CommonHelper.formatDate}
-                                        isRequired={true}
-                                    />
-                                </td>
-                                <td colSpan={3} style={{verticalAlign: "top"}}>
-                                    <DatePicker
-                                        label="Fecha fin"
-                                        firstDayOfWeek={DayOfWeek.Monday}
-                                        strings={Constants.Miscellaneous.DayPickerStrings}
-                                        placeholder="Seleccione una fecha..."
-                                        ariaLabel="Seleccione una fecha"
-                                        value={selectedItem.EndDate!}
-                                        onSelectDate={this.onSelectEndDate.bind(this)}
-                                        formatDate={CommonHelper.formatDate}
-                                        isRequired={true}
-                                    />
-                                </td>
-                            </tr>
-                        </table>   
-                        <table style={{width:'100%'}}>
-                            <tr>
-                                <td colSpan={2}>
-                                    <TextField 
-                                        label="Descuento por pieza ($):"
-                                        onChange={this.onDiscountPerPieceChange.bind(this)}
-                                        value={selectedItem ? selectedItem.DiscountPerPieceAsString() : null}
-                                        required={selectedItem.RequiresDiscountPerPiece()}
-                                        autoComplete="Off"
-                                        disabled={!selectedItem.RequiresDiscountPerPiece() }
-                                        errorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage(selectedItem.DiscountPerPiece) : null}
-                                        onGetErrorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
-                                    />
-                                </td>
-                                <td colSpan={2} style={{verticalAlign: "top"}}>
-                                    <TextField 
-                                        label="Precio neto OFF:"
-                                        className={styles.readOnlyInput}
-                                        value={selectedItem ? selectedItem.NetPriceAsString() : null}
-                                        disabled={!selectedItem.RequiresNetPrice()}
-                                        readOnly={true}
-                                    />
-                                </td>
-                                <td colSpan={2} style={{verticalAlign: "top"}}>
-                                    <TextField 
-                                        label="% Descuento:"
-                                        className={styles.readOnlyInput}
-                                        value={selectedItem ? selectedItem.DiscountPercentageAsString() : null}
-                                        disabled={!selectedItem.RequiresDiscountPerPiece() }
-                                        readOnly={true}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={2}>
-                                    <TextField 
-                                        label="BEP NR:"
-                                        className={styles.readOnlyInput}
-                                        readOnly={true}
-                                    />
-                                </td>
-                                <td colSpan={2}>
-                                    <TextField 
-                                        label="COGS:"
-                                        className={styles.readOnlyInput}
-                                        value={selectedItem ? selectedItem.COGSAsString() : null}
-                                        readOnly={true}
-                                    />
-                                </td>
-                                <td colSpan={2}>
-                                    <TextField 
-                                        label="GM % NR:"
-                                        className={styles.readOnlyInput}
-                                        value={selectedItem ? selectedItem.GMPercentageNRAsString() : null}
-                                        readOnly={true}
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={2}>
-                                    <TextField 
-                                        label="GM %NR con promo:"
-                                        className={styles.readOnlyInput}
-                                        value={selectedItem ? selectedItem.GMPercentageNRWithPromoAsString() : null}
-                                        disabled={!selectedItem.RequiresDiscountPerPiece() }
-                                        readOnly={true}
-                                    />
-                                </td>
-                                <td colSpan={2}>
-                                    <TextField 
-                                        label="GM base unit:"
-                                        className={styles.readOnlyInput}
-                                        value={selectedItem ? selectedItem.GMBaseUnitAsString() : null}
-                                        readOnly={true}
-                                    />
-                                </td>
-                                <td colSpan={2}>
-                                    <TextField 
-                                        label="GM promo unit:"
-                                        className={styles.readOnlyInput}
-                                        value={selectedItem ? selectedItem.GMPromoUnitAsString() : null}
-                                        readOnly={true}
-                                    />
-                                </td>                                
-                            </tr>
-                            <tr>
-                                <td colSpan={2}>
-                                    <TextField 
-                                        label="BEP GM:"
-                                        className={styles.readOnlyInput}
-                                        readOnly={true}
-                                    />
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
               </Shimmer>
             </Modal>
           </div>;
@@ -1437,31 +1181,38 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         });
     }
 
-    private onCategoryChanged(item: IDropdownOption) {
-        const category = this.state.viewModel.Categories.filter(x => x.ItemId === item.key as number)[0];
+    private onCategoryChanged(item: IDropdownOption) {        
         const promoItem = this.state.viewModel.Entity.Items[this.state.selectedIndex];
-        const investment = promoItem.Investment;
-        const discountPerPiece = promoItem.DiscountPerPiece;
+
+        promoItem.Category = this.state.viewModel.Categories.filter(x => x.ItemId === item.key as number)[0];
+        promoItem.Type = null;
+        promoItem.Redemption = null;
+
+        if(!promoItem.RequiresInvestment())
+          promoItem.Investment = null;
+
+        if(!promoItem.RequiresDiscountPerPiece())
+          promoItem.DiscountPerPiece = null;
 
         this.setState((prevState) => { 
             let newState = prevState as IPromoFormState;
 
             newState.loadingTypes = true;
-            newState.viewModel.Entity.Items[this.state.selectedIndex].Category = category;
-            newState.viewModel.Entity.Items[this.state.selectedIndex].Type = null;
-            newState.viewModel.Entity.Items[this.state.selectedIndex].Investment = category && category.RequiresInvestment ? investment : null;
-            newState.viewModel.Entity.Items[this.state.selectedIndex].DiscountPerPiece = category && category.RequiresDiscountPerPiece ? discountPerPiece : null;
+            newState.viewModel.Entity.Items[this.state.selectedIndex] = promoItem;
 
             return newState;
         }, () => {
             this.updateClientProductFields(this.state.selectedIndex);
         });        
 
-        PromoService.GetTypesByCategory(category.ItemId).then((types: Type[]) => {
-            this.setState({loadingTypes: false});
+        PromoService.GetTypesByCategory(promoItem.Category.ItemId).then((types: Type[]) => {
             this.setState((state) => {
-                state.viewModel.Types = types;
-                return state;
+                let newState = state as IPromoFormState;
+
+                newState.loadingTypes = false;
+                newState.viewModel.Types = types;
+
+                return newState;
             });            
         });
     }
@@ -1474,10 +1225,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     }
 
     private onTypeChanged(item: IDropdownOption) {        
-        const type = this.state.viewModel.Types.filter(x => x.ItemId === item.key as number)[0];
+        const promoItem = this.state.viewModel.Entity.Items[this.state.selectedIndex];
+
+        promoItem.Type = this.state.viewModel.Types.filter(x => x.ItemId === item.key as number)[0];
+        promoItem.Redemption = null;        
 
         this.setState((state) => {            
-            state.viewModel.Entity.Items[this.state.selectedIndex].Type = type;
+            state.viewModel.Entity.Items[this.state.selectedIndex] = promoItem;
             return state;
         });
     }
@@ -1568,30 +1322,37 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     }
 
     private updateClientProductFields(itemIndex: number) {
-        let promoItem = this.state.viewModel.Entity.Items[itemIndex];
-        const client = this.state.viewModel.Entity.Client;        
-        const product = promoItem.Product;        
+      let promoItem = this.state.viewModel.Entity.Items[itemIndex];
+      const client = this.state.viewModel.Entity.Client;        
+      const product = promoItem.Product;        
 
-        if(client && product) {
-            ClientProductRepository.GetByClientAndProduct(client.ItemId, product.ItemId).then((item: ClientProduct) => {
-                promoItem.NetPrice = promoItem.RequiresNetPrice() && item ? item.Price : null;
-                promoItem.COGS = item ? item.COGS : null;
+      if(client && product) {
+        ClientProductRepository.GetByClientAndProduct(client.ItemId, product.ItemId).then((item: ClientProduct) => {
+          promoItem.NetPrice = promoItem.RequiresNetPrice() && item ? item.Price : null;
+          promoItem.COGS = item ? item.COGS : null;
 
-                this.setState((state) => {
-                    state.viewModel.Entity.Items[itemIndex] = promoItem;
-                    return state;
-                });
-            });
-        }
-        else {
-            promoItem.NetPrice = null;
-            promoItem.COGS = null;
+          this.setState((state) => {
+            state.viewModel.Entity.Items[itemIndex] = promoItem;
+            return state;
+          });
+        });
 
-            this.setState((state) => {
-                state.viewModel.Entity.Items[itemIndex] = promoItem;
-                return state;
-            });
-        }
+        LastYearVolumesRepository.GetByClientAndProduct(client.ItemId, product.ItemId).then((item: LastYearVolumes) => {
+          this.setState((state) => {
+            state.viewModel.Entity.Items[itemIndex].LastYearVolumes = item;
+            return state;
+          });
+        });
+      }
+      else {
+        promoItem.NetPrice = null;
+        promoItem.COGS = null;
+
+        this.setState((state) => {
+          state.viewModel.Entity.Items[itemIndex] = promoItem;
+          return state;
+        });
+      }
     }
 
     //#endregion
@@ -1603,24 +1364,52 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         });
     }
 
+    private onRedemptionChange(event: any, text: any) {
+      this.setState((state) => {
+          state.viewModel.Entity.Items[this.state.selectedIndex].Redemption = !isNaN(parseInt(text)) ? parseInt(text) : null;    
+          return state;
+      });
+    }
+
+    private onBaseVolumeChange(event: any, text: any) {
+      this.setState((state) => {
+          state.viewModel.Entity.Items[this.state.selectedIndex].BaseVolume = !isNaN(parseInt(text)) ? parseInt(text) : null;    
+          return state;
+      });
+    }
+
+    private onAdditionalInvestmentChange(event: any, text: any) {
+      this.setState((state) => {
+          state.viewModel.Entity.Items[this.state.selectedIndex].AdditionalInvestment = !isNaN(parseInt(text)) ? parseInt(text) : null;    
+          return state;
+      });
+    }
+
+    private onEstimatedIncrementalVolumeChange(event: any, text: any) {
+      this.setState((state) => {
+          state.viewModel.Entity.Items[this.state.selectedIndex].EstimatedIncrementalVolume = !isNaN(parseInt(text)) ? parseInt(text) : null;    
+          return state;
+      });
+    }
+
     private submit(): void {
-        console.log(this.state.viewModel.Entity);
+      console.log(this.state.viewModel.Entity);
 
-/*         if(!this.validateFormControls()) return;
+      if(!this.validateFormControls()) return;
 
-        this.setState({
-            enableSubmit:false
-        });
+      this.setState({
+          enableSubmit:false
+      });
 
-        PromoService.Save(this.state.viewModel.Entity).then(() => {
-            this.setState({
-                formSubmitted: true,
-                resultIsOK: true
-            });
-        }).catch((err) => {
-            console.error(err);
-            this.setState({ formSubmitted: true, errorMessage: err});
-        }); */
+      PromoService.Save(this.state.viewModel.Entity).then(() => {
+          this.setState({
+              formSubmitted: true,
+              resultIsOK: true
+          });
+      }).catch((err) => {
+          console.error(err);
+          this.setState({ formSubmitted: true, errorMessage: err});
+      });
     }
     
     private getValidationErrorMessage(value: any): string{
@@ -1645,7 +1434,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         this.state.viewModel.Entity.Items.map((item) => {
             if(CommonHelper.IsNullOrEmpty(item.ShortDescription)) invalidCount++;
             if(item.Category == null) invalidCount++;
-            if(item.Category != null && item.Category.RequiresInvestment && !(item.Investment > 0)) invalidCount++;
+            if(item.RequiresInvestment() && !(item.Investment > 0)) invalidCount++;
             if(item.Type == null) invalidCount++;
             if(item.BusinessUnit == null) invalidCount++;
             if(item.Brand == null) invalidCount++;
@@ -1653,6 +1442,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             if(item.ProductCategory == null) invalidCount++;
             if(!CommonHelper.IsDate(item.StartDate)) invalidCount++;
             if(!CommonHelper.IsDate(item.EndDate)) invalidCount++;
+            if(item.RequiresDiscountPerPiece() && !(item.DiscountPerPiece > 0)) invalidCount++;
+            if(item.RequiresRedemption() && !(item.Redemption > 0)) invalidCount++;
+            if(!(item.BaseVolume > 0)) invalidCount++;
+            if(!(item.EstimatedIncrementalVolume > 0)) invalidCount++;
         });
 
         this.setState({ hasValidationError: invalidCount > 0});
@@ -1709,10 +1502,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     },
   };
   
-  private labelStyles: Partial<IStyleSet<ILabelStyles>> = {
-    root: { marginTop: 10 },
-  };
-  
   private examplePersona: IPersonaSharedProps = {
     imageUrl: TestImages.personaMale,
     imageInitials: 'JS',
@@ -1731,84 +1520,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     optionalText: 'Available at 4:00pm',
   };
   
-  private clientsOptions: IComboBoxOption[] = [
-    { key: 'A', text: 'Cliente 1' },
-    { key: 'B', text: 'Cliente 2' },
-    { key: 'C', text: 'Cliente 3' }
-  ];
-  
-  private channelOptions: IComboBoxOption[] = [
-    { key: 'A', text: 'Canal 1' },
-    { key: 'B', text: 'Canal 2' },
-    { key: 'C', text: 'Canal 3' }
-  ];
-  
-  private promotionCategoryOptions: IComboBoxOption[] = [
-    { key: 'A', text: 'Categoría de promoción 1' },
-    { key: 'B', text: 'Categoría de promoción  2' },
-    { key: 'C', text: 'Categoría de promoción  3' },
-  ];
-  
-  private promotionTypesOptions: IComboBoxOption[] = [
-    { key: 'A', text: 'Tipo de promoción 1' },
-    { key: 'B', text: 'Tipo de promoción 2' },
-    { key: 'C', text: 'Tipo de promoción 3' },
-  ];
-  
-  private brandOptions: IComboBoxOption[] = [
-    { key: 'A', text: 'Marca 1' },
-    { key: 'B', text: 'Marca 2' },
-    { key: 'C', text: 'Marca 3' },
-  ];
-  
-  private aditionalInvestmentOptions: IComboBoxOption[] = [
-    { key: 'A', text: 'Inversión 1' },
-    { key: 'B', text: 'Inversión 2' },
-    { key: 'C', text: 'Inversión 3' },
-  ];
-  
-  private categoryOptions: IComboBoxOption[] = [
-    { key: 'A', text: 'Categoría 1' },
-    { key: 'B', text: 'Categoría 2' },
-    { key: 'C', text: 'Categoría 3' },
-  ];
-  
-  private DayPickerStrings: IDatePickerStrings = {
-    months: [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre',
-    ],
-  
-    shortMonths: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-  
-    days: ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'],
-  
-    shortDays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-  
-    goToToday: 'Ir a hoy',
-    prevMonthAriaLabel: 'Ir a mes anterior',
-    nextMonthAriaLabel: 'Ir a siguiente mes',
-    prevYearAriaLabel: 'Ir a año anterior',
-    nextYearAriaLabel: 'Ir a siguiente año',
-    closeButtonAriaLabel: 'Cerrar selector de fecha',
-    monthPickerHeaderAriaLabel: '{0}, seleccione para cambiar el año',
-    yearPickerHeaderAriaLabel: '{0}, seleccione para cambiar el mes',
-    isRequiredErrorMessage: 'Este campo es requerido',
-    invalidInputErrorMessage: 'Formato invalido',
-  };
-  
-  private firstDayOfWeek = DayOfWeek.Sunday;
-  
   private verticalSeparatorStyle = {
     root:
       [{
@@ -1825,13 +1536,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   };
   
   private confirmationDialogStyles = { main: { maxWidth: '450px' } };
-
-    private _validationsTriggerClicked() {
-        if (this.state.errorMessage == "")
-          this.setState({ errorMessage: "Este campo es requerido" });
-        else
-          this.setState({ errorMessage: "" });
-      }
     
   private _customPromotionPivotItemRenderer(promoID: string, link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {
     return (
