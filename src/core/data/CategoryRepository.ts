@@ -9,9 +9,7 @@ export class CategoryRepository {
             .items.getById(id).select(
                 "ID", 
                 "Title", 
-                "RequiresInvestment", 
-                "RequiresDiscountPerPiece",
-                "RequiresNetPrice"
+                "SYS_Identifier"
             ).get().then((item) => {
                 return CategoryRepository.BuildEntity(item);
             });
@@ -25,9 +23,7 @@ export class CategoryRepository {
             .items.select(
                 "ID", 
                 "Title", 
-                "RequiresInvestment", 
-                "RequiresDiscountPerPiece",
-                "RequiresNetPrice"
+                "SYS_Identifier", 
             ).get().then((items) => { 
                 return items.map((item) => {                     
                     return CategoryRepository.BuildEntity(item);
@@ -42,9 +38,7 @@ export class CategoryRepository {
   
         entity.ItemId = item.ID;
         entity.Name = item.Title;
-        entity.RequiresInvestment = item.RequiresInvestment;
-        entity.RequiresDiscountPerPiece = item.RequiresDiscountPerPiece;
-        entity.RequiresNetPrice = item.RequiresNetPrice;
+        entity.Identifier = item.SYS_Identifier;
 
         return entity;
     }

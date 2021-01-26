@@ -1,13 +1,15 @@
 import { sp } from "@pnp/sp/presets/all";
 import { Category, Product, Type } from "../model/Common";
+import { LastYearVolumes } from "../model/Common/LastYearVolumes";
 import { PromoItem } from "../model/Promo";
 import { CategoryRepository } from "./CategoryRepository";
+import { LastYearVolumesRepository } from "./LastYearVolumesRepository";
 import { ProductRepository } from "./ProductRepository";
 
 export class PromoItemRepository {
     private static LIST_NAME: string = "Promo items";
 
-    public static async GetByPromo(promoId: number):Promise<PromoItem[]>
+    public static async GetByPromo(promoId: number, clientId?:number):Promise<PromoItem[]>
     {
         const items = await sp.web.lists.getByTitle(PromoItemRepository.LIST_NAME)
             .items.select(
@@ -30,14 +32,19 @@ export class PromoItemRepository {
                 "EndDate",
                 "DiscountPerPiece",
                 "NetPrice",
-                "COGS"
+                "COGS",
+                "Redemption",  
+                "BaseVolume",
+                "EstimatedIncrementalVolume",
+                "AdditionalInvestment",
             ).expand("Type", "BusinessUnit", "Brand", "ProductCategory").filter(`PromoId eq ${promoId}`).get();
         
         //TODO: revisar y mejorar este query
         const collection = items.map(async (item) => { 
             const category = item.CategoryId ? await CategoryRepository.GetById(item.CategoryId) : null;
             const product = item.ProductId ? await ProductRepository.GetById(item.ProductId) : null;
-            return PromoItemRepository.BuildEntity(item, category, product);
+            const volumesLY = clientId && item.ProductId ? await LastYearVolumesRepository.GetByClientAndProduct(clientId, item.ProductId) : null;
+            return PromoItemRepository.BuildEntity(item, category, product, volumesLY);
         });       
 
         return Promise.all(collection);
@@ -73,7 +80,11 @@ export class PromoItemRepository {
                 GMPercentageNR: entity.GetGMPercentageNR(),
                 GMPercentageNRWithPromo: entity.GetGMPercentageNRWithPromo(),
                 GMBaseUnit: entity.GetGMBaseUnit(),
-                GMPromoUnit: entity.GetGMPromoUnit()
+                GMPromoUnit: entity.GetGMPromoUnit(),
+                Redemption: entity.Redemption,  
+                BaseVolume: entity.BaseVolume,              
+                EstimatedIncrementalVolume: entity.EstimatedIncrementalVolume,
+                AdditionalInvestment: entity.AdditionalInvestment
             };
 
             if(entity.ItemId)
@@ -85,7 +96,7 @@ export class PromoItemRepository {
         await batch.execute();
     }
 
-    private static BuildEntity(item: any, category?: Category, product?: Product): PromoItem {
+    private static BuildEntity(item: any, category?: Category, product?: Product, lyVolumes?: LastYearVolumes): PromoItem {
         let entity = new PromoItem();
   
         entity.ItemId = item.ID;
@@ -104,6 +115,11 @@ export class PromoItemRepository {
         entity.DiscountPerPiece = item.DiscountPerPiece;
         entity.NetPrice= item.NetPrice;
         entity.COGS = item.COGS;
+        entity.Redemption = item.Redemption; 
+        entity.BaseVolume = item.BaseVolume;       
+        entity.EstimatedIncrementalVolume = item.EstimatedIncrementalVolume;
+        entity.AdditionalInvestment = item.AdditionalInvestment;
+        entity.LastYearVolumes = lyVolumes;
   
         return entity;
     }

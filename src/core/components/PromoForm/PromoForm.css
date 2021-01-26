@@ -266,8 +266,14 @@
 }
 .controlPadding
 {
-    min-height: 82px;
+    min-height: 70px;
 }
+
+.detailsControlPadding
+{
+    min-height: 36px !important;
+}
+
 .multilineControlPadding
 {
     min-height: 114px;
