@@ -40,6 +40,13 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, {}> {
         width: "180px"
     };
 
+    public componentDidMount(){
+        var itemId = CommonHelper.getParameterByName("ItemId");
+
+        if(itemId != null)
+            this.openPromoFormDialog();
+    }
+
     public render(): React.ReactElement<IPromoFormLinkProps> {
         var output = 
             <Stack style={this.mainStakStyles}>
