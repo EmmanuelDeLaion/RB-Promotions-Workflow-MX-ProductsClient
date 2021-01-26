@@ -1,0 +1,1 @@
+Apply-PnPProvisioningTemplate -Path "../template.xml" -Handlers Lists
