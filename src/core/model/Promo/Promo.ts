@@ -3,6 +3,7 @@ import { Client } from "../Common";
 import { NewPromoState, PromoState, DraftPromoState } from "./PromoStates";
 import { PromoStatus, PromoViewModel } from "./";
 import { PromoItem } from "./PromoItem";
+import { ApprovalState } from "./PromoStates/ApprovalState";
 
 export class Promo extends Entity {
     public PromoID: string = "MX--";
@@ -27,6 +28,9 @@ export class Promo extends Entity {
             case PromoStatus.Draft:
                 this._state = new DraftPromoState();
                 break;
+            case PromoStatus.Approval:
+                this._state = new ApprovalState();
+                break;
             default:
                 break;
         }
@@ -46,8 +50,13 @@ export class Promo extends Entity {
         return this._state.GetViewModel();
     }
 
-    public ExecuteAction1(entity: Promo): Promise<void>
+    public Save(entity: Promo): Promise<void>
     {       
-        return this._state.ExecuteAction1(entity);
+        return this._state.Save(entity);
+    }
+
+    public Submit(entity: Promo): Promise<void>
+    {       
+        return this._state.Submit(entity);
     }
 }

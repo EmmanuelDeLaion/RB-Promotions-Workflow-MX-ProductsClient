@@ -9,12 +9,22 @@ export abstract class PromoState {
     public abstract GetStatusText():string;
     public abstract GetViewModel():Promise<PromoViewModel>;
 
-    public ExecuteAction1(entity: Promo): Promise<void>
+    public Save(entity: Promo): Promise<void>
     {
         throw new Error(Constants.Messages.NotAllowedAction);
     }
 
-    public ExecuteAction2(entity: Promo): Promise<void>
+    public Submit(entity: Promo): Promise<void>
+    {
+        throw new Error(Constants.Messages.NotAllowedAction);
+    }
+
+    public Approve(entity: Promo): Promise<void>
+    {
+        throw new Error(Constants.Messages.NotAllowedAction);
+    }
+
+    public Reject(entity: Promo): Promise<void>
     {
         throw new Error(Constants.Messages.NotAllowedAction);
     }

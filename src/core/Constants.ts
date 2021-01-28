@@ -4,6 +4,7 @@ export namespace Constants {
     export class StatusTexts{
         public static NewPromo = "Nueva promoción";
         public static DraftPromo = "Borrador";
+        public static Approval = "Aprobación";
     } 
     
     export class Messages {

@@ -1,29 +1,30 @@
-import { Promo } from "..";
+import { Promo, PromoStatus } from "..";
 import { Constants } from "../../..";
 import { 
+    CategoryRepository, 
     ClientRepository, 
-    PromoRepository,
-    CategoryRepository,
-    ProductRepository,
-    MasterDataRepository,
+    MasterDataRepository, 
+    ProductRepository, 
+    PromoRepository, 
+    TypeRepository 
 } from "../../../data";
 import { LookupValue } from "../../../infrastructure";
-import { Client } from "../../Common";
-import { PromoStatus } from "../PromoStatus";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoState } from "./PromoState";
 
-export class NewPromoState extends PromoState {
+export class ApprovalState extends PromoState {
     public GetStatusId(): number {
-        return PromoStatus.New;
+        return PromoStatus.Approval;
     }
-    
+
     public GetStatusText(): string {
-        return Constants.StatusTexts.NewPromo;
+        return Constants.StatusTexts.Approval;
     }
 
     public async GetViewModel(): Promise<PromoViewModel> {
         let viewModel = new PromoViewModel(this.Entity);
+
+        viewModel.ReadOnlyForm = true;
 
         viewModel.Clients = await ClientRepository.GetClients();
         viewModel.Categories = await CategoryRepository.GetAll();
@@ -35,23 +36,27 @@ export class NewPromoState extends PromoState {
         viewModel.BusinessUnits.unshift(new LookupValue());
         viewModel.Brands.unshift(new LookupValue());
         viewModel.ProductCategories.unshift(new LookupValue());
+        
+        if(this.Entity.Items.length > 0 && this.Entity.Items[0].Category)
+            viewModel.Types = await TypeRepository.GetByCategory(this.Entity.Items[0].Category.ItemId);
 
-        viewModel.ShowSaveButton = true;
-        viewModel.ShowSubmitButton = true;
+        viewModel.ShowApproveButton = true;
+        viewModel.ShowRejectButton = true;
 
         return viewModel;
-    }
+    }    
 
-    public Save(entity: Promo): Promise<void>
+    public Approve(entity: Promo): Promise<void>
     {
-        entity.ChangeState(PromoStatus.Draft);
+        //TODO: Implementar lógica del workflow
+        entity.ChangeState(PromoStatus.Approved);
 
         return PromoRepository.SaveOrUpdate(entity);
     }
 
     public Submit(entity: Promo): Promise<void>
     {
-        entity.ChangeState(PromoStatus.Approval);
+        entity.ChangeState(PromoStatus.Rejected);
 
         return PromoRepository.SaveOrUpdate(entity);
     }

@@ -19,7 +19,6 @@ import {
   Modal,
   IconButton,
   Dialog,
-  ComboBox,
   Stack,
   Persona,
   Separator,
@@ -28,7 +27,6 @@ import {
   Icon,
   mergeStyles,
   getTheme,
-  IComboBoxOption,
   IPersonaSharedProps,
   IStackStyles,
   FontWeights,
@@ -36,10 +34,7 @@ import {
   Spinner,
   PersonaPresence,
   DialogType,
-  IStyleSet,
-  ILabelStyles,
-  IIconProps,
-  IDatePickerStrings  
+  IIconProps
 } from 'office-ui-fabric-react';
 import styles from './PromoForm.module.scss';
 import { Category, Client, ClientProduct, Product, Type } from '../../model/Common';
@@ -233,6 +228,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   autoFocus={true}
                                   onChange={this.onNameChange.bind(this)}
                                   autoComplete="Off"
+                                  readOnly={this.state.viewModel.ReadOnlyForm}
                                 />
                               </Stack>
                               <Stack grow={6} className="padding-right controlPadding">
@@ -1026,7 +1022,17 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     </Stack>
                     <Stack grow={3} className="modalBottomButtonsContainer" horizontal horizontalAlign="end">
                       <Stack>
-                        <DefaultButton text="Guardar borrador" allowDisabledFocus onClick={() => this.setState({ hideSavingSpinnerConfirmationDialog: false })} />
+                        <DefaultButton 
+                          style={{display: this.state.viewModel.ShowSaveButton ? "block" : "none"}}
+                          text="Guardar borrador" 
+                          allowDisabledFocus 
+                          onClick={this.save.bind(this)} />
+                        <PrimaryButton
+                          style={{display: this.state.viewModel.ShowApproveButton ? "block" : "none"}}
+                          text="Aprobar" 
+                          allowDisabledFocus 
+                          onClick={this.approve.bind(this)} 
+                          disabled={!this.state.enableSubmit} />
                         <Dialog
                           hidden={this.state.hideSavingSpinnerConfirmationDialog}
                           dialogContentProps={this.savingSpinnerModalDialogContentProps}
@@ -1037,11 +1043,17 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         </Dialog>
                       </Stack>
                       <Stack>
-                        <PrimaryButton 
+                        <PrimaryButton
+                          style={{display: this.state.viewModel.ShowSubmitButton ? "block" : "none"}}
                           text="Enviar a aprobación" 
                           allowDisabledFocus 
                           onClick={this.submit.bind(this)} 
                           disabled={!this.state.enableSubmit} />
+                        <DefaultButton 
+                          style={{display: this.state.viewModel.ShowRejectButton ? "block" : "none"}}
+                          text="Rechazar" 
+                          allowDisabledFocus 
+                          onClick={this.reject.bind(this)} />
                       </Stack>
                     </Stack>
                   </Stack>
@@ -1357,6 +1369,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     //#endregion
 
+    //#region Input - Pre analisis
+
     private onDiscountPerPieceChange(event: any, text: any) {
         this.setState((state) => {
             state.viewModel.Entity.Items[this.state.selectedIndex].DiscountPerPiece = !isNaN(parseInt(text)) ? parseInt(text) : null;
@@ -1392,13 +1406,14 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       });
     }
 
-    private submit(): void {
+    //#endregion
+
+    private save(): void {
       console.log(this.state.viewModel.Entity);
 
-      if(!this.validateFormControls()) return;
-
       this.setState({
-          enableSubmit:false
+          enableSubmit:false,
+          hideSavingSpinnerConfirmationDialog:false
       });
 
       PromoService.Save(this.state.viewModel.Entity).then(() => {
@@ -1410,6 +1425,35 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
           console.error(err);
           this.setState({ formSubmitted: true, errorMessage: err});
       });
+    }
+
+    private submit(): void {
+      console.log(this.state.viewModel.Entity);
+
+      if(!this.validateFormControls()) return;
+
+      this.setState({
+          enableSubmit:false,
+          hideSavingSpinnerConfirmationDialog:false
+      });
+
+      PromoService.Submit(this.state.viewModel.Entity).then(() => {
+          this.setState({
+              formSubmitted: true,
+              resultIsOK: true
+          });
+      }).catch((err) => {
+          console.error(err);
+          this.setState({ formSubmitted: true, errorMessage: err});
+      });
+    }
+
+    private approve(): void {
+
+    }
+
+    private reject(): void {
+
     }
     
     private getValidationErrorMessage(value: any): string{
@@ -1464,22 +1508,22 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         };
     }
 
-    // New part
+  // New part
 
-    private contentStyles = mergeStyleSets({
-    header: [
-      // eslint-disable-next-line deprecation/deprecation
-      theme.fonts.xLargePlus,
-      {
-        flex: '1 1 auto',
-        borderTop: `4px solid ${theme.palette.themePrimary}`,
-        color: theme.palette.neutralPrimary,
-        display: 'flex',
-        alignItems: 'center',
-        fontWeight: FontWeights.semibold,
-        padding: '12px 12px 14px 24px',
-      },
-    ]
+  private contentStyles = mergeStyleSets({
+  header: [
+    // eslint-disable-next-line deprecation/deprecation
+    theme.fonts.xLargePlus,
+    {
+      flex: '1 1 auto',
+      borderTop: `4px solid ${theme.palette.themePrimary}`,
+      color: theme.palette.neutralPrimary,
+      display: 'flex',
+      alignItems: 'center',
+      fontWeight: FontWeights.semibold,
+      padding: '12px 12px 14px 24px',
+    },
+  ]
   });
     
   private cancelIcon: IIconProps = { iconName: 'Cancel' };
@@ -1548,66 +1592,66 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     );
   }
     
-      private _customPromotionSummaryPivotItemRenderer(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {
-        return (
-          <Stack horizontal>
-            {defaultRenderer(link)}
-            <Label style={{ color: theme.palette.themePrimary }}><Icon iconName="DietPlanNotebook" /></Label>
-            <Label>Resumen General</Label>
-          </Stack>
-        );
-      }
-        
-      private wrapperClass = mergeStyles({
-        padding: 2,
-        selectors: {
-          '& > .ms-Shimmer-container': {
-            margin: '10px 0',
-          },
-        },
-      });
+  private _customPromotionSummaryPivotItemRenderer(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {
+    return (
+      <Stack horizontal>
+        {defaultRenderer(link)}
+        <Label style={{ color: theme.palette.themePrimary }}><Icon iconName="DietPlanNotebook" /></Label>
+        <Label>Resumen General</Label>
+      </Stack>
+    );
+  }
     
-      private getCustomShimmerElementsGroup = (): JSX.Element => {
-        return (
-          <div style={{ display: 'flex' }} className={this.wrapperClass}>
-            {/* <ShimmerElementsGroup
-              shimmerElements={[
-                { type: ShimmerElementType.gap, width: 10, height: 80 },
-                { type: ShimmerElementType.circle, height: 80 },
-                { type: ShimmerElementType.gap, width: 10, height: 80 },
-              ]}
-            /> */}
-            {/* <ShimmerElementType
-              flexWrap
-              className="padding"
-              shimmerElements={[
-                { type: ShimmerElementType.line, width: 360, height: 30 },
-                 { type: ShimmerElementType.gap, width: 30, height: 30 },
-                 { type: ShimmerElementType.line, width: 360, height: 30 },
-                 { type: ShimmerElementType.gap, width: 30, height: 30 },
-                 { type: ShimmerElementType.line, width: 360, height: 30 },
-                // { type: ShimmerElementType.line, width: 500, height: 20 },
-              ]}
-            /> */}
-          </div>
-        );
-      }
+  private wrapperClass = mergeStyles({
+    padding: 2,
+    selectors: {
+      '& > .ms-Shimmer-container': {
+        margin: '10px 0',
+      },
+    },
+  });
 
-      private deleteProductDialogContentProps = {
-        type: DialogType.normal,
-        title: 'Eliminar producto',
-        closeButtonAriaLabel: 'Cerrar',
-        subText: 'Esta seguro que desea eliminar este producto de la promoción?',
-      };
-    
-      private closeModalDialogContentProps = {
-        type: DialogType.normal,
-        title: 'Salir sin guardar',
-        closeButtonAriaLabel: 'Cerrar',
-        subText: 'Esta seguro que desea cerrar el formulario sin guardar?',
-      };
-    
-      private savingSpinnerModalDialogContentProps = {
-        type: DialogType.largeHeader,
-      };
+  private getCustomShimmerElementsGroup = (): JSX.Element => {
+    return (
+      <div style={{ display: 'flex' }} className={this.wrapperClass}>
+        {/* <ShimmerElementsGroup
+          shimmerElements={[
+            { type: ShimmerElementType.gap, width: 10, height: 80 },
+            { type: ShimmerElementType.circle, height: 80 },
+            { type: ShimmerElementType.gap, width: 10, height: 80 },
+          ]}
+        /> */}
+        {/* <ShimmerElementType
+          flexWrap
+          className="padding"
+          shimmerElements={[
+            { type: ShimmerElementType.line, width: 360, height: 30 },
+              { type: ShimmerElementType.gap, width: 30, height: 30 },
+              { type: ShimmerElementType.line, width: 360, height: 30 },
+              { type: ShimmerElementType.gap, width: 30, height: 30 },
+              { type: ShimmerElementType.line, width: 360, height: 30 },
+            // { type: ShimmerElementType.line, width: 500, height: 20 },
+          ]}
+        /> */}
+      </div>
+    );
+  }
+
+  private deleteProductDialogContentProps = {
+    type: DialogType.normal,
+    title: 'Eliminar producto',
+    closeButtonAriaLabel: 'Cerrar',
+    subText: 'Esta seguro que desea eliminar este producto de la promoción?',
+  };
+
+  private closeModalDialogContentProps = {
+    type: DialogType.normal,
+    title: 'Salir sin guardar',
+    closeButtonAriaLabel: 'Cerrar',
+    subText: 'Esta seguro que desea cerrar el formulario sin guardar?',
+  };
+
+  private savingSpinnerModalDialogContentProps = {
+    type: DialogType.largeHeader,
+  };
 }

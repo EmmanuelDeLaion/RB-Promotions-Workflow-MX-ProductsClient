@@ -15,7 +15,11 @@ export class PromoService {
   }
 
   public static async Save(entity: Promo): Promise<void> {
-    return (await this.GetPromo(entity.ItemId)).ExecuteAction1(entity);
+    return (await this.GetPromo(entity.ItemId)).Save(entity);
+  }
+
+  public static async Submit(entity: Promo): Promise<void> {
+    return (await this.GetPromo(entity.ItemId)).Submit(entity);
   }
 
   public static async GetTypesByCategory(categoryId: number): Promise<Type[]> {

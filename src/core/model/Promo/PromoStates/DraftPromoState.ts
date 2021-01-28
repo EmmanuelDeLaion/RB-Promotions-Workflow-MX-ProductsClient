@@ -38,17 +38,20 @@ export class DraftPromoState extends PromoState {
         if(this.Entity.Items.length > 0 && this.Entity.Items[0].Category)
             viewModel.Types = await TypeRepository.GetByCategory(this.Entity.Items[0].Category.ItemId);
 
+        viewModel.ShowSaveButton = true;
+        viewModel.ShowSubmitButton = true;
+
         return viewModel;
     }    
 
-    public ExecuteAction1(entity: Promo): Promise<void>
+    public Save(entity: Promo): Promise<void>
     {
         entity.ChangeState(PromoStatus.Draft);
 
         return PromoRepository.SaveOrUpdate(entity);
     }
 
-    public ExecuteAction2(entity: Promo): Promise<void>
+    public Submit(entity: Promo): Promise<void>
     {
         entity.ChangeState(PromoStatus.Approval);
 

@@ -7,7 +7,10 @@ export class PromoViewModel {
 
     constructor(entity: Promo){
         this.Entity = entity;
+        this.ReadOnlyForm = false;
     }
+
+    public ReadOnlyForm: boolean;
 
     //#region Collections
 
@@ -27,4 +30,9 @@ export class PromoViewModel {
 
         return "Nueva promoción";
     }
+
+    public ShowSaveButton: boolean;
+    public ShowSubmitButton: boolean;
+    public ShowApproveButton: boolean;
+    public ShowRejectButton: boolean;
 }
