@@ -8,17 +8,6 @@
     },
     "sgiovannini": {
       "pageUrl": "https://sgiovannini.sharepoint.com/sites/RB-Promociones/_layouts/workbench.aspx"
-    },
-    "promoFormListView": {
-      "pageUrl": "https://contoso.sharepoint.com/sites/mySite/SitePages/myPage.aspx",
-      "fieldCustomizers": {
-        "InternalFieldName": {
-          "id": "ffb341b3-c717-40a2-95d3-86b0bbb5ec81",
-          "properties": {
-            "sampleText": "Value"
-          }
-        }
-      }
     }
   },
   "initialPage": "https://localhost:5432/workbench",

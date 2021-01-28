@@ -1,10 +1,3 @@
-$siteUrl = "https://sgiovannini-admin.sharepoint.com"
-$userName = "administrator@sgiovannini.onmicrosoft.com"
-$pwd = "Spdevteam4"
-
-$cred = New-Object -TypeName System.Management.Automation.PSCredential -argumentlist $userName, $(convertto-securestring $pwd -asplaintext -force)
-Connect-SPOService -Url $siteUrl -Credential $cred
-
 $themepalette = @{
     "themePrimary" = "#ea3592";
     "themeLighterAlt" = "#fef6fa";

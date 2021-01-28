@@ -1,5 +1,5 @@
 import { IItemAddResult, sp } from "@pnp/sp/presets/all";
-import { ClientRepository } from ".";
+import { ClientRepository, ConfigurationRepository } from ".";
 import { Client } from "../model/Common";
 import { PromoItem, PromoStatus } from "../model/Promo";
 import { Promo } from "../model/Promo/Promo";
@@ -34,7 +34,7 @@ export class PromoRepository {
 
         //TODO: Obtener prefijo de país desde configuración
         entity.ItemId = iar.data.ID;
-        entity.PromoID = "MX" + iar.data.ID;
+        entity.PromoID = entity.CountryCode + iar.data.ID;
         
         await sp.web.lists.getByTitle(PromoRepository.LIST_NAME).items.getById(iar.data.ID).update({
           Title: entity.PromoID
@@ -46,9 +46,15 @@ export class PromoRepository {
       await PromoItemRepository.SaveOrUpdateItems(entity.ItemId, entity.PromoID, entity.Items);
     }
 
-    private static BuildEntity(item: any, items: PromoItem[], client?: Client): Promo {
+    public static async GetNewPromo() : Promise<Promo>
+    {
+      let configuration = await ConfigurationRepository.GetInstance();
+      return new Promo(configuration.CountryCode);
+    }
 
-      let entity = new Promo();
+    private static async BuildEntity(item: any, items: PromoItem[], client?: Client): Promise<Promo> {
+
+      let entity = await PromoRepository.GetNewPromo();
 
       entity.ItemId = item.ID;
       entity.Name = item.PromoName;

@@ -32,9 +32,7 @@
     "react-dom": "16.8.5",
     "react-select": "^3.1.1",
     "@fluentui/react-tabs": "^0.6.21",
-    "@uifabric/example-data": "^7.1.5",
-    "@microsoft/decorators": "1.11.0",
-    "@microsoft/sp-listview-extensibility": "1.11.0"
+    "@uifabric/example-data": "^7.1.5"
   },
   "resolutions": {
     "@types/react": "16.8.8"
