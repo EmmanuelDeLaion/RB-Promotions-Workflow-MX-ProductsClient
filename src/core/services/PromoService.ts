@@ -3,11 +3,13 @@ import { PromoViewModel } from "../model/Promo/PromoViewModel";
 import { PromoRepository } from "../data/PromoRepository";
 import { TypeRepository } from "../data/TypeRepository";
 import { Type } from "../model/Common";
+import { ConfigurationRepository } from "../data";
 
 export class PromoService { 
 
   private static async GetPromo(itemId?: number): Promise<Promo> {
-    return itemId ? await PromoRepository.GetById(itemId) : new Promo();
+    return itemId ? await PromoRepository.GetById(itemId)
+                  : await PromoRepository.GetNewPromo();
   }
 
   public static async GetViewModel(itemId?: number): Promise<PromoViewModel> {

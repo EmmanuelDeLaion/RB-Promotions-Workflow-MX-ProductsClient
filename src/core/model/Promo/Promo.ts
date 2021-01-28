@@ -5,21 +5,26 @@ import { PromoStatus, PromoViewModel } from "./";
 import { PromoItem } from "./PromoItem";
 
 export class Promo extends Entity {
-    public PromoID: string = "MX--";
+
+    public PromoID: string;
     public Name: string;
     public ActivityObjective: string;
     public Client: Client;
-    public Items: PromoItem[] = [new PromoItem({AdditionalID: this.PromoID + ".1"})];
-
+    public Items: PromoItem[];
+    public CountryCode: string;
     protected _state: PromoState;
 
-    constructor() {
+    constructor(conuntryCode: string) {
         super();
+
+        this.CountryCode = conuntryCode;
+        this.PromoID = this.CountryCode + "--";
+        this.Items = [new PromoItem({AdditionalID: this.PromoID + ".1"})];
 
         this.ChangeState(PromoStatus.New);
     }
 
-    public ChangeState(status: PromoStatus):void {
+    public ChangeState(status: PromoStatus):void {        
         switch (status) {
             case PromoStatus.New:
                 this._state = new NewPromoState();
