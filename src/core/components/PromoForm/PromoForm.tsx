@@ -39,7 +39,7 @@ import {
 import styles from './PromoForm.module.scss';
 import { Category, Client, ClientProduct, Product, Type } from '../../model/Common';
 import { ClientRepository } from '../../data';
-import { PromoItem } from '../../model/Promo';
+import { PromoItem, PromoWorkflowState } from '../../model/Promo';
 import { Constants } from '../../Constants';
 import { LookupValue } from '../../infrastructure';
 import { ProductSelector } from '../ProductSelector/ProductSelector';
@@ -50,7 +50,6 @@ require('../PromoForm/PromoForm.overrides.scss');
 require('./PromoForm.css');
 import { initializeTheme } from './Theme';
 import { TestImages } from '@uifabric/example-data';
-import { IItemAddResult, sp } from "@pnp/sp/presets/all";
 import { LastYearVolumesRepository } from '../../data/LastYearVolumesRepository';
 import { LastYearVolumes } from '../../model/Common/LastYearVolumes';
 
@@ -1449,7 +1448,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     }
 
     private approve(): void {
-
+      console.log(this.state.viewModel.Entity.WorkflowState);
     }
 
     private reject(): void {

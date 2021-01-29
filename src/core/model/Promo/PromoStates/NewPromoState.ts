@@ -8,7 +8,6 @@ import {
     MasterDataRepository,
 } from "../../../data";
 import { LookupValue } from "../../../infrastructure";
-import { Client } from "../../Common";
 import { PromoStatus } from "../PromoStatus";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoState } from "./PromoState";
@@ -52,6 +51,8 @@ export class NewPromoState extends PromoState {
     public Submit(entity: Promo): Promise<void>
     {
         entity.ChangeState(PromoStatus.Approval);
+
+        this.InitializeWorkflowState(entity);
 
         return PromoRepository.SaveOrUpdate(entity);
     }

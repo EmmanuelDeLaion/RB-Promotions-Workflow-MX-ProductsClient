@@ -1,9 +1,10 @@
-import { Entity } from "../../infrastructure";
+import { Entity, LookupValue } from "../../infrastructure";
 import { Client } from "../Common";
 import { NewPromoState, PromoState, DraftPromoState } from "./PromoStates";
 import { PromoStatus, PromoViewModel } from "./";
 import { PromoItem } from "./PromoItem";
 import { ApprovalState } from "./PromoStates/ApprovalState";
+import { PromoWorkflowState } from "./PromoWorkflowState";
 
 export class Promo extends Entity {
 
@@ -13,7 +14,9 @@ export class Promo extends Entity {
     public Client: Client;
     public Items: PromoItem[];
     public CountryCode: string;
-    protected _state: PromoState;
+    public WorkflowState: PromoWorkflowState;
+    public CurrentApprover: LookupValue;
+    protected _state: PromoState;    
 
     constructor(conuntryCode: string) {
         super();

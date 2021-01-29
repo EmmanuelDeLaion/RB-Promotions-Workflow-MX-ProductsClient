@@ -55,6 +55,8 @@ export class DraftPromoState extends PromoState {
     {
         entity.ChangeState(PromoStatus.Approval);
 
+        this.InitializeWorkflowState(entity);
+
         return PromoRepository.SaveOrUpdate(entity);
     }
 }

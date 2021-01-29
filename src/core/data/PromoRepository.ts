@@ -12,7 +12,15 @@ export class PromoRepository {
     //TODO: Optimizar consulta
     public static async GetById(id: number): Promise<Promo> {
       const item = await sp.web.lists.getByTitle(PromoRepository.LIST_NAME)
-        .items.getById(id).select("ID", "Title", "PromoName", "ActivityObjective", "ClientId", "StatusId").get();  
+        .items.getById(id).select(
+          "ID", 
+          "Title", 
+          "PromoName", 
+          "ActivityObjective", 
+          "ClientId", 
+          "StatusId",
+          "SYS_WorkflowState"
+        ).get();  
         
       const items = await PromoItemRepository.GetByPromo(item.ID, item.ClientId);
       const client = item.ClientId ? await ClientRepository.GetById(item.ClientId) : null;
@@ -26,7 +34,9 @@ export class PromoRepository {
         ActivityObjective: entity.ActivityObjective,
         ClientId: entity.Client ? entity.Client.ItemId : null,
         Status: entity.GetStatusText(),
-        StatusId: entity.GetStatusId()
+        StatusId: entity.GetStatusId(),
+        SYS_WorkflowState: entity.WorkflowState ? JSON.stringify(entity.WorkflowState) : null,
+        CurrentApproverId: entity.CurrentApprover ? entity.CurrentApprover.ItemId : null
       };
 
       if(!entity.ItemId) {
@@ -61,6 +71,7 @@ export class PromoRepository {
       entity.PromoID = item.Title;
       entity.ActivityObjective = item.ActivityObjective;
       entity.Client = client;
+      entity.WorkflowState = item.SYS_WorkflowState ? JSON.parse(item.SYS_WorkflowState) : null;
       entity.Items = items;
 
       entity.ChangeState(parseInt(item.StatusId));      
