@@ -37,6 +37,6 @@ export abstract class PromoState {
         //TODO: Implementar lógica para determinar si aplica la segunda etapa de aprobación
         entity.WorkflowStages.push(new PromoWorkflowState([16,17]));
 
-        entity.CurrentStageNumber = 0;
+        entity.CurrentStageNumber = 1;
     }
 }
