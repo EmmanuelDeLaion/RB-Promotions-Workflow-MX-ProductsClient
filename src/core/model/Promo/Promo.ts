@@ -1,5 +1,5 @@
 import { Entity, LookupValue } from "../../infrastructure";
-import { Client } from "../Common";
+import { CategoryType, Client } from "../Common";
 import { NewPromoState, PromoState, DraftPromoState } from "./PromoStates";
 import { PromoStatus, PromoViewModel } from "./";
 import { PromoItem } from "./PromoItem";
@@ -14,8 +14,8 @@ export class Promo extends Entity {
     public Client: Client;
     public Items: PromoItem[];
     public CountryCode: string;
-    public WorkflowState: PromoWorkflowState;
-    public CurrentApprover: LookupValue;
+    public CurrentStageNumber: number;
+    public WorkflowStages: PromoWorkflowState[];
     protected _state: PromoState;    
 
     constructor(conuntryCode: string) {
@@ -23,7 +23,7 @@ export class Promo extends Entity {
 
         this.CountryCode = conuntryCode;
         this.PromoID = this.CountryCode + "--";
-        this.Items = [new PromoItem({AdditionalID: this.PromoID + ".1"})];
+        this.Items = [new PromoItem({AdditionalID: this.PromoID + ".1", GetBaseGMSum: this.GetBaseGMSum.bind(this)})];
 
         this.ChangeState(PromoStatus.New);
     }
@@ -66,5 +66,28 @@ export class Promo extends Entity {
     public Submit(entity: Promo): Promise<void>
     {       
         return this._state.Submit(entity);
+    }
+
+    public Approve(): Promise<void>
+    {       
+        return this._state.Approve();
+    }
+
+    public Reject(): Promise<void>
+    {       
+        return this._state.Reject();
+    }
+
+    public GetBaseGMSum(category: CategoryType) {
+        let sum: number = 0;
+
+        if(this.Items){
+            this.Items.map((item) => {
+                if(item.GetCategoryType() == category)
+                    sum += item.GetBaseGM();
+            });
+        }
+
+        return sum;
     }
 }

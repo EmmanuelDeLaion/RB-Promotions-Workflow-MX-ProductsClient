@@ -25,6 +25,7 @@ export class PromoItem extends Entity {
     public AdditionalInvestment: number;
 
     public LastYearVolumes: LastYearVolumes;
+    public GetBaseGMSum?: (category: CategoryType) => number;
 
     public constructor(init?:Partial<PromoItem>) {
         super();
@@ -208,6 +209,25 @@ export class PromoItem extends Entity {
         return null;
     }
 
+    public GetEstimatedInvestment(): number {
+        switch (this.GetCategoryType()) {
+            case CategoryType.Visibility:
+            case CategoryType.Performance:
+                const baseGMSum = this.GetBaseGMSum(this.GetCategoryType());
+                return baseGMSum > 0 ? (this.GetBaseGM() / baseGMSum) * (this.Investment || 0): 0;
+            case CategoryType.Institutional:
+            case CategoryType.SpecialExhibitions:
+                return this.Investment || 0;
+            case CategoryType.ConsumerPromo:
+                if(this.Type != null && this.Type.Name.toLowerCase() == "redemption")
+                    return this.BaseVolume * (this.Redemption/100) * this.DiscountPerPiece;
+                else    
+                    return this.GetTotalEstimatedVolume() * this.DiscountPerPiece;
+            default:
+                return this.GetTotalEstimatedVolume() * this.DiscountPerPiece;
+        }
+    }
+
     //#endregion
 
     //#region Numbers as strings
@@ -297,6 +317,11 @@ export class PromoItem extends Entity {
     public GetBaseGMAsString(): string {
         const value = this.GetBaseGM();
         return value != null ? value.toFixed(1) :  null;
+    }
+
+    public GetEstimatedInvestmentAsString(): string {
+        const value = this.GetEstimatedInvestment();
+        return value != null ? value.toFixed(0) :  null;
     }
 
     //#endregion

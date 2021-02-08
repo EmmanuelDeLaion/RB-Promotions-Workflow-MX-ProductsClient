@@ -2,8 +2,9 @@ export class PromoWorkflowState {
     public ApproverIDs: number[] = [];
     public CompletedBy: number[] = [];
 
-    constructor(approverIDs: number[]) {
+    constructor(approverIDs: number[], completedBy?: number[]) {
         this.ApproverIDs = approverIDs;
+        this.CompletedBy = completedBy || [];
     }
 
     public IsComplete():boolean {
@@ -12,11 +13,18 @@ export class PromoWorkflowState {
 
     public UserCanApprove(userId: number): boolean
     {
-        return this.GetCurrentApproverId() == userId;
+        return this.GetPendingUserIDs().indexOf(userId) != -1;
     }
 
-    public GetCurrentApproverId(): number
-    {
-        return this.ApproverIDs.length > 0 ? this.ApproverIDs.slice(this.CompletedBy.length)[0] : null;
+    public AddToCompletBy(userId: number): void {
+        if(this.ApproverIDs.indexOf(userId) != -1)
+            this.CompletedBy.push(userId);
+    }
+
+    public GetPendingUserIDs(): number[] {
+        return this.ApproverIDs.map((approverID) => {
+            if(this.CompletedBy.indexOf(approverID) == -1)
+                return approverID;
+        });
     }
 }

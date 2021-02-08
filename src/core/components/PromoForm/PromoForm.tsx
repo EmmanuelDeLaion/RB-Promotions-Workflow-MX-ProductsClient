@@ -646,6 +646,11 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <Label className="toRight">{selectedItem.RequiresBaseGM() ? ("$" + selectedItem.GetBaseGMAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Inversión estimada</Label>
+                                    <Label className="toRight">{"$" + selectedItem.GetEstimatedInvestmentAsString()}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
                                 <Stack className="smallPadding" grow={4}>
                                   <Stack horizontal className="verticalPadding">
@@ -1127,7 +1132,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         let items = this.state.viewModel.Entity.Items;
         const index = items.length + 1;
         
-        items.push(new PromoItem({AdditionalID: this.state.viewModel.Entity.PromoID + "." + index}));        
+        items.push(new PromoItem({
+          AdditionalID: this.state.viewModel.Entity.PromoID + "." + index, 
+          GetBaseGMSum: this.state.viewModel.Entity.GetBaseGMSum.bind(this.state.viewModel.Entity)
+        }));        
 
         this.setState((state) => {
             let newState = state as IPromoFormState;
@@ -1448,11 +1456,35 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     }
 
     private approve(): void {
-      console.log(this.state.viewModel.Entity.WorkflowState);
+      this.setState({
+        enableSubmit:false,
+      });
+
+      PromoService.Approve(this.state.viewModel.Entity).then(() => {
+        this.setState({
+          formSubmitted: true,
+          resultIsOK: true
+        });
+      }).catch((err) => {
+        console.error(err);
+        this.setState({ formSubmitted: true, errorMessage: err});
+      });
     }
 
     private reject(): void {
+      this.setState({
+        enableSubmit:false,
+      });
 
+      PromoService.Reject(this.state.viewModel.Entity).then(() => {
+        this.setState({
+          formSubmitted: true,
+          resultIsOK: true
+        });
+      }).catch((err) => {
+        console.error(err);
+        this.setState({ formSubmitted: true, errorMessage: err});
+      });
     }
     
     private getValidationErrorMessage(value: any): string{

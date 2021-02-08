@@ -1,7 +1,7 @@
 import { IItemAddResult, sp } from "@pnp/sp/presets/all";
 import { ClientRepository, ConfigurationRepository } from ".";
 import { Client } from "../model/Common";
-import { PromoItem, PromoStatus } from "../model/Promo";
+import { PromoItem, PromoStatus, PromoWorkflowState } from "../model/Promo";
 import { Promo } from "../model/Promo/Promo";
 import { PromoItemRepository } from "./PromoItemRepository";
 
@@ -19,7 +19,8 @@ export class PromoRepository {
           "ActivityObjective", 
           "ClientId", 
           "StatusId",
-          "SYS_WorkflowState"
+          "SYS_WorkflowStages",
+          "SYS_CurrentStageNumber"
         ).get();  
         
       const items = await PromoItemRepository.GetByPromo(item.ID, item.ClientId);
@@ -35,8 +36,8 @@ export class PromoRepository {
         ClientId: entity.Client ? entity.Client.ItemId : null,
         Status: entity.GetStatusText(),
         StatusId: entity.GetStatusId(),
-        SYS_WorkflowState: entity.WorkflowState ? JSON.stringify(entity.WorkflowState) : null,
-        CurrentApproverId: entity.CurrentApprover ? entity.CurrentApprover.ItemId : null
+        SYS_WorkflowStages: entity.WorkflowStages ? JSON.stringify(entity.WorkflowStages) : null,
+        SYS_CurrentStageNumber: entity.CurrentStageNumber
       };
 
       if(!entity.ItemId) {
@@ -70,11 +71,25 @@ export class PromoRepository {
       entity.Name = item.PromoName;
       entity.PromoID = item.Title;
       entity.ActivityObjective = item.ActivityObjective;
-      entity.Client = client;
-      entity.WorkflowState = item.SYS_WorkflowState ? JSON.parse(item.SYS_WorkflowState) : null;
+      entity.Client = client;     
+      entity.CurrentStageNumber = item.SYS_CurrentStageNumber; 
+
+      items.map((promoItem) => {
+        promoItem.GetBaseGMSum = entity.GetBaseGMSum.bind(entity);
+      });
+
       entity.Items = items;
 
-      entity.ChangeState(parseInt(item.StatusId));      
+      if(item.SYS_WorkflowStages) {
+        const data: any[] = JSON.parse(item.SYS_WorkflowStages);
+        entity.WorkflowStages = [];
+        
+        data.map((stage) => {
+          entity.WorkflowStages.push(new PromoWorkflowState(stage.ApproverIDs, stage.CompletedBy));
+        });
+      }
+
+      entity.ChangeState(parseInt(item.StatusId));
 
       return entity;
     }

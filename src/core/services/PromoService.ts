@@ -24,6 +24,14 @@ export class PromoService {
     return (await this.GetPromo(entity.ItemId)).Submit(entity);
   }
 
+  public static async Approve(entity: Promo): Promise<void> {
+    return (await this.GetPromo(entity.ItemId)).Approve();
+  }
+
+  public static async Reject(entity: Promo): Promise<void> {
+    return (await this.GetPromo(entity.ItemId)).Reject();
+  }
+
   public static async GetTypesByCategory(categoryId: number): Promise<Type[]> {
     return await TypeRepository.GetByCategory(categoryId);
   }

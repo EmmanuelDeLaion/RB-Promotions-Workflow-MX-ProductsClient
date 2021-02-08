@@ -1,5 +1,6 @@
 import { Promo, PromoStatus } from "..";
 import { Constants } from "../../..";
+import { SecurityHelper } from "../../../common/SecurityHelper";
 import { 
     CategoryRepository, 
     ClientRepository, 
@@ -10,6 +11,7 @@ import {
 } from "../../../data";
 import { LookupValue } from "../../../infrastructure";
 import { PromoViewModel } from "../PromoViewModel";
+import { PromoWorkflowState } from "../PromoWorkflowState";
 import { PromoState } from "./PromoState";
 
 export class ApprovalState extends PromoState {
@@ -40,24 +42,45 @@ export class ApprovalState extends PromoState {
         if(this.Entity.Items.length > 0 && this.Entity.Items[0].Category)
             viewModel.Types = await TypeRepository.GetByCategory(this.Entity.Items[0].Category.ItemId);
 
-        viewModel.ShowApproveButton = true;
-        viewModel.ShowRejectButton = true;
+        const currentUser = await SecurityHelper.GetCurrentUser();
+
+        console.log(this.Entity.WorkflowStages);
+
+        if(this.GetCurrentStage().UserCanApprove(currentUser.ItemId)){
+            viewModel.ShowApproveButton = true;
+            viewModel.ShowRejectButton = true;
+        }
 
         return viewModel;
     }    
 
-    public Approve(entity: Promo): Promise<void>
-    {
-        //TODO: Implementar lógica del workflow
-        entity.ChangeState(PromoStatus.Approved);
-
-        return PromoRepository.SaveOrUpdate(entity);
+    private GetCurrentStage(): PromoWorkflowState {
+        return this.Entity.WorkflowStages[this.Entity.CurrentStageNumber - 1];
     }
 
-    public Submit(entity: Promo): Promise<void>
+    public async Approve(): Promise<void>
     {
-        entity.ChangeState(PromoStatus.Rejected);
+        const stage = this.GetCurrentStage();
+        
+        stage.AddToCompletBy((await SecurityHelper.GetCurrentUser()).ItemId);
 
-        return PromoRepository.SaveOrUpdate(entity);
+        if(stage.IsComplete()) {
+            if(this.Entity.CurrentStageNumber == this.Entity.WorkflowStages.length) {
+                this.Entity.ChangeState(PromoStatus.Approved);
+            }
+            else {
+                this.Entity.CurrentStageNumber++;
+                //TODO: Implementar lógica para envío de notificaciones
+            }
+        }
+
+        return PromoRepository.SaveOrUpdate(this.Entity);
+    }
+
+    public Reject(): Promise<void>
+    {
+        this.Entity.ChangeState(PromoStatus.Rejected);
+
+        return PromoRepository.SaveOrUpdate(this.Entity);
     }
 }

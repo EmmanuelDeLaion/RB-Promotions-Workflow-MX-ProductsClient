@@ -20,19 +20,23 @@ export abstract class PromoState {
         throw new Error(Constants.Messages.NotAllowedAction);
     }
 
-    public Approve(entity: Promo): Promise<void>
+    public async Approve(): Promise<void>
     {
         throw new Error(Constants.Messages.NotAllowedAction);
     }
 
-    public Reject(entity: Promo): Promise<void>
+    public Reject(): Promise<void>
     {
         throw new Error(Constants.Messages.NotAllowedAction);
     }
 
     public InitializeWorkflowState(entity: Promo): void {
         //TODO: obtener IDs de aprobadores
-        entity.WorkflowState = new PromoWorkflowState([entity.Client.Channel.HeadOfChannel.ItemId, 13, 14]);
-        entity.CurrentApprover = entity.Client.Channel.HeadOfChannel;
+        entity.WorkflowStages = [new PromoWorkflowState([entity.Client.Channel.HeadOfChannel.ItemId, 15])];
+
+        //TODO: Implementar lógica para determinar si aplica la segunda etapa de aprobación
+        entity.WorkflowStages.push(new PromoWorkflowState([16,17]));
+
+        entity.CurrentStageNumber = 0;
     }
 }
