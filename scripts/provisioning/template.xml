@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2020/02/ProvisioningSchema">
   <pnp:Preferences Generator="OfficeDevPnP.Core, Version=3.28.2012.0, Culture=neutral, PublicKeyToken=5e633289e95c321a" />
-  <pnp:Templates ID="CONTAINER-TEMPLATE-B755489D12534A998BE37E11C6ED9CA2">
-    <pnp:ProvisioningTemplate ID="TEMPLATE-B755489D12534A998BE37E11C6ED9CA2" Version="1" BaseSiteTemplate="GROUP#0" Scope="RootSite">
+  <pnp:Templates ID="CONTAINER-TEMPLATE-49D929E70FEB43368BFC212605CF8C07">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-49D929E70FEB43368BFC212605CF8C07" Version="1" BaseSiteTemplate="GROUP#0">
       <pnp:Lists>
         <pnp:ListInstance Title="Promo items" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/PromoItems" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PromoItems/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PromoItems/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PromoItems/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -78,6 +78,9 @@
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Inversion adicional (MKT)" Format="Dropdown" Name="AdditionalInvestment" Percentage="FALSE" Title="Inversion adicional (MKT)" Type="Number" ID="{4020b903-a2e4-4cc1-ab8e-573413aeb7d0}" Version="2" StaticName="AdditionalInvestment" SourceID="{{listid:Promo items}}" ColName="float10" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="0" DisplayName="Volumen base" Format="Dropdown" Name="BaseVolume" Percentage="FALSE" Title="Volumen base" Type="Number" ID="{2193956f-4af2-46af-a4a2-45a75b30e217}" Version="2" StaticName="BaseVolume" SourceID="{{listid:Promo items}}" ColName="float13" RowOrdinal="0" />
           </pnp:Fields>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=d00e81fb-759e-4e9f-8c6f-895aa6c63529" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Promociones" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Promotions" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Promotions/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Promotions/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Promotions/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -97,6 +100,8 @@
                 <FieldRef Name="ActivityObjective" />
                 <FieldRef Name="Client" />
                 <FieldRef Name="Status" />
+                <FieldRef Name="SYS_WorkflowStages" />
+                <FieldRef Name="SYS_CurrentStageNumber" />
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
               <Aggregations Value="Off" />
@@ -137,7 +142,55 @@
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Estado" Format="Dropdown" MaxLength="255" Name="Status" Title="Estado" Type="Text" ID="{eb1a11ed-7291-418f-90c3-12cc1d065c9d}" Version="2" StaticName="Status" SourceID="{{listid:Promociones}}" ColName="nvarchar5" RowOrdinal="0" />
             <Field CommaSeparator="TRUE" Decimals="0" DisplayName="StatusId" Format="Dropdown" IsModern="TRUE" Name="StatusId" Percentage="FALSE" Title="StatusId" Type="Number" ID="{d6e9c6fc-670d-4e21-aff5-640625eaf7ed}" SourceID="{{listid:Promociones}}" StaticName="StatusId" ColName="float1" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Nombre de la promoción" Format="Dropdown" MaxLength="255" Name="PromoName" Title="Nombre de la promoción" Type="Text" ID="{5c1c7eb9-431e-4ecc-b05e-38e6c8a5b383}" Version="2" StaticName="PromoName" SourceID="{{listid:Promociones}}" ColName="nvarchar4" RowOrdinal="0" />
+            <Field AppendOnly="FALSE" DisplayName="SYS_WorkflowStages" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="SYS_WorkflowStages" RichText="FALSE" RichTextMode="Compatible" Title="SYS_WorkflowStages" Type="Note" ID="{f77468ee-3786-4102-8075-da73cf0498c8}" SourceID="{{listid:Promociones}}" StaticName="SYS_WorkflowStages" ColName="ntext4" RowOrdinal="0" />
+            <Field CommaSeparator="TRUE" Decimals="0" DisplayName="SYS_CurrentStageNumber" Format="Dropdown" IsModern="TRUE" Name="SYS_CurrentStageNumber" Percentage="FALSE" Title="SYS_CurrentStageNumber" Type="Number" ID="{372bb452-d710-46c2-9a25-7befea17f84a}" SourceID="{{listid:Promociones}}" StaticName="SYS_CurrentStageNumber" ColName="float2" RowOrdinal="0" />
           </pnp:Fields>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=090cf579-9dd2-435b-aa29-ecef1a1dd61b" ExpiresInDays="1" />
+          </pnp:Webhooks>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Aprobadores" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/Approvers" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Approvers/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Approvers/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Approvers/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{7DBA4A29-B635-4E4B-8A2A-A4570D5AC5FB}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Approvers/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="Role" />
+                <FieldRef Name="User" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+              <ViewData />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field Type="Choice" DisplayName="Rol" Required="TRUE" EnforceUniqueValues="TRUE" Indexed="TRUE" Format="Dropdown" FillInChoice="FALSE" ID="{a9a4f58c-d7b2-4cc6-8990-0bc1ab21c979}" SourceID="{{listid:Aprobadores}}" StaticName="Role" Name="Role" ColName="nvarchar4" RowOrdinal="0" CustomFormatter="" Version="1">
+              <Default>Rol 1</Default>
+              <CHOICES>
+                <CHOICE>Rol 1</CHOICE>
+                <CHOICE>Rol 2</CHOICE>
+                <CHOICE>Rol 3</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field Type="User" DisplayName="Usuario" List="UserInfo" Required="TRUE" EnforceUniqueValues="FALSE" ShowField="ImnName" UserSelectionMode="PeopleOnly" UserSelectionScope="0" ID="{0f1af64e-dc91-4cdb-8cd0-a9744573ae41}" SourceID="{{listid:Aprobadores}}" StaticName="User" Name="User" ColName="int1" RowOrdinal="0" Group="" Version="1" />
+          </pnp:Fields>
+          <pnp:DataRows UpdateBehavior="Overwrite">
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Role">Rol 1</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Role">Rol 2</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Role">Rol 3</pnp:DataValue>
+            </pnp:DataRow>
+          </pnp:DataRows>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=761c4eba-0dac-48d3-b828-0492655f0ce1" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Canales" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Channels" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Channels/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Channels/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Channels/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -174,6 +227,9 @@
               <pnp:DataValue FieldName="Title">US Business</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=7e0c4cf9-5843-4a0f-8f1f-f959ec98e3a4" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Categorías" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Categories" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Categories/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Categories/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Categories/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -332,7 +388,7 @@
             </pnp:DataRow>
           </pnp:DataRows>
         </pnp:ListInstance>
-        <pnp:ListInstance Title="Configuración" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/Configuration" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Configuration/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Configuration/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Configuration/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+        <pnp:ListInstance Title="Configuración" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/Configuration" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Configuration/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Configuration/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Configuration/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
           </pnp:ContentTypeBindings>
@@ -357,7 +413,7 @@
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">CountryCode</pnp:DataValue>
-              <pnp:DataValue FieldName="Value">Mex</pnp:DataValue>
+              <pnp:DataValue FieldName="Value">MX</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">TeamsChannelId</pnp:DataValue>
@@ -367,9 +423,13 @@
               <pnp:DataValue FieldName="Title">CurrencySymbol</pnp:DataValue>
               <pnp:DataValue FieldName="Value">$</pnp:DataValue>
             </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">ApprovalAmountLimit</pnp:DataValue>
+              <pnp:DataValue FieldName="Value">100000</pnp:DataValue>
+            </pnp:DataRow>
           </pnp:DataRows>
           <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=2dde9d3c-99d6-4f84-9d7c-fd8b88c6fe69" ExpiresInDays="1" />
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=28cc2fbd-3329-432f-bda3-be930559cba4" ExpiresInDays="1" />
           </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Marcas" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Brands" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Brands/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Brands/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Brands/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">

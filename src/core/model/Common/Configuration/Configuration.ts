@@ -6,5 +6,6 @@ export class Configuration {
     public CountryCode: string;
     public TeamsChannelId: string;
     public CurrencySymbol: string;
+    public ApprovalAmountLimit: number;
     
 }

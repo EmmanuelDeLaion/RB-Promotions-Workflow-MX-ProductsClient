@@ -2,5 +2,6 @@ export enum ConfigurationKey {
     CountryName = "CountryName",
     CountryCode = "CountryCode",
     TeamsChannelId = "TeamsChannelId",
-    CurrencySymbol = "CurrencySymbol"
+    CurrencySymbol = "CurrencySymbol",
+    ApprovalAmountLimit = "ApprovalAmountLimit"
 }

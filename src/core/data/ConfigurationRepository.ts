@@ -24,12 +24,21 @@ export class ConfigurationRepository {
                 configuration.CountryName = ConfigurationRepository.GetConfigurationValue(items, ConfigurationKey.CountryName);
                 configuration.CurrencySymbol = ConfigurationRepository.GetConfigurationValue(items, ConfigurationKey.CurrencySymbol);
                 configuration.TeamsChannelId = ConfigurationRepository.GetConfigurationValue(items, ConfigurationKey.TeamsChannelId);
+                configuration.ApprovalAmountLimit = ConfigurationRepository.GetNumberConfigurationValue(items, ConfigurationKey.ApprovalAmountLimit);
+                
                 return configuration;
             });
   
         return entity;
     }
     
+    private static GetNumberConfigurationValue(items: ConfigurationItem[], key: ConfigurationKey): number
+    {
+        let value = ConfigurationRepository.GetConfigurationValue(items, key);
+
+        return !CommonHelper.IsNullOrEmpty(value) ? parseInt(value) : -1;
+    }
+
     private static GetConfigurationValue(items: ConfigurationItem[], key: ConfigurationKey): string
     {
         let configurationItem = items.filter(x => x.Key.toLowerCase() === key.toLowerCase())[0];
