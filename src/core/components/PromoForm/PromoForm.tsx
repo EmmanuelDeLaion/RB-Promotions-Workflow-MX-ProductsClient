@@ -182,7 +182,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     styles={this.iconButtonStyles}
                     iconProps={this.cancelIcon}
                     ariaLabel="Close popup modal"
-                    onClick={() => this.setState({ hideModalConfirmationDialog: false })}
+                    onClick={this.onCloseModal.bind(this)}
                     autoFocus={false}
                   />
                 </div>
@@ -1030,7 +1030,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           style={{display: this.state.viewModel.ShowSaveButton ? "block" : "none"}}
                           text="Guardar borrador" 
                           allowDisabledFocus 
-                          onClick={this.save.bind(this)} />
+                          onClick={this.save.bind(this)}
+                          disabled={!this.state.enableSubmit} />
                         <PrimaryButton
                           style={{display: this.state.viewModel.ShowApproveButton ? "block" : "none"}}
                           text="Aprobar" 
@@ -1057,7 +1058,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           style={{display: this.state.viewModel.ShowRejectButton ? "block" : "none"}}
                           text="Rechazar" 
                           allowDisabledFocus 
-                          onClick={this.reject.bind(this)} />
+                          onClick={this.reject.bind(this)}
+                          disabled={!this.state.enableSubmit} />
                       </Stack>
                     </Stack>
                   </Stack>
@@ -1082,6 +1084,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     }
 
     //#region Header events
+
+    private onCloseModal() {
+      if(!this.state.viewModel.ReadOnlyForm) 
+        this.setState({ hideModalConfirmationDialog: false });
+      else 
+        this.props.close();
+    }
 
     private onNameChange (event: any, text?: string) {
       const client = this.state.viewModel.Entity.Client;

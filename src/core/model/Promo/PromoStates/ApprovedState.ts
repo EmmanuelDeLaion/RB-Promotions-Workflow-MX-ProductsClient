@@ -1,28 +1,29 @@
-import { Promo } from "..";
+import { PromoStatus } from "..";
 import { Constants } from "../../..";
 import { 
+    CategoryRepository, 
     ClientRepository, 
-    PromoRepository,
-    CategoryRepository,
-    ProductRepository,
-    MasterDataRepository,
+    MasterDataRepository, 
+    ProductRepository, 
+    TypeRepository 
 } from "../../../data";
 import { LookupValue } from "../../../infrastructure";
-import { PromoStatus } from "../PromoStatus";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoState } from "./PromoState";
 
-export class NewPromoState extends PromoState {
+export class ApprovedState extends PromoState {
     public GetStatusId(): number {
-        return PromoStatus.New;
+        return PromoStatus.Approved;
     }
-    
+
     public GetStatusText(): string {
-        return Constants.StatusTexts.NewPromo;
+        return Constants.StatusTexts.Approved;
     }
 
     public async GetViewModel(): Promise<PromoViewModel> {
         let viewModel = new PromoViewModel(this.Entity);
+
+        viewModel.ReadOnlyForm = true;
 
         viewModel.Clients = await ClientRepository.GetClients();
         viewModel.Categories = await CategoryRepository.GetAll();
@@ -34,26 +35,10 @@ export class NewPromoState extends PromoState {
         viewModel.BusinessUnits.unshift(new LookupValue());
         viewModel.Brands.unshift(new LookupValue());
         viewModel.ProductCategories.unshift(new LookupValue());
-
-        viewModel.ShowSaveButton = true;
-        viewModel.ShowSubmitButton = true;
+        
+        if(this.Entity.Items.length > 0 && this.Entity.Items[0].Category)
+            viewModel.Types = await TypeRepository.GetByCategory(this.Entity.Items[0].Category.ItemId);
 
         return viewModel;
-    }
-
-    public Save(entity: Promo): Promise<void>
-    {
-        entity.ChangeState(PromoStatus.Draft);
-
-        return PromoRepository.SaveOrUpdate(entity);
-    }
-
-    public async Submit(entity: Promo): Promise<void>
-    {
-        entity.ChangeState(PromoStatus.Approval);
-
-        await this.InitializeWorkflowState(entity);
-
-        return PromoRepository.SaveOrUpdate(entity);
     }
 }

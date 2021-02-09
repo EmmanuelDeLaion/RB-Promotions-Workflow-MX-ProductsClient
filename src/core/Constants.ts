@@ -5,6 +5,8 @@ export namespace Constants {
         public static NewPromo = "Nueva promoción";
         public static DraftPromo = "Borrador";
         public static Approval = "Aprobación";
+        public static Approved = "Aprobada";
+        public static Rejected = "Rechazada";
     } 
     
     export class Messages {

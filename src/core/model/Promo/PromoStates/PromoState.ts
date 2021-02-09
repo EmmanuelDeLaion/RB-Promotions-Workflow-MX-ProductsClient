@@ -1,4 +1,5 @@
 import { Constants } from "../../..";
+import { ApproversRepository } from "../../../data/ApproversRepository";
 import { Promo } from "../Promo";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoWorkflowState } from "../PromoWorkflowState";
@@ -30,12 +31,13 @@ export abstract class PromoState {
         throw new Error(Constants.Messages.NotAllowedAction);
     }
 
-    public InitializeWorkflowState(entity: Promo): void {
-        //TODO: obtener IDs de aprobadores
-        entity.WorkflowStages = [new PromoWorkflowState([entity.Client.Channel.HeadOfChannel.ItemId, 15])];
+    public async InitializeWorkflowState(entity: Promo): Promise<void> {
+        const approvers = await ApproversRepository.GetInstance();
+
+        entity.WorkflowStages = [new PromoWorkflowState([entity.Client.Channel.HeadOfChannel.ItemId, approvers.Role1.ItemId])];
 
         //TODO: Implementar lógica para determinar si aplica la segunda etapa de aprobación
-        entity.WorkflowStages.push(new PromoWorkflowState([16,17]));
+        entity.WorkflowStages.push(new PromoWorkflowState([approvers.Role2.ItemId,approvers.Role3.ItemId]));
 
         entity.CurrentStageNumber = 1;
     }

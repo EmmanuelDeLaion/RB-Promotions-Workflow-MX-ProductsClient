@@ -5,6 +5,8 @@ import { PromoStatus, PromoViewModel } from "./";
 import { PromoItem } from "./PromoItem";
 import { ApprovalState } from "./PromoStates/ApprovalState";
 import { PromoWorkflowState } from "./PromoWorkflowState";
+import { ApprovedState } from "./PromoStates/ApprovedState";
+import { RejectedState } from "./PromoStates/RejectedState";
 
 export class Promo extends Entity {
 
@@ -38,6 +40,12 @@ export class Promo extends Entity {
                 break;
             case PromoStatus.Approval:
                 this._state = new ApprovalState();
+                break;
+            case PromoStatus.Approved:
+                this._state = new ApprovedState();
+                break;
+            case PromoStatus.Rejected:
+                this._state = new RejectedState();
                 break;
             default:
                 break;
