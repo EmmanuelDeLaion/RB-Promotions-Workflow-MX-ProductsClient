@@ -60,7 +60,7 @@ export class PromoRepository {
     public static async GetNewPromo() : Promise<Promo>
     {
       let configuration = await ConfigurationRepository.GetInstance();
-      return new Promo(configuration.CountryCode);
+      return new Promo(configuration.CountryCode, configuration.ApprovalAmountLimit);
     }
 
     private static async BuildEntity(item: any, items: PromoItem[], client?: Client): Promise<Promo> {

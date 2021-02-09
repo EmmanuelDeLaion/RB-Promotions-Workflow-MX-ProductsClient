@@ -36,7 +36,7 @@ export abstract class PromoState {
 
         entity.WorkflowStages = [new PromoWorkflowState([entity.Client.Channel.HeadOfChannel.ItemId, approvers.Role1.ItemId])];
 
-        if(entity.GetTotalEstimatedInvestment() > 20000)
+        if(entity.GetTotalEstimatedInvestment() > entity.ApprovalAmountLimit)
             entity.WorkflowStages.push(new PromoWorkflowState([approvers.Role2.ItemId,approvers.Role3.ItemId]));
 
         entity.CurrentStageNumber = 1;

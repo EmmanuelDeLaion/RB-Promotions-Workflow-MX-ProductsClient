@@ -16,14 +16,16 @@ export class Promo extends Entity {
     public Client: Client;
     public Items: PromoItem[];
     public CountryCode: string;
+    public ApprovalAmountLimit: number;
     public CurrentStageNumber: number;
     public WorkflowStages: PromoWorkflowState[];
     protected _state: PromoState;    
 
-    constructor(conuntryCode: string) {
+    constructor(countryCode: string, approvalAmountLimit: number) {
         super();
 
-        this.CountryCode = conuntryCode;
+        this.CountryCode = countryCode;
+        this.ApprovalAmountLimit = approvalAmountLimit;
         this.PromoID = this.CountryCode + "--";
         this.Items = [new PromoItem({AdditionalID: this.PromoID + ".1", GetBaseGMSum: this.GetBaseGMSum.bind(this)})];
 
