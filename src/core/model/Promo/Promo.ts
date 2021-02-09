@@ -98,4 +98,19 @@ export class Promo extends Entity {
 
         return sum;
     }
+
+    public GetTotalEstimatedInvestment(): number {
+        let value: number = 0;
+
+        this.Items.map((item:PromoItem) => {
+            value += item.GetEstimatedInvestment();
+        });
+
+        return value;
+    }
+
+    public GetTotalEstimatedInvestmentAsString(): string {
+        const value = this.GetTotalEstimatedInvestment();
+        return value != null ? value.toFixed(0) : "0";
+    }
 }

@@ -36,8 +36,8 @@ export abstract class PromoState {
 
         entity.WorkflowStages = [new PromoWorkflowState([entity.Client.Channel.HeadOfChannel.ItemId, approvers.Role1.ItemId])];
 
-        //TODO: Implementar lógica para determinar si aplica la segunda etapa de aprobación
-        entity.WorkflowStages.push(new PromoWorkflowState([approvers.Role2.ItemId,approvers.Role3.ItemId]));
+        if(entity.GetTotalEstimatedInvestment() > 20000)
+            entity.WorkflowStages.push(new PromoWorkflowState([approvers.Role2.ItemId,approvers.Role3.ItemId]));
 
         entity.CurrentStageNumber = 1;
     }

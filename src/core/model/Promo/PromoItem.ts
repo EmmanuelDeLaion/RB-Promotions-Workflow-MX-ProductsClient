@@ -118,6 +118,10 @@ export class PromoItem extends Entity {
         return this.RequiresNetPrice();
     }
 
+    public RequiresEstimatedGMPromo(): boolean {
+        return this.RequiresTotalEstimatedVolume();
+    }
+
     //#endregion
 
     //#region Calculated values
@@ -125,6 +129,19 @@ export class PromoItem extends Entity {
     public GetDiscountPercentage(): number {
         if(this.RequiresDiscountPerPiece() && this.NetPrice > 0)
             return (this.DiscountPerPiece / this.NetPrice) * 100;
+
+        return null;
+    }
+
+    public GetBEPNR(): number {
+        if(this.GetCategoryType() == CategoryType.ConsumerPromo) {
+            if(this.NetPrice > 0 && this.BaseVolume > 0)
+                return (this.GetEstimatedInvestment() / this.NetPrice / this.BaseVolume) * 100;
+        }
+        else {
+            if(this.NetPrice != null)
+                return (this.NetPrice / (this.NetPrice - this.DiscountPerPiece || 0) - 1) * 100;
+        }
 
         return null;
     }
@@ -150,6 +167,23 @@ export class PromoItem extends Entity {
 
     public GetGMPromoUnit(): number {
         return this.NetPrice - this.DiscountPerPiece - this.COGS;
+    }
+
+    public GetBEPGM(): number {
+        const gmBaseUnit = this.GetGMBaseUnit();
+        if(this.RequiresDiscountPerPiece()) {
+            if(this.GetCategoryType() == CategoryType.ConsumerPromo) {
+                if(gmBaseUnit > 0 && this.BaseVolume > 0)
+                    return (this.GetEstimatedInvestment() / gmBaseUnit / this.BaseVolume) * 100;
+            }
+            else {
+                const gmPromoUnit = this.GetGMPromoUnit();
+                if(gmPromoUnit > 0)
+                    return (gmBaseUnit / gmPromoUnit - 1) * 100;
+            }
+        }
+
+        return null;
     }
 
     public GetLastYearVolume(): number {
@@ -209,6 +243,13 @@ export class PromoItem extends Entity {
         return null;
     }
 
+    public GetEstimatedGMPromo(): number {
+        if(this.RequiresEstimatedGMPromo()) 
+            return (this.GetTotalEstimatedVolume() || 0) * (this.GetGMBaseUnit() || 0);
+
+        return null;
+    }
+
     public GetEstimatedInvestment(): number {
         switch (this.GetCategoryType()) {
             case CategoryType.Visibility:
@@ -226,6 +267,16 @@ export class PromoItem extends Entity {
             default:
                 return this.GetTotalEstimatedVolume() * this.DiscountPerPiece;
         }
+    }
+
+    public GetROI(): number {
+        const value1 = (this.GetEstimatedGMPromo() || 0) - (this.GetBaseGM() || 0);
+        const value2 = (this.GetEstimatedInvestment() || 0) + (this.AdditionalInvestment || 0);
+
+        if(value2 > 0)
+            return value1/value2;
+
+        return null;
     }
 
     //#endregion
@@ -247,6 +298,11 @@ export class PromoItem extends Entity {
     public GetDiscountPercentageAsString(): string {
         const discountPercentage = this.GetDiscountPercentage();
         return discountPercentage != null ? discountPercentage.toFixed(2) : "0.0";
+    }
+
+    public GetBEPNRAsString(): string {
+        const value = this.GetBEPNR();
+        return value != null ? value.toFixed(1) : "0.0";
     }
 
     public GetCOGSAsString():string {
@@ -271,6 +327,11 @@ export class PromoItem extends Entity {
     public GetGMPromoUnitAsString(): string {
         const gmPromoUnit = this.GetGMPromoUnit();
         return gmPromoUnit != null ? gmPromoUnit.toFixed(2) : "0.0";
+    }
+
+    public GetBEPGMAsString(): string {
+        const value = this.GetBEPGM();
+        return value != null ? value.toFixed(1) : "0.0";
     }
 
     public GetLastYearVolumeAsString(): string {
@@ -319,9 +380,19 @@ export class PromoItem extends Entity {
         return value != null ? value.toFixed(1) :  null;
     }
 
+    public GetEstimatedGMPromoAsString(): string {
+        const value = this.GetEstimatedGMPromo();
+        return value != null ? value.toFixed(1) :  null;
+    }
+
     public GetEstimatedInvestmentAsString(): string {
         const value = this.GetEstimatedInvestment();
-        return value != null ? value.toFixed(0) :  null;
+        return value != null ? value.toFixed(0) : null;
+    }
+
+    public GetROIAsString(): string {
+        const value = this.GetROI();
+        return value != null ? value.toFixed(2) : "0.00";
     }
 
     //#endregion

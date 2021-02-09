@@ -101,6 +101,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     const kam = client ? client.KeyAccountManager : null;
     const subchannel = client ? client.Subchannel : null;
     const selectedItem = entity ? entity.Items[this.state.selectedIndex] : null;
+    const readOnlyForm = this.state.viewModel ? this.state.viewModel.ReadOnlyForm : true;
 
     let output = 
       <DialogContent
@@ -222,37 +223,45 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   label="Nombre de la promoción"
                                   value={entity.Name}
                                   placeholder="Ingrese el nombre de la promoción"
-                                  required={true}
+                                  required={!readOnlyForm}
                                   errorMessage={this.getValidationErrorMessage(entity.Name)}
                                   autoFocus={true}
                                   onChange={this.onNameChange.bind(this)}
                                   autoComplete="Off"
-                                  readOnly={this.state.viewModel.ReadOnlyForm}
+                                  readOnly={readOnlyForm}
                                 />
                               </Stack>
                               <Stack grow={6} className="padding-right controlPadding">
-                                <Dropdown
-                                  placeholder="Seleccione un cliente"
-                                  label="Cliente:"
-                                  options={clients}
-                                  selectedKey={entity.Client ? entity.Client.ItemId : null}
-                                  onChanged={this.onClientChanged.bind(this)}
-                                  required={true}
-                                  errorMessage={this.getValidationErrorMessage(entity.Client)}
-                                />
+                                {!readOnlyForm ?
+                                  <Dropdown
+                                    placeholder="Seleccione un cliente"
+                                    label="Cliente:"
+                                    options={clients}
+                                    selectedKey={entity.Client ? entity.Client.ItemId : null}
+                                    onChanged={this.onClientChanged.bind(this)}
+                                    required={true}
+                                    errorMessage={this.getValidationErrorMessage(entity.Client)}
+                                  />:
+                                  <TextField
+                                    label="Cliente"
+                                    value={entity.Client ? entity.Client.Name : null}
+                                    readOnly={true}
+                                  />
+                                }
                               </Stack>
                             </Stack >
                             <Stack grow={12} className="padding-right multilineControlPadding">
                               <TextField 
                                 label="Objetivo de la actividad:" 
-                                required={true} 
+                                required={!readOnlyForm}
                                 multiline={true}
                                 rows={3}
                                 onChange={this.onActivityObjectiveChange.bind(this)}
-                                value={entity.ActivityObjective} 
+                                value={entity.ActivityObjective}
                                 autoComplete="Off"
                                 errorMessage={this.getValidationErrorMessage(entity.ActivityObjective)}
                                 onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
+                                readOnly={readOnlyForm}
                               />
                             </Stack>
                           </Stack>
@@ -514,7 +523,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <Separator className="graySeparator separatorToTop" />
                                     <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                       <Label>BEP NR</Label>
-                                      <Label className="toRight">Valor</Label>
+                                      <Label className="toRight">{selectedItem.GetBEPNRAsString() + "%"}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
                                     <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
@@ -544,7 +553,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <Separator className="graySeparator separatorToTop" />
                                     <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                       <Label>BEP GM</Label>
-                                      <Label className="toRight">Valor</Label>
+                                      <Label className="toRight">{selectedItem.RequiresDiscountPerPiece() ? (selectedItem.GetBEPGMAsString() + "%") : "N/A"}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
                                     <Stack verticalFill></Stack>
@@ -560,12 +569,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Label>Pre análisis</Label>
                               </Stack>
                               <Stack grow={3} horizontalAlign="end">
-                                <Label>ROI Estimado por SKU</Label>
-                                <Label>1.37</Label>
+                                <Label>Inversión estimada</Label>
+                                <Label>{"$" + selectedItem.GetEstimatedInvestmentAsString()}</Label>
                               </Stack>
                               <Stack grow={3} horizontalAlign="end">
-                                <Label>ROI Estimado Total</Label>
-                                <Label>0.92</Label>
+                                <Label>ROI Estimado por SKU</Label>
+                                <Label>{selectedItem.GetROIAsString()}</Label>
                               </Stack>
                               <Stack grow={3} horizontalAlign="end">
                                 <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
@@ -583,7 +592,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <TextField
                                       label="Volumen base"
                                       onChange={this.onBaseVolumeChange.bind(this)}
-                                      value={selectedItem.GetBaseVolumeAsString()} 
+                                      value={selectedItem.GetBaseVolumeAsString()}
                                       required={true}
                                       autoComplete="Off"
                                       errorMessage={this.getValidationErrorMessage(selectedItem.BaseVolume)}
@@ -593,7 +602,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <TextField
                                       label="Volumen incremental estimado"
                                       onChange={this.onEstimatedIncrementalVolumeChange.bind(this)}
-                                      value={selectedItem.GetEstimatedIncrementalVolumeAsString()} 
+                                      value={selectedItem.GetEstimatedIncrementalVolumeAsString()}
                                       required={true}
                                       autoComplete="Off"
                                       errorMessage={this.getValidationErrorMessage(selectedItem.EstimatedIncrementalVolume)}
@@ -603,7 +612,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <TextField
                                       label="Inversión adicional (MKT)"
                                       onChange={this.onAdditionalInvestmentChange.bind(this)}
-                                      value={selectedItem.GetAdditionalInvestmentAsString()} 
+                                      value={selectedItem.GetAdditionalInvestmentAsString()}
                                       autoComplete="Off" />
                                 </Stack>
                               </Stack>                              
@@ -646,11 +655,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <Label className="toRight">{selectedItem.RequiresBaseGM() ? ("$" + selectedItem.GetBaseGMAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
-                                    <Label>Inversión estimada</Label>
-                                    <Label className="toRight">{"$" + selectedItem.GetEstimatedInvestmentAsString()}</Label>
-                                  </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
                                 <Stack className="smallPadding" grow={4}>
                                   <Stack horizontal className="verticalPadding">
@@ -665,7 +669,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>GM promo estimado</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{selectedItem.RequiresEstimatedGMPromo() ? ("$" + selectedItem.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
@@ -681,19 +685,19 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           <Stack className="statusContainer smallPadding padding-right" horizontal horizontalAlign="end">
                             <Stack style={{ color: theme.palette.themePrimary, paddingRight: "4px" }}><Icon iconName="MapLayers" /></Stack>
                             <Stack className="label">Estado:</Stack>
-                            <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>Pendiente de aprobación</Stack>
+                            <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>{entity.GetStatusText()}</Stack>
                           </Stack>
                           <Stack horizontal className="padding">
                             <Stack grow={8} verticalAlign="start">
                               <Stack grow={12} className="grayContent padding padding-left padding-right">
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Cliente</Label>
-                                  <Label className="toRight">Cliente 1</Label>
+                                  <Label className="toRight">{entity.Client ? entity.Client.Name : null}</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                                 <Stack className="verticalPadding">
                                   <Label>Objetivo de la promoción</Label>
-                                  <span className="twoColumnsContentMaxWidth">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</span>
+                                  <span className="twoColumnsContentMaxWidth">{entity.ActivityObjective}</span>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                               </Stack>
@@ -705,211 +709,147 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               <Stack grow={12}>
                                 <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
                                   <Label className="peopleLabel">Cabeza de canal</Label>
-                                  <Persona
-                                    {...this.examplePersona}
-                                    size={PersonaSize.size24}
-                                    presence={PersonaPresence.online}
-                                    hidePersonaDetails={false}
-                                    imageAlt="Annie Lindqvist, status is online"
-                                  />
+                                  <div style={{display: headOfChannel ? "block" : "none"}}>
+                                    <Persona
+                                      //TODO: Cargar imagen y account name
+                                      //{...this.examplePersona}
+                                      text= {headOfChannel ? headOfChannel.Value : null}
+                                      size={PersonaSize.size24}
+                                      //presence={PersonaPresence.online}
+                                      hidePersonaDetails={false}
+                                      imageAlt={headOfChannel ? headOfChannel.Value : null}                                    
+                                    />
+                                  </div>
                                 </Stack>
                                 <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
                                   <Label className="peopleLabel">Gerente KAM</Label>
-                                  <Persona
-                                    {...this.examplePersona2}
-                                    size={PersonaSize.size24}
-                                    presence={PersonaPresence.online}
-                                    hidePersonaDetails={false}
-                                    imageAlt="Annie Lindqvist, status is online"
-                                  />
+                                  <div style={{display: kam ? "block" : "none"}}>
+                                    <Persona
+                                      //TODO: Cargar imagen y account name
+                                      text={kam ? kam.Value : null}
+                                      size={PersonaSize.size24}
+                                      //presence={PersonaPresence.online}
+                                      hidePersonaDetails={false}
+                                      imageAlt={kam ? kam.Value : null}
+                                    />
+                                  </div>
                                 </Stack>
                                 <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
                                   <Label className="peopleLabel">Canal</Label>
-                                  <Label className="labelNotBold">Canal 1</Label>
+                                  <Label className="labelNotBold">{channel ? channel.Name : null}</Label>
                                 </Stack>
                                 <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
                                   <Label className="peopleLabel">Subcanal</Label>
-                                  <Label className="labelNotBold">Subcanal 1.1</Label>
+                                  <Label className="labelNotBold">{subchannel ? subchannel.Value : null}</Label>
                                 </Stack>
                               </Stack>
                             </Stack>
                           </Stack>
-                          <Stack className="padding-bottom">
-                            <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
-                              <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
-                                <Icon iconName="DietPlanNotebook" />
-                                <Label>Pre análisis MX1.1</Label>
+                          {entity.Items.map((item, index) => { return (                         
+                            <Stack className="padding-bottom">
+                              <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
+                                <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
+                                  <Icon iconName="DietPlanNotebook" />
+                                  <Label>Pre análisis {item.AdditionalID}</Label>
+                                </Stack>
+                                <Stack grow={3} horizontalAlign="end">
+                                  <Label>ROI Estimado por SKU</Label>
+                                  <Label>1.37</Label>
+                                </Stack>
+                                <Stack grow={3} horizontalAlign="end">
+                                  <Label>ROI Estimado Total</Label>
+                                  <Label>0.92</Label>
+                                </Stack>
+                                <Stack grow={3} horizontalAlign="end">
+                                  <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
+                                  <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                                    <span className="effectiveLabel">EFECTIVA</span>
+                                  </div>
+                                  <div hidden={this.state.effective} className="effectiveLabelContainer">
+                                    <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
+                                  </div>
+                                </Stack>
                               </Stack>
-                              <Stack grow={3} horizontalAlign="end">
-                                <Label>ROI Estimado por SKU</Label>
-                                <Label>1.37</Label>
-                              </Stack>
-                              <Stack grow={3} horizontalAlign="end">
-                                <Label>ROI Estimado Total</Label>
-                                <Label>0.92</Label>
-                              </Stack>
-                              <Stack grow={3} horizontalAlign="end">
-                                <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                                <div hidden={!this.state.effective} className="effectiveLabelContainer">
-                                  <span className="effectiveLabel">EFECTIVA</span>
-                                </div>
-                                <div hidden={this.state.effective} className="effectiveLabelContainer">
-                                  <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
-                                </div>
-                              </Stack>
-                            </Stack>
-                            <Stack horizontal className="grayContent padding padding-left padding-right">
-                              <Stack className="smallPadding padding-right controlPadding" grow={4}>
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Volumen base</Label>
-                                  <Label className="toRight">Valor</Label>
+                              <Stack horizontal className="grayContent padding padding-left padding-right">
+                                <Stack className="smallPadding padding-right controlPadding" grow={4}>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Volumen base</Label>
+                                    <Label className="toRight">{item.GetBaseVolumeAsString()}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Volume LY</Label>
+                                    <Label className="toRight">{item.GetLastYearVolumeAsString()}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>% Volume Incremental</Label>
+                                    <Label className="toRight">{item.RequiresIncrementalVolumePercentage() ? (item.GetIncrementalVolumePercentageAsString() + "%") : "N/A"}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>NR incremental estimado</Label>
+                                    <Label className="toRight">Valor</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>GM incremental</Label>
+                                    <Label className="toRight">Valor</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>NR base</Label>
-                                  <Label className="toRight">Valor</Label>
+                                <Stack className="smallPadding padding-right" grow={4}>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Volumen incremental estimado</Label>
+                                    <Label className="toRight">{item.GetEstimatedIncrementalVolumeAsString()}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Volume Average L 3 Months</Label>
+                                    <Label className="toRight">{item.GetAverageVolumeL3MonthsAsString()}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>NR base</Label>
+                                    <Label className="toRight">{item.RequiresBaseNR() ? ("$" + item.GetBaseNRAsString()) : "N/A"}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>GM base</Label>
+                                    <Label className="toRight">{item.RequiresBaseGM() ? ("$" + item.GetBaseGMAsString()) : "N/A"}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Inversión estimada</Label>
+                                    <Label className="toRight">{"$" + selectedItem.GetEstimatedInvestmentAsString()}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>GM base</Label>
-                                  <Label className="toRight">Valor</Label>
+                                <Stack className="smallPadding" grow={4}>
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Inversión adicional (MKT)</Label>
+                                    <Label className="toRight">{item.GetAdditionalInvestmentAsString()}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>Total volumen estimado</Label>
+                                    <Label className="toRight">{item.RequiresTotalEstimatedVolume() ? item.GetTotalEstimatedVolumeAsString() : "N/A"}</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>NR Estimado</Label>
+                                    <Label className="toRight">Valor</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <Label>GM promo estimado</Label>
+                                    <Label className="toRight">Valor</Label>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Inversión estimada</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                              </Stack>
-                              <Stack className="smallPadding padding-right" grow={4}>
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Volumen estimado</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>NR estimado</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>GM estimado</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Inversión adicional (MKT)</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                              </Stack>
-                              <Stack className="smallPadding" grow={4}>
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>% volumen incremental</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>% NR incremental</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>% GM incremental</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                              </Stack>
-                            </Stack>
-                          </Stack>
-                          <Stack className="padding-bottom">
-                            <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
-                              <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
-                                <Icon iconName="DietPlanNotebook" />
-                                <Label>Pre análisis MX1.2</Label>
-                              </Stack>
-                              <Stack grow={3} horizontalAlign="end">
-                                <Label>ROI Estimado por SKU</Label>
-                                <Label>1.37</Label>
-                              </Stack>
-                              <Stack grow={3} horizontalAlign="end">
-                                <Label>ROI Estimado Total</Label>
-                                <Label>0.92</Label>
-                              </Stack>
-                              <Stack grow={3} horizontalAlign="end">
-                                <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                                <div hidden={!this.state.effective} className="effectiveLabelContainer">
-                                  <span className="effectiveLabel">EFECTIVA</span>
-                                </div>
-                                <div hidden={this.state.effective} className="effectiveLabelContainer">
-                                  <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
-                                </div>
                               </Stack>
                             </Stack>
-                            <Stack horizontal className="grayContent padding padding-left padding-right">
-                              <Stack className="smallPadding padding-right controlPadding" grow={4}>
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Volumen base</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>NR base</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>GM base</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Inversión estimada</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                              </Stack>
-                              <Stack className="smallPadding padding-right" grow={4}>
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Volumen estimado</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>NR estimado</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>GM estimado</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Inversión adicional (MKT)</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                              </Stack>
-                              <Stack className="smallPadding" grow={4}>
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>% volumen incremental</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>% NR incremental</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>% GM incremental</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                              </Stack>
-                            </Stack>
-                          </Stack>
+                          );})}
                           <Stack className="padding-bottom">
                             <Stack horizontal className={this.state.effective
                               ? "grayHeader smallPadding padding-left padding-right grayHeaderToGreen"
@@ -1011,7 +951,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                   <Label>Estado general de la promoción</Label>
                   <Separator className="graySeparator separatorToTop" />
                   <Stack className="modalBottomContent" horizontal grow={12}>
-                    <Stack grow={6}>
+                    <Stack grow={3}>
                       <Label className="modalBottomContentHeader" onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
                       <div hidden={!this.state.effective} className="effectiveLabelContainer">
                         <span className="effectiveLabel">EFECTIVA</span>
@@ -1023,6 +963,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     <Stack grow={3}>
                       <Label className="modalBottomContentHeader">ROI Estimado total</Label>
                       <Label className="modalBottomContentValue">0.92</Label>
+                    </Stack>
+                    <Stack grow={3}>
+                      <Label className="modalBottomContentHeader">Inversión estimada total</Label>
+                      <Label className="modalBottomContentValue">{"$" + entity.GetTotalEstimatedInvestmentAsString()}</Label>
                     </Stack>
                     <Stack grow={3} className="modalBottomButtonsContainer" horizontal horizontalAlign="end">
                       <Stack>
