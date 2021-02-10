@@ -279,6 +279,11 @@ export class PromoItem extends Entity {
         return null;
     }
 
+    public IsEffective(): boolean {
+        const roi = this.GetROI();
+        return (roi != null && roi >=1);
+    }
+
     //#endregion
 
     //#region Numbers as strings
@@ -393,7 +398,7 @@ export class PromoItem extends Entity {
     public GetROIAsString(): string {
         const value = this.GetROI();
         return value != null ? value.toFixed(2) : "0.00";
-    }
+    }    
 
     //#endregion
 }

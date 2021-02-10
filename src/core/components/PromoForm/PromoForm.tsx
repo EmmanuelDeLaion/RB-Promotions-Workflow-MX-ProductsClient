@@ -362,44 +362,66 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               <Stack horizontal grow={12} styles={{ root: { paddingTop: "16px" } }}>
                                 <Stack className="smallPadding" grow={6}>
                                   <Stack className="padding-right controlPadding">
-                                    <Dropdown
-                                      placeholder="Seleccione una categoría"
-                                      label="Categoria de la Promoción (LD):"
-                                      options={categories}
-                                      selectedKey={selectedItem.Category ? selectedItem.Category.ItemId : null}
-                                      onChanged={this.onCategoryChanged.bind(this)}
-                                      required={true}
-                                      errorMessage={this.getValidationErrorMessage(selectedItem.Category)}
-                                    />
+                                    {!readOnlyForm ?
+                                      <Dropdown
+                                        placeholder="Seleccione una categoría"
+                                        label="Categoria de la Promoción (LD):"
+                                        options={categories}
+                                        selectedKey={selectedItem.Category ? selectedItem.Category.ItemId : null}
+                                        onChanged={this.onCategoryChanged.bind(this)}
+                                        required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.Category)}
+                                      />:
+                                      <TextField
+                                        label="Categoria de la Promoción (LD)"
+                                        value={selectedItem.Category ? selectedItem.Category.Name : null}
+                                        readOnly={true}
+                                      />
+                                    }
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
                                     <TextField
                                       label="Descripción corta:"
                                       onChange={this.onShortDescriptionChange.bind(this)}
                                       value={selectedItem ? selectedItem.ShortDescription : null} 
-                                      required={true}
+                                      required={!readOnlyForm}
                                       autoComplete="Off"
                                       errorMessage={this.getValidationErrorMessage(selectedItem.ShortDescription)}
                                       onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
+                                      readOnly={readOnlyForm}
                                     />
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
-                                    <ProductSelector 
-                                      products={this.GetFilteredProducts()}
-                                      onChanged={this.onProductChanged.bind(this)}
-                                      value={selectedItem.Product}
-                                    />
+                                    {!readOnlyForm ?
+                                      <ProductSelector 
+                                        products={this.GetFilteredProducts()}
+                                        onChanged={this.onProductChanged.bind(this)}
+                                        value={selectedItem.Product}
+                                      />:
+                                      <TextField
+                                        label="SKU"
+                                        value={selectedItem.Product ? selectedItem.Product.SKUNumber + " - " + selectedItem.Product.SKUDescription : null}
+                                        readOnly={true}
+                                      />
+                                    }
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
-                                    <Dropdown
-                                      placeholder="Seleccione un negocio"
-                                      label="BU:"
-                                      options={businessUnits}
-                                      selectedKey={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.ItemId : null}
-                                      onChanged={this.onBusinessUnitChanged.bind(this)}
-                                      required={true}
-                                      errorMessage={this.getValidationErrorMessage(selectedItem.BusinessUnit)}
-                                    />
+                                    {!readOnlyForm ?
+                                      <Dropdown
+                                        placeholder="Seleccione un negocio"
+                                        label="BU:"
+                                        options={businessUnits}
+                                        selectedKey={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.ItemId : null}
+                                        onChanged={this.onBusinessUnitChanged.bind(this)}
+                                        required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.BusinessUnit)}
+                                      />:
+                                      <TextField
+                                        label="BU:"
+                                        value={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.Value : null}
+                                        readOnly={true}
+                                      />
+                                    }                                    
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
                                     <DatePicker
@@ -419,60 +441,83 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       label="Descuento por pieza ($):"
                                       onChange={this.onDiscountPerPieceChange.bind(this)}
                                       value={selectedItem.GetDiscountPerPieceAsString()}
-                                      required={selectedItem.RequiresDiscountPerPiece()}
+                                      required={selectedItem.RequiresDiscountPerPiece() && !readOnlyForm}
                                       autoComplete="Off"
                                       disabled={!selectedItem.RequiresDiscountPerPiece() }
                                       errorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage(selectedItem.DiscountPerPiece) : null}
                                       onGetErrorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
+                                      readOnly={readOnlyForm}
                                     />
                                   </Stack>
                                 </Stack>
                                 <Stack className="smallPadding" grow={6}>
                                   <Stack className="padding-right controlPadding">
-                                    <Dropdown
-                                      placeholder="Seleccione un tipo"
-                                      label="Tipo de Promocion (LD):"
-                                      options={types}
-                                      disabled={this.state.loadingTypes || types.length === 0}
-                                      selectedKey={selectedItem.Type ? selectedItem.Type.ItemId : null}
-                                      onChanged={this.onTypeChanged.bind(this)}
-                                      required={true}
-                                      errorMessage={this.getValidationErrorMessage(selectedItem.Type)}
-                                    />
+                                    {!readOnlyForm ?
+                                      <Dropdown
+                                        placeholder="Seleccione un tipo"
+                                        label="Tipo de Promocion (LD):"
+                                        options={types}
+                                        disabled={this.state.loadingTypes || types.length === 0}
+                                        selectedKey={selectedItem.Type ? selectedItem.Type.ItemId : null}
+                                        onChanged={this.onTypeChanged.bind(this)}
+                                        required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.Type)}
+                                      />:
+                                      <TextField
+                                        label="Tipo de Promocion (LD)"
+                                        value={selectedItem.Type ? selectedItem.Type.Name : null}
+                                        readOnly={true}
+                                      />
+                                    }
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
                                     <TextField 
                                       label="Inversión ($):"
                                       onChange={this.onInvestmentChange.bind(this)}
                                       value={selectedItem ? selectedItem.GetInvestmentAsString() : null} 
-                                      required={selectedItem.RequiresInvestment()}
+                                      required={selectedItem.RequiresInvestment() && !readOnlyForm}
                                       autoComplete="Off"
                                       disabled={!selectedItem.RequiresInvestment() }
                                       errorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage(selectedItem.Investment) : null}
                                       onGetErrorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
+                                      readOnly={readOnlyForm}
                                     />
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
-                                    <Dropdown
-                                      placeholder="Seleccione una marca"
-                                      label="Marca:"
-                                      options={brands}
-                                      selectedKey={selectedItem.Brand ? selectedItem.Brand.ItemId : null}
-                                      onChanged={this.onBrandChanged.bind(this)}
-                                      required={true}
-                                      errorMessage={this.getValidationErrorMessage(selectedItem.Brand)}
-                                    />
+                                    {!readOnlyForm ?
+                                      <Dropdown
+                                        placeholder="Seleccione una marca"
+                                        label="Marca:"
+                                        options={brands}
+                                        selectedKey={selectedItem.Brand ? selectedItem.Brand.ItemId : null}
+                                        onChanged={this.onBrandChanged.bind(this)}
+                                        required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.Brand)}
+                                      />:
+                                      <TextField
+                                        label="Marca:"
+                                        value={selectedItem.Brand ? selectedItem.Brand.Value : null}
+                                        readOnly={true}
+                                      />
+                                    }                                    
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
-                                    <Dropdown
-                                      placeholder="Seleccione una categoría"
-                                      label="Categoría:"
-                                      options={productCategories}
-                                      selectedKey={selectedItem.ProductCategory ? selectedItem.ProductCategory.ItemId : null}
-                                      onChanged={this.onProductCategoryChanged.bind(this)}
-                                      required={true}
-                                      errorMessage={this.getValidationErrorMessage(selectedItem.ProductCategory)}
-                                    />
+                                    {!readOnlyForm ?
+                                      <Dropdown
+                                        placeholder="Seleccione una categoría"
+                                        label="Categoría:"
+                                        options={productCategories}
+                                        selectedKey={selectedItem.ProductCategory ? selectedItem.ProductCategory.ItemId : null}
+                                        onChanged={this.onProductCategoryChanged.bind(this)}
+                                        required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.ProductCategory)}
+                                      />:
+                                      <TextField
+                                        label="Categoría:"
+                                        value={selectedItem.ProductCategory ? selectedItem.ProductCategory.Value : null}
+                                        readOnly={true}
+                                      />
+                                    }                                    
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
                                     <DatePicker
@@ -492,11 +537,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       label="% Redención"
                                       onChange={this.onRedemptionChange.bind(this)}
                                       value={selectedItem.GetRedemptionAsString()}                                      
-                                      required={selectedItem.RequiresRedemption()}
+                                      required={selectedItem.RequiresRedemption() && !readOnlyForm}
                                       autoComplete="Off"
                                       disabled={!selectedItem.RequiresRedemption()}
                                       errorMessage={selectedItem.RequiresRedemption() ? this.getValidationErrorMessage(selectedItem.Redemption) : null}
                                       onGetErrorMessage={selectedItem.RequiresRedemption() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }} 
+                                      readOnly={readOnlyForm}
                                     />
                                   </Stack>
                                 </Stack>
@@ -577,11 +623,11 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Label>{selectedItem.GetROIAsString()}</Label>
                               </Stack>
                               <Stack grow={3} horizontalAlign="end">
-                                <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                                <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                                <Label>Efectividad</Label>
+                                <div hidden={!selectedItem.IsEffective()} className="effectiveLabelContainer">
                                   <span className="effectiveLabel">EFECTIVA</span>
                                 </div>
-                                <div hidden={this.state.effective} className="effectiveLabelContainer">
+                                <div hidden={selectedItem.IsEffective()} className="effectiveLabelContainer">
                                   <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
                                 </div>
                               </Stack>
@@ -590,30 +636,36 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               <Stack horizontal>
                                 <Stack grow={4} className="smallPadding padding-right controlPadding">                                  
                                   <TextField
-                                      label="Volumen base"
-                                      onChange={this.onBaseVolumeChange.bind(this)}
-                                      value={selectedItem.GetBaseVolumeAsString()}
-                                      required={true}
-                                      autoComplete="Off"
-                                      errorMessage={this.getValidationErrorMessage(selectedItem.BaseVolume)}
-                                      onGetErrorMessage={this.getValidationErrorMessage.bind(this)} />
+                                    label="Volumen base"
+                                    onChange={this.onBaseVolumeChange.bind(this)}
+                                    value={selectedItem.GetBaseVolumeAsString()}
+                                    required={!readOnlyForm}
+                                    autoComplete="Off"
+                                    errorMessage={this.getValidationErrorMessage(selectedItem.BaseVolume)}
+                                    onGetErrorMessage={this.getValidationErrorMessage.bind(this)} 
+                                    readOnly={readOnlyForm}
+                                  />
                                 </Stack>
                                 <Stack grow={4} className="smallPadding padding-right controlPadding">
                                   <TextField
-                                      label="Volumen incremental estimado"
-                                      onChange={this.onEstimatedIncrementalVolumeChange.bind(this)}
-                                      value={selectedItem.GetEstimatedIncrementalVolumeAsString()}
-                                      required={true}
-                                      autoComplete="Off"
-                                      errorMessage={this.getValidationErrorMessage(selectedItem.EstimatedIncrementalVolume)}
-                                      onGetErrorMessage={this.getValidationErrorMessage.bind(this)} />
+                                    label="Volumen incremental estimado"
+                                    onChange={this.onEstimatedIncrementalVolumeChange.bind(this)}
+                                    value={selectedItem.GetEstimatedIncrementalVolumeAsString()}
+                                    required={!readOnlyForm}
+                                    autoComplete="Off"
+                                    errorMessage={this.getValidationErrorMessage(selectedItem.EstimatedIncrementalVolume)}
+                                    onGetErrorMessage={this.getValidationErrorMessage.bind(this)} 
+                                    readOnly={readOnlyForm}
+                                  />
                                 </Stack>
                                 <Stack grow={4} className="smallPadding padding-right controlPadding">                                  
                                   <TextField
-                                      label="Inversión adicional (MKT)"
-                                      onChange={this.onAdditionalInvestmentChange.bind(this)}
-                                      value={selectedItem.GetAdditionalInvestmentAsString()}
-                                      autoComplete="Off" />
+                                    label="Inversión adicional (MKT)"
+                                    onChange={this.onAdditionalInvestmentChange.bind(this)}
+                                    value={selectedItem.GetAdditionalInvestmentAsString()}
+                                    autoComplete="Off"
+                                    readOnly={readOnlyForm}
+                                  />
                                 </Stack>
                               </Stack>                              
                               <Stack horizontal>
@@ -753,19 +805,19 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Label>Pre análisis {item.AdditionalID}</Label>
                                 </Stack>
                                 <Stack grow={3} horizontalAlign="end">
+                                  <Label>Inversión estimada</Label>
+                                  <Label>{"$" + item.GetEstimatedInvestmentAsString()}</Label>
+                                </Stack>
+                                <Stack grow={3} horizontalAlign="end">
                                   <Label>ROI Estimado por SKU</Label>
-                                  <Label>1.37</Label>
+                                  <Label>{item.GetROIAsString()}</Label>
                                 </Stack>
                                 <Stack grow={3} horizontalAlign="end">
-                                  <Label>ROI Estimado Total</Label>
-                                  <Label>0.92</Label>
-                                </Stack>
-                                <Stack grow={3} horizontalAlign="end">
-                                  <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                                  <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                                  <Label>Efectividad</Label>
+                                  <div hidden={!item.IsEffective()} className="effectiveLabelContainer">
                                     <span className="effectiveLabel">EFECTIVA</span>
                                   </div>
-                                  <div hidden={this.state.effective} className="effectiveLabelContainer">
+                                  <div hidden={item.IsEffective()} className="effectiveLabelContainer">
                                     <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
                                   </div>
                                 </Stack>
@@ -843,7 +895,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>GM promo estimado</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{item.RequiresEstimatedGMPromo() ? ("$" + item.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
@@ -854,9 +906,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             <Stack horizontal className={this.state.effective
                               ? "grayHeader smallPadding padding-left padding-right grayHeaderToGreen"
                               : "grayHeader smallPadding padding-left padding-right grayHeaderToRed"}>
-                              <Stack grow={6} horizontal className="verticalPadding preAnalisisPadding">
+                              <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
                                 <Icon iconName="DietPlanNotebook" />
                                 <Label>Análisis general</Label>
+                              </Stack>
+                              <Stack grow={3} horizontalAlign="end">
+                                <Label>Inversión estimada total</Label>
+                                <Label>{"$" + entity.GetTotalEstimatedInvestmentAsString()}</Label>
                               </Stack>
                               <Stack grow={3} horizontalAlign="end">
                                 <Label>ROI Estimado Total</Label>
