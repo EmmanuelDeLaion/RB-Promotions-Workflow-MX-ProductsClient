@@ -111,7 +111,15 @@ export class PromoItem extends Entity {
     }
 
     public RequiresBaseNR(): boolean {
-        return this.RequiresNetPrice();
+        return this.GetCategoryType() != CategoryType.Institutional;
+    }
+
+    public RequiresEstimatedNR(): boolean {
+        return this.GetCategoryType() != CategoryType.Institutional;
+    }
+
+    public RequiresIncrementalEstimatedNR(): boolean {
+        return this.GetCategoryType() != CategoryType.Institutional;
     }
 
     public RequiresBaseGM(): boolean {
@@ -120,6 +128,19 @@ export class PromoItem extends Entity {
 
     public RequiresEstimatedGMPromo(): boolean {
         return this.RequiresTotalEstimatedVolume();
+    }
+
+    public RequiresIncrementalGM(): boolean {
+        switch (this.GetCategoryType()) {
+            case CategoryType.SpecialExhibitions:
+            case CategoryType.Institutional:
+            case CategoryType.Visibility:
+            case CategoryType.Performance:
+            case CategoryType.Unknown:     
+                return false;
+            default:
+                return true;
+        }
     }
 
     //#endregion
@@ -236,6 +257,25 @@ export class PromoItem extends Entity {
         return null;
     }
 
+    public GetEstimatedNR(): number {
+        if(this.RequiresEstimatedNR()) {
+            if(this.GetCategoryType() == CategoryType.ConsumerPromo)
+                return (this.GetTotalEstimatedVolume() || 0) * (this.NetPrice || 0) - (this.GetEstimatedInvestment() || 0);
+            else
+                return (this.GetTotalEstimatedVolume() || 0) * ((this.NetPrice || 0) - (this.RequiresDiscountPerPiece() ? (this.DiscountPerPiece || 0) : 0));
+        }            
+
+        return null;
+    }
+
+    public GetIncrementalEstimatedNR(): number {
+        if(this.RequiresIncrementalEstimatedNR()) {
+            return (this.GetEstimatedNR() || 0) - (this.GetBaseNR() || 0);
+        }            
+
+        return null;
+    }
+
     public GetBaseGM(): number {
         if(this.RequiresBaseGM())
             return (this.BaseVolume || 0) * (this.GetGMBaseUnit() || 0);
@@ -267,6 +307,14 @@ export class PromoItem extends Entity {
             default:
                 return this.GetTotalEstimatedVolume() * this.DiscountPerPiece;
         }
+    }
+
+    public GetIncrementalGM(): number {
+        if(this.RequiresIncrementalGM()) {
+            return (this.GetEstimatedGMPromo() || 0) - (this.GetBaseGM() || 0);
+        }
+
+        return null;
     }
 
     public GetROI(): number {
@@ -377,7 +425,17 @@ export class PromoItem extends Entity {
 
     public GetBaseNRAsString(): string {
         const value = this.GetBaseNR();
-        return value != null ? value.toFixed(1) :  null;
+        return value != null ? value.toFixed(1) : null;
+    }
+
+    public GetEstimatedNRAsString(): string {
+        const value = this.GetEstimatedNR();
+        return value != null ? value.toFixed(1) : null;
+    }
+
+    public GetIncrementalEstimatedNRAsString(): string {
+        const value = this.GetIncrementalEstimatedNR();
+        return value != null ? value.toFixed(1) : null;
     }
 
     public GetBaseGMAsString(): string {
@@ -387,6 +445,11 @@ export class PromoItem extends Entity {
 
     public GetEstimatedGMPromoAsString(): string {
         const value = this.GetEstimatedGMPromo();
+        return value != null ? value.toFixed(1) :  null;
+    }
+
+    public GetIncrementalGMAsString(): string {
+        const value = this.GetIncrementalGM();
         return value != null ? value.toFixed(1) :  null;
     }
 

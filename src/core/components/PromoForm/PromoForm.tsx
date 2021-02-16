@@ -682,12 +682,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>NR incremental estimado</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{selectedItem.RequiresIncrementalEstimatedNR() ? ("$" + selectedItem.GetIncrementalEstimatedNR()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>GM incremental</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{selectedItem.RequiresIncrementalGM() ? ("$" + selectedItem.GetIncrementalGMAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
@@ -716,7 +716,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>NR Estimado</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{selectedItem.RequiresEstimatedNR() ? "$" + selectedItem.GetEstimatedNRAsString() : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
