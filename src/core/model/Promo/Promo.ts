@@ -11,8 +11,8 @@ import { RejectedState } from "./PromoStates/RejectedState";
 export class Promo extends Entity {
 
     public PromoID: string;
-    public Name: string;
-    public ActivityObjective: string;
+    public Name: string = "";
+    public ActivityObjective: string = "";
     public Client: Client;
     public Items: PromoItem[];
     public CountryCode: string;

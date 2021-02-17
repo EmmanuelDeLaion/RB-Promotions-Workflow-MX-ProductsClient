@@ -4,8 +4,8 @@ import { Category, CategoryType, Product, Type } from "../Common";
 import { LastYearVolumes } from "../Common/LastYearVolumes";
 
 export class PromoItem extends Entity {
-    public AdditionalID: string;
-    public ShortDescription: string;
+    public AdditionalID: string = "";
+    public ShortDescription: string = "";
     public Category: Category;
     public Investment?: number;
     public Type: Type;
@@ -337,11 +337,11 @@ export class PromoItem extends Entity {
     //#region Numbers as strings
 
     public GetInvestmentAsString():string {
-        return this.Investment != null ? this.Investment.toString() : null;
+        return this.Investment != null ? this.Investment.toString() : "";
     }
 
     public GetDiscountPerPieceAsString():string {
-        return this.DiscountPerPiece != null ? this.DiscountPerPiece.toString() : null;
+        return this.DiscountPerPiece != null ? this.DiscountPerPiece.toString() : "";
     }
 
     public GetNetPriceAsString():string {
@@ -398,19 +398,19 @@ export class PromoItem extends Entity {
     }
 
     public GetRedemptionAsString(): string {
-        return this.Redemption != null ? this.Redemption.toString() : null;
+        return this.Redemption != null ? this.Redemption.toString() : "";
     }
 
     public GetBaseVolumeAsString(): string {
-        return this.BaseVolume != null ? this.BaseVolume.toString() : null;
+        return this.BaseVolume != null ? this.BaseVolume.toString() : "";
     }
 
     public GetEstimatedIncrementalVolumeAsString(): string {
-        return this.EstimatedIncrementalVolume != null ? this.EstimatedIncrementalVolume.toString() : null;
+        return this.EstimatedIncrementalVolume != null ? this.EstimatedIncrementalVolume.toString() : "";
     }
 
     public GetAdditionalInvestmentAsString(): string {
-        return this.AdditionalInvestment != null ? this.AdditionalInvestment.toString() : null;
+        return this.AdditionalInvestment != null ? this.AdditionalInvestment.toString() : "";
     }
 
     public GetTotalEstimatedVolumeAsString(): string {
