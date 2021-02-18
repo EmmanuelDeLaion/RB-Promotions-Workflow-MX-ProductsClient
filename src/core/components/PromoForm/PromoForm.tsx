@@ -244,7 +244,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   />:
                                   <TextField
                                     label="Cliente"
-                                    value={entity.Client ? entity.Client.Name : ''}
+                                    value={entity.Client ? entity.Client.Name : ""}
                                     readOnly={true}
                                   />
                                 }
@@ -370,7 +370,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       />:
                                       <TextField
                                         label="Categoria de la Promoción (LD)"
-                                        value={selectedItem.Category ? selectedItem.Category.Name : ''}
+                                        value={selectedItem.Category ? selectedItem.Category.Name : ""}
                                         readOnly={true}
                                       />
                                     }
@@ -379,7 +379,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField
                                       label="Descripción corta:"
                                       onChange={this.onShortDescriptionChange.bind(this)}
-                                      value={selectedItem ? selectedItem.ShortDescription : ''} 
+                                      value={selectedItem ? selectedItem.ShortDescription : ""} 
                                       required={!readOnlyForm}
                                       autoComplete="Off"
                                       onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
@@ -395,7 +395,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       />:
                                       <TextField
                                         label="SKU"
-                                        value={selectedItem.Product ? selectedItem.Product.SKUNumber + " - " + selectedItem.Product.SKUDescription : ''}
+                                        value={selectedItem.Product ? selectedItem.Product.SKUNumber + " - " + selectedItem.Product.SKUDescription : ""}
                                         readOnly={true}
                                       />
                                     }
@@ -413,7 +413,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       />:
                                       <TextField
                                         label="BU:"
-                                        value={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.Value : ''}
+                                        value={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.Value : ""}
                                         readOnly={true}
                                       />
                                     }                                    
@@ -459,7 +459,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       />:
                                       <TextField
                                         label="Tipo de Promocion (LD)"
-                                        value={selectedItem.Type ? selectedItem.Type.Name : ''}
+                                        value={selectedItem.Type ? selectedItem.Type.Name : ""}
                                         readOnly={true}
                                       />
                                     }
@@ -468,7 +468,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <TextField 
                                       label="Inversión ($):"
                                       onChange={this.onInvestmentChange.bind(this)}
-                                      value={selectedItem ? selectedItem.GetInvestmentAsString() : ''} 
+                                      value={selectedItem ? selectedItem.GetInvestmentAsString() : ""} 
                                       required={selectedItem.RequiresInvestment() && !readOnlyForm}
                                       autoComplete="Off"
                                       disabled={!selectedItem.RequiresInvestment() }
@@ -489,7 +489,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       />:
                                       <TextField
                                         label="Marca:"
-                                        value={selectedItem.Brand ? selectedItem.Brand.Value : ''}
+                                        value={selectedItem.Brand ? selectedItem.Brand.Value : ""}
                                         readOnly={true}
                                       />
                                     }                                    
@@ -507,7 +507,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       />:
                                       <TextField
                                         label="Categoría:"
-                                        value={selectedItem.ProductCategory ? selectedItem.ProductCategory.Value : ''}
+                                        value={selectedItem.ProductCategory ? selectedItem.ProductCategory.Value : ""}
                                         readOnly={true}
                                       />
                                     }                                    
@@ -671,12 +671,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>NR incremental estimado</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{selectedItem.RequiresIncrementalEstimatedNR() ? ("$" + selectedItem.GetIncrementalEstimatedNR()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>GM incremental</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{selectedItem.RequiresIncrementalGM() ? ("$" + selectedItem.GetIncrementalGMAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
@@ -705,7 +705,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>NR Estimado</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{selectedItem.RequiresEstimatedNR() ? "$" + selectedItem.GetEstimatedNRAsString() : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
