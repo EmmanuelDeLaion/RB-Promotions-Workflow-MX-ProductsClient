@@ -89,24 +89,26 @@ export class Promo extends Entity {
     }
 
     public GetBaseGMSum(category: CategoryType) {
-        let sum: number = 0;
+        let value: number = 0;
 
-        if(this.Items){
+        if(this.Items) {
             this.Items.map((item) => {
                 if(item.GetCategoryType() == category)
-                    sum += item.GetBaseGM();
+                    value += item.GetBaseGM();
             });
         }
 
-        return sum;
+        return value;
     }
 
     public GetTotalEstimatedInvestment(): number {
         let value: number = 0;
 
-        this.Items.map((item:PromoItem) => {
-            value += item.GetEstimatedInvestment();
-        });
+        if(this.Items) {
+            this.Items.map((item:PromoItem) => {
+                value += item.GetEstimatedInvestment() || 0;
+            });
+        }
 
         return value;
     }
@@ -114,5 +116,34 @@ export class Promo extends Entity {
     public GetTotalEstimatedInvestmentAsString(): string {
         const value = this.GetTotalEstimatedInvestment();
         return value != null ? value.toFixed(0) : "0";
+    }
+
+    public GetROI(): number {
+        let value: number = 0;
+        let incrementalGM: number = 0;
+        let additionalInvestment: number = 0;
+        const estimatedInvestment = this.GetTotalEstimatedInvestment();
+
+        if(this.Items) {
+            this.Items.map((item:PromoItem) => {
+                incrementalGM += item.GetIncrementalGM() || 0;
+                additionalInvestment += item.AdditionalInvestment || 0;
+            });
+
+            const investment = estimatedInvestment + additionalInvestment;
+            value = investment > 0 ? incrementalGM / investment : 0;
+        }
+
+        return value;
+    }
+
+    public GetROIAsString(): string {
+        const value = this.GetROI();
+        return value != null ? value.toFixed(2) : "0.00";
+    }
+
+    public IsEffective(): boolean {
+        const roi = this.GetROI();
+        return (roi != null && roi >=1);
     }
 }

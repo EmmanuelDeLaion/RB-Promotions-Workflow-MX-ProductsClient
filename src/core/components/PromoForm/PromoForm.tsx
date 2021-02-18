@@ -259,8 +259,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 onChange={this.onActivityObjectiveChange.bind(this)}
                                 value={entity.ActivityObjective}
                                 autoComplete="Off"
-                                errorMessage={this.getValidationErrorMessage(entity.ActivityObjective)}
-                                onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
+                                errorMessage={this.getValidationErrorMessage(entity.ActivityObjective)}                                
                                 readOnly={readOnlyForm}
                               />
                             </Stack>
@@ -433,7 +432,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       value={selectedItem.StartDate!}
                                       onSelectDate={this.onSelectStartDate.bind(this)}   
                                       formatDate={CommonHelper.formatDate}
-                                      isRequired={true}
+                                      isRequired={!readOnlyForm}
                                     />
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
@@ -682,7 +681,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>NR incremental estimado</Label>
-                                    <Label className="toRight">{selectedItem.RequiresIncrementalEstimatedNR() ? ("$" + selectedItem.GetIncrementalEstimatedNR()) : "N/A"}</Label>
+                                    <Label className="toRight">{selectedItem.RequiresIncrementalEstimatedNR() ? ("$" + selectedItem.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
@@ -841,12 +840,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>NR incremental estimado</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{item.RequiresIncrementalEstimatedNR() ? ("$" + item.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>GM incremental</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{item.RequiresIncrementalGM() ? ("$" + item.GetIncrementalGMAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
@@ -890,7 +889,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>NR Estimado</Label>
-                                    <Label className="toRight">Valor</Label>
+                                    <Label className="toRight">{item.RequiresEstimatedNR() ? "$" + item.GetEstimatedNRAsString() : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
@@ -901,98 +900,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 </Stack>
                               </Stack>
                             </Stack>
-                          );})}
-                          <Stack className="padding-bottom">
-                            <Stack horizontal className={this.state.effective
-                              ? "grayHeader smallPadding padding-left padding-right grayHeaderToGreen"
-                              : "grayHeader smallPadding padding-left padding-right grayHeaderToRed"}>
-                              <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
-                                <Icon iconName="DietPlanNotebook" />
-                                <Label>Análisis general</Label>
-                              </Stack>
-                              <Stack grow={3} horizontalAlign="end">
-                                <Label>Inversión estimada total</Label>
-                                <Label>{"$" + entity.GetTotalEstimatedInvestmentAsString()}</Label>
-                              </Stack>
-                              <Stack grow={3} horizontalAlign="end">
-                                <Label>ROI Estimado Total</Label>
-                                <Label>0.92</Label>
-                              </Stack>
-                              <Stack grow={3} horizontalAlign="end">
-                                <Label onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                                <div hidden={!this.state.effective} className="effectiveLabelContainer">
-                                  <span className="effectiveLabel">EFECTIVA</span>
-                                </div>
-                                <div hidden={this.state.effective} className="effectiveLabelContainer">
-                                  <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
-                                </div>
-                              </Stack>
-                            </Stack>
-                            <Stack horizontal className="grayContent padding padding-left padding-right">
-                              <Stack className="smallPadding padding-right controlPadding" grow={4}>
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Volumen base</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>NR base</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>GM base</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Inversión estimada</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                              </Stack>
-                              <Stack className="smallPadding padding-right" grow={4}>
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Volumen estimado</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>NR estimado</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>GM estimado</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>Inversión adicional (MKT)</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                              </Stack>
-                              <Stack className="smallPadding" grow={4}>
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>% volumen incremental</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>% NR incremental</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
-                                  <Label>% GM incremental</Label>
-                                  <Label className="toRight">Valor</Label>
-                                </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                              </Stack>
-                            </Stack>
-                          </Stack>
+                          );})}                          
                         </Stack>
                       </Stack>
                     </PivotItem>
@@ -1008,17 +916,17 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                   <Separator className="graySeparator separatorToTop" />
                   <Stack className="modalBottomContent" horizontal grow={12}>
                     <Stack grow={3}>
-                      <Label className="modalBottomContentHeader" onClick={() => this.setState({ effective: !this.state.effective })}>Efectividad</Label>
-                      <div hidden={!this.state.effective} className="effectiveLabelContainer">
+                      <Label className="modalBottomContentHeader">Efectividad</Label>
+                      <div hidden={!entity.IsEffective()} className="effectiveLabelContainer">
                         <span className="effectiveLabel">EFECTIVA</span>
                       </div>
-                      <div hidden={this.state.effective} className="effectiveLabelContainer">
+                      <div hidden={entity.IsEffective()} className="effectiveLabelContainer">
                         <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
                       </div>
                     </Stack>
                     <Stack grow={3}>
                       <Label className="modalBottomContentHeader">ROI Estimado total</Label>
-                      <Label className="modalBottomContentValue">0.92</Label>
+                      <Label className="modalBottomContentValue">{"$" + entity.GetROIAsString()}</Label>
                     </Stack>
                     <Stack grow={3}>
                       <Label className="modalBottomContentHeader">Inversión estimada total</Label>

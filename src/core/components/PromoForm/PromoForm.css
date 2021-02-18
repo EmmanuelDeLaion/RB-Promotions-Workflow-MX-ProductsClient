@@ -239,7 +239,8 @@
 }
 .summarySectionContainer
 {
-    min-height: 1078px;
+    /* min-height: 1078px; */
+    min-height: inherit;
 }
 .statusContainer i
 {
