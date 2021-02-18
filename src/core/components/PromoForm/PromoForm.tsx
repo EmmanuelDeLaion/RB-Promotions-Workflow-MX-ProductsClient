@@ -216,9 +216,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         </Stack>
                         {/* Promotion section */}
                         <Stack horizontal className="padding">
-                          <Stack grow={8} verticalAlign="start">
+                          <Stack grow={8} verticalAlign="start" className="fixedStructure">
                             <Stack grow={12} horizontal className="smallPadding">
-                              <Stack grow={6} className="padding-right controlPadding">
+                              <Stack grow={6} className="padding-right controlPadding fixedStructure">
                                 <TextField
                                   label="Nombre de la promoción"
                                   value={entity.Name}
@@ -231,7 +231,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   readOnly={readOnlyForm}
                                 />
                               </Stack>
-                              <Stack grow={6} className="padding-right controlPadding">
+                              <Stack grow={6} className="padding-right controlPadding fixedStructure">
                                 {!readOnlyForm ?
                                   <Dropdown
                                     placeholder="Seleccione un cliente"
@@ -264,11 +264,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               />
                             </Stack>
                           </Stack>
-                          <Stack grow={4} horizontal>
-                            <Stack verticalFill>
-                              <Separator vertical={true} styles={this.verticalSeparatorStyle}></Separator>
-                            </Stack>
-                            <Stack grow={12}>
+                          <Stack grow={4} horizontal className="fixedStructure">
+                            <Stack grow={12} className="grayBorderLeft">
                               <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
                                 <Label className="peopleLabel">Cabeza de canal</Label>
                                 <div style={{display: headOfChannel ? "block" : "none"}}>
@@ -300,7 +297,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Label className="peopleLabel">Canal (LP)</Label>
                                 <Label className="labelNotBold">{channel ? channel.Name : null}</Label>
                               </Stack>
-                              <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
+                              <Stack horizontal className="smallPadding padding-left peopleHeaderStyles noMarginBottom" verticalFill verticalAlign="center">
                                 <Label className="peopleLabel">Subcanal</Label>
                                 <Label className="labelNotBold">{subchannel ? subchannel.Value : null}</Label>
                               </Stack>
@@ -342,7 +339,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             </Dialog>
                           </Stack>
                           <Stack horizontal styles={this.repetitiveSectionStyle} className="padding">
-                            <Stack grow={8}>
+                            <Stack grow={8} className="fixedStructure">
                               <Stack styles={{ root: { maxHeight: "30px" } }} className="smallPadding padding-right" grow={6}>
                                 <Stack horizontal className="actividadTopadaContainer smallPadding-left">
                                   <Stack>
@@ -385,7 +382,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       value={selectedItem ? selectedItem.ShortDescription : ""} 
                                       required={!readOnlyForm}
                                       autoComplete="Off"
-                                      errorMessage={this.getValidationErrorMessage(selectedItem.ShortDescription)}
                                       onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
                                       readOnly={readOnlyForm}
                                     />
@@ -443,7 +439,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       required={selectedItem.RequiresDiscountPerPiece() && !readOnlyForm}
                                       autoComplete="Off"
                                       disabled={!selectedItem.RequiresDiscountPerPiece() }
-                                      errorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage(selectedItem.DiscountPerPiece) : null}
                                       onGetErrorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
                                       readOnly={readOnlyForm}
                                     />
@@ -477,7 +472,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       required={selectedItem.RequiresInvestment() && !readOnlyForm}
                                       autoComplete="Off"
                                       disabled={!selectedItem.RequiresInvestment() }
-                                      errorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage(selectedItem.Investment) : null}
                                       onGetErrorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
                                       readOnly={readOnlyForm}
                                     />
@@ -539,7 +533,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       required={selectedItem.RequiresRedemption() && !readOnlyForm}
                                       autoComplete="Off"
                                       disabled={!selectedItem.RequiresRedemption()}
-                                      errorMessage={selectedItem.RequiresRedemption() ? this.getValidationErrorMessage(selectedItem.Redemption) : null}
                                       onGetErrorMessage={selectedItem.RequiresRedemption() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }} 
                                       readOnly={readOnlyForm}
                                     />
@@ -547,10 +540,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 </Stack>
                               </Stack>
                             </Stack>
-                            <Stack grow={4}>
+                            <Stack grow={4} className="fixedStructure">
                               <Stack className="smallPadding" grow={4} horizontal>
-                                <Separator vertical={true} styles={this.verticalSeparatorStyle}></Separator>
-                                <Stack grow={12}>
+                                <Stack grow={12} className="grayBorderLeft">
                                   <Stack horizontal className="grayHeader padding padding-left padding-right">
                                     <Icon iconName="DietPlanNotebook" />
                                     <Label>Detalles de la promoción</Label>
@@ -609,19 +601,19 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           </Stack>
                           <Stack className="padding-bottom">
                             <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
-                              <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
+                              <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding fixedStructure">
                                 <Icon iconName="DietPlanNotebook" />
                                 <Label>Pre análisis</Label>
                               </Stack>
-                              <Stack grow={3} horizontalAlign="end">
+                              <Stack grow={3} horizontalAlign="end" className="fixedStructure">
                                 <Label>Inversión estimada</Label>
                                 <Label>{"$" + selectedItem.GetEstimatedInvestmentAsString()}</Label>
                               </Stack>
-                              <Stack grow={3} horizontalAlign="end">
+                              <Stack grow={3} horizontalAlign="end" className="fixedStructure">
                                 <Label>ROI Estimado por SKU</Label>
                                 <Label>{selectedItem.GetROIAsString()}</Label>
                               </Stack>
-                              <Stack grow={3} horizontalAlign="end">
+                              <Stack grow={3} horizontalAlign="end" className="fixedStructure">
                                 <Label>Efectividad</Label>
                                 <div hidden={!selectedItem.IsEffective()} className="effectiveLabelContainer">
                                   <span className="effectiveLabel">EFECTIVA</span>
@@ -633,31 +625,29 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             </Stack>
                             <Stack className="grayContent padding padding-left padding-right">
                               <Stack horizontal>
-                                <Stack grow={4} className="smallPadding padding-right controlPadding">                                  
+                                <Stack grow={4} className="smallPadding padding-right controlPadding fixedStructure">                                  
                                   <TextField
                                     label="Volumen base"
                                     onChange={this.onBaseVolumeChange.bind(this)}
                                     value={selectedItem.GetBaseVolumeAsString()}
                                     required={!readOnlyForm}
                                     autoComplete="Off"
-                                    errorMessage={this.getValidationErrorMessage(selectedItem.BaseVolume)}
                                     onGetErrorMessage={this.getValidationErrorMessage.bind(this)} 
                                     readOnly={readOnlyForm}
                                   />
                                 </Stack>
-                                <Stack grow={4} className="smallPadding padding-right controlPadding">
+                                <Stack grow={4} className="smallPadding padding-right controlPadding fixedStructure">
                                   <TextField
                                     label="Volumen incremental estimado"
                                     onChange={this.onEstimatedIncrementalVolumeChange.bind(this)}
                                     value={selectedItem.GetEstimatedIncrementalVolumeAsString()}
                                     required={!readOnlyForm}
                                     autoComplete="Off"
-                                    errorMessage={this.getValidationErrorMessage(selectedItem.EstimatedIncrementalVolume)}
                                     onGetErrorMessage={this.getValidationErrorMessage.bind(this)} 
                                     readOnly={readOnlyForm}
                                   />
                                 </Stack>
-                                <Stack grow={4} className="smallPadding padding-right controlPadding">                                  
+                                <Stack grow={4} className="smallPadding padding-right controlPadding fixedStructure">                                  
                                   <TextField
                                     label="Inversión adicional (MKT)"
                                     onChange={this.onAdditionalInvestmentChange.bind(this)}
@@ -668,7 +658,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 </Stack>
                               </Stack>                              
                               <Stack horizontal>
-                                <Stack className="smallPadding padding-right controlPadding" grow={4}>
+                                <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={4}>
                                   <Stack horizontal className="verticalPadding">
                                     <Label>Volume LY</Label>
                                     <Label className="toRight">{selectedItem.GetLastYearVolumeAsString()}</Label>
@@ -690,7 +680,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
-                                <Stack className="smallPadding padding-right" grow={4}>
+                                <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={4}>
                                   <Stack horizontal className="verticalPadding">
                                     <Label>Volume Average L 3 Months</Label>
                                     <Label className="toRight">{selectedItem.GetAverageVolumeL3MonthsAsString()}</Label>
@@ -707,7 +697,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
-                                <Stack className="smallPadding" grow={4}>
+                                <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={4}>
                                   <Stack horizontal className="verticalPadding">
                                     <Label>Total volumen estimado</Label>
                                     <Label className="toRight">{selectedItem.RequiresTotalEstimatedVolume() ? selectedItem.GetTotalEstimatedVolumeAsString() : "N/A"}</Label>
@@ -739,7 +729,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>{entity.GetStatusText()}</Stack>
                           </Stack>
                           <Stack horizontal className="padding">
-                            <Stack grow={8} verticalAlign="start">
+                            <Stack grow={8} verticalAlign="start" className="fixedStructure">
                               <Stack grow={12} className="grayContent padding padding-left padding-right">
                                 <Stack horizontal className="verticalPadding">
                                   <Label>Cliente</Label>
@@ -753,11 +743,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Separator className="graySeparator separatorToTop" />
                               </Stack>
                             </Stack>
-                            <Stack grow={4} horizontal>
-                              <Stack verticalFill>
-                                <Separator vertical={true} styles={this.verticalSeparatorStyle}></Separator>
-                              </Stack>
-                              <Stack grow={12}>
+                            <Stack grow={4} horizontal className="fixedStructure">
+                              <Stack grow={12} className="grayBorderLeft">
                                 <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
                                   <Label className="peopleLabel">Cabeza de canal</Label>
                                   <div style={{display: headOfChannel ? "block" : "none"}}>
@@ -799,19 +786,19 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           {entity.Items.map((item, index) => { return (                         
                             <Stack className="padding-bottom">
                               <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
-                                <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding">
+                                <Stack grow={3} horizontal className="verticalPadding preAnalisisPadding fixedStructure">
                                   <Icon iconName="DietPlanNotebook" />
                                   <Label>Pre análisis {item.AdditionalID}</Label>
                                 </Stack>
-                                <Stack grow={3} horizontalAlign="end">
+                                <Stack grow={3} horizontalAlign="end" className="fixedStructure">
                                   <Label>Inversión estimada</Label>
                                   <Label>{"$" + item.GetEstimatedInvestmentAsString()}</Label>
                                 </Stack>
-                                <Stack grow={3} horizontalAlign="end">
+                                <Stack grow={3} horizontalAlign="end" className="fixedStructure">
                                   <Label>ROI Estimado por SKU</Label>
                                   <Label>{item.GetROIAsString()}</Label>
                                 </Stack>
-                                <Stack grow={3} horizontalAlign="end">
+                                <Stack grow={3} horizontalAlign="end" className="fixedStructure">
                                   <Label>Efectividad</Label>
                                   <div hidden={!item.IsEffective()} className="effectiveLabelContainer">
                                     <span className="effectiveLabel">EFECTIVA</span>
@@ -822,7 +809,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 </Stack>
                               </Stack>
                               <Stack horizontal className="grayContent padding padding-left padding-right">
-                                <Stack className="smallPadding padding-right controlPadding" grow={4}>
+                                <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={4}>
                                   <Stack horizontal className="verticalPadding">
                                     <Label>Volumen base</Label>
                                     <Label className="toRight">{item.GetBaseVolumeAsString()}</Label>
@@ -849,7 +836,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
-                                <Stack className="smallPadding padding-right" grow={4}>
+                                <Stack className="smallPadding padding-right fixedStructure" grow={4}>
                                   <Stack horizontal className="verticalPadding">
                                     <Label>Volumen incremental estimado</Label>
                                     <Label className="toRight">{item.GetEstimatedIncrementalVolumeAsString()}</Label>
@@ -876,7 +863,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
-                                <Stack className="smallPadding" grow={4}>
+                                <Stack className="smallPadding fixedStructure" grow={4}>
                                   <Stack horizontal className="verticalPadding">
                                     <Label>Inversión adicional (MKT)</Label>
                                     <Label className="toRight">{item.GetAdditionalInvestmentAsString()}</Label>
@@ -915,7 +902,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                   <Label>Estado general de la promoción</Label>
                   <Separator className="graySeparator separatorToTop" />
                   <Stack className="modalBottomContent" horizontal grow={12}>
-                    <Stack grow={3}>
+                    <Stack grow={1}>
                       <Label className="modalBottomContentHeader">Efectividad</Label>
                       <div hidden={!entity.IsEffective()} className="effectiveLabelContainer">
                         <span className="effectiveLabel">EFECTIVA</span>
@@ -924,16 +911,16 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         <span className="effectiveLabel notEffectiveLabel">NO EFECTIVA</span>
                       </div>
                     </Stack>
-                    <Stack grow={3}>
+                    <Stack grow={1} className="fixedStructure">
                       <Label className="modalBottomContentHeader">ROI Estimado total</Label>
                       <Label className="modalBottomContentValue">{"$" + entity.GetROIAsString()}</Label>
                     </Stack>
-                    <Stack grow={3}>
+                    <Stack grow={1} className="fixedStructure">
                       <Label className="modalBottomContentHeader">Inversión estimada total</Label>
                       <Label className="modalBottomContentValue">{"$" + entity.GetTotalEstimatedInvestmentAsString()}</Label>
                     </Stack>
-                    <Stack grow={3} className="modalBottomButtonsContainer" horizontal horizontalAlign="end">
-                      <Stack>
+                    <Stack grow={2} className="modalBottomButtonsContainer fixedStructure" horizontal horizontalAlign="end">
+                      <Stack grow={12}>
                         <DefaultButton 
                           style={{display: this.state.viewModel.ShowSaveButton ? "block" : "none"}}
                           text="Guardar borrador" 
@@ -1511,22 +1498,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     tertiaryText: 'In a meeting',
     optionalText: 'Available at 4:00pm',
   };
-  
-  private verticalSeparatorStyle = {
-    root:
-      [{
-        padding: '0px !important',
-        marginBottom: '2px',
-        selectors: {
-          '::after': {
-            background: '#707070',
-            minHeight: '100%',
-            padding: '0px !important'
-          }
-        }
-      }]
-  };
-  
+    
   private confirmationDialogStyles = { main: { maxWidth: '450px' } };
     
   private _customPromotionPivotItemRenderer(promoID: string, link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {

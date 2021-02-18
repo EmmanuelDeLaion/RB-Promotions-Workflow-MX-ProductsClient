@@ -239,8 +239,7 @@
 }
 .summarySectionContainer
 {
-    /* min-height: 1078px; */
-    min-height: inherit;
+    min-height: 800px;
 }
 .statusContainer i
 {
@@ -274,18 +273,19 @@
 {
     min-height: 36px !important;
 }
-
 .multilineControlPadding
 {
     min-height: 114px;
 }
-
-/*
-.smallPadding
+.mainModal .fixedStructure
 {
-    border: 2px solid green;
+flex-basis: 0;
 }
-.padding
+.grayBorderLeft
 {
-    border: 2px solid red;
-}  */
+    border-left: 1px solid #575554;
+}
+.noMarginBottom
+{
+    margin-bottom: 0px;
+}
