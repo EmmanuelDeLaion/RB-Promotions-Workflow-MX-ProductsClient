@@ -6,3 +6,5 @@ export * from './Product';
 export * from './ClientProduct';
 export * from './CategoryType';
 export * from './LastYearVolumes';
+export * from './NotificationTemplate';
+export * from './NotificationTemplateId';

@@ -6,7 +6,7 @@ $Credentials = New-Object System.Management.Automation.PSCredential ($userName, 
 Connect-PnPOnline -Url $siteUrl –Credentials $Credentials
 
 $templatePath = "../template.xml"
-Get-PnPProvisioningTemplate -Out $templatePath -IncludeAllClientSidePages -Force -Handlers "Lists", "Pages" -ListsToExtract "Aprobadores", "Canales", "Categorías", "Categorías de producto", "Clientes", "Configuración", "Marcas", "Productos", "Productos por cliente", "Promo items", "Promociones", "Subcanales", "Tipos", "Unidades de negocio", "Volúmenes del último año"
+Get-PnPProvisioningTemplate -Out $templatePath -IncludeAllClientSidePages -Force -Handlers "Lists", "Pages" -ListsToExtract "Aprobadores", "Canales", "Categorías", "Categorías de producto", "Clientes", "Configuración", "EmailSender", "Marcas", "NotificationTemplates", "Productos", "Productos por cliente", "Promo items", "Promociones", "Subcanales", "Tipos", "Unidades de negocio", "Volúmenes del último año"
 
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Aprobadores' -Query '' -Fields 'Role'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Canales' -Query '' -Fields 'Title'
@@ -14,7 +14,9 @@ Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Categorías' -Qu
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List "Categorías de producto" -Query '' -Fields 'Title'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Clientes' -Query '' -Fields 'Title','Channel','Subchannel'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Configuración' -Query '' -Fields 'Title','Value'
+Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'EmailSender' -Query '' -Fields 'Title','Cc', 'Subject', 'Body'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List "Marcas" -Query '' -Fields 'Title'
+Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List "NotificationTemplates" -Query '' -Fields 'Title', 'To', 'Cc', 'Subject', 'Body'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List "Productos" -Query '' -Fields 'Title','SKUDescription','BusinessUnit','Brand','Category'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List "Productos por cliente" -Query '' -Fields 'Title','Client','Product','Price','COGS'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Subcanales' -Query '' -Fields 'Title','Channel'

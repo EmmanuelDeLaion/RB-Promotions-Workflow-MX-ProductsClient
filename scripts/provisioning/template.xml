@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2020/02/ProvisioningSchema">
   <pnp:Preferences Generator="OfficeDevPnP.Core, Version=3.28.2012.0, Culture=neutral, PublicKeyToken=5e633289e95c321a" />
-  <pnp:Templates ID="CONTAINER-TEMPLATE-BC14521EB1CA4FA08E43189507C72D98">
-    <pnp:ProvisioningTemplate ID="TEMPLATE-BC14521EB1CA4FA08E43189507C72D98" Version="1" BaseSiteTemplate="GROUP#0">
+  <pnp:Templates ID="CONTAINER-TEMPLATE-9AF2ED4D15044D528257C0FDE0E47EC7">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-9AF2ED4D15044D528257C0FDE0E47EC7" Version="1" BaseSiteTemplate="GROUP#0">
       <pnp:Lists>
         <pnp:ListInstance Title="Promo items" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/PromoItems" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PromoItems/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PromoItems/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PromoItems/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -418,6 +418,33 @@
             </pnp:DataRow>
           </pnp:DataRows>
         </pnp:ListInstance>
+        <pnp:ListInstance Title="EmailSender" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/EmailSender" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/EmailSender/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/EmailSender/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/EmailSender/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{CBC7CC64-52AA-4260-A219-F81C74F56093}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/EmailSender/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="Cc" />
+                <FieldRef Name="Subject" />
+                <FieldRef Name="Body" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+              <CustomFormatter />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field DisplayName="Cc" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="Cc" Title="Cc" Type="Text" ID="{60e1f91f-5daf-4be6-8a85-cd322572e39b}" SourceID="{{listid:EmailSender}}" StaticName="Cc" ColName="nvarchar4" RowOrdinal="0" />
+            <Field DisplayName="Subject" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="Subject" Title="Subject" Type="Text" ID="{30bf6396-a5ad-44e2-9e6c-f4fd8ebf4a2b}" SourceID="{{listid:EmailSender}}" StaticName="Subject" ColName="nvarchar5" RowOrdinal="0" />
+            <Field AppendOnly="FALSE" DisplayName="Body" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="Body" RichText="FALSE" RichTextMode="Compatible" Title="Body" Type="Note" ID="{a8a33a6a-ea3f-4930-9b68-1a84fea50b05}" SourceID="{{listid:EmailSender}}" StaticName="Body" ColName="ntext2" RowOrdinal="0" />
+          </pnp:Fields>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://northcentralus1.pushnp.svc.ms/notifications?token=f5c3cbd1-d6d3-4965-92b9-56e5d18291f4" ExpiresInDays="1" />
+          </pnp:Webhooks>
+        </pnp:ListInstance>
         <pnp:ListInstance Title="Marcas" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Brands" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Brands/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Brands/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Brands/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
@@ -482,6 +509,58 @@
               <pnp:DataValue FieldName="Title">Enfamil 1 RTD</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="NotificationTemplates" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/NotificationTemplates" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/NotificationTemplates/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/NotificationTemplates/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/NotificationTemplates/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{39DE4F31-3FBD-446A-89E5-844C2DE332D2}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/NotificationTemplates/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query />
+              <ViewFields>
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="To" />
+                <FieldRef Name="Cc" />
+                <FieldRef Name="Subject" />
+                <FieldRef Name="Body" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+              <CustomFormatter />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field DisplayName="To" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="To" Title="To" Type="Text" ID="{06245f56-8fa4-46cc-9a05-0bc754434d23}" SourceID="{{listid:NotificationTemplates}}" StaticName="To" ColName="nvarchar4" RowOrdinal="0" />
+            <Field DisplayName="Cc" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="Cc" Title="Cc" Type="Text" ID="{8edc1ac2-26d5-45ee-9483-77ceedb6e81f}" SourceID="{{listid:NotificationTemplates}}" StaticName="Cc" ColName="nvarchar5" RowOrdinal="0" />
+            <Field DisplayName="Subject" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="Subject" Title="Subject" Type="Text" ID="{7b562099-771f-45d5-8b17-ad8e11339e2a}" SourceID="{{listid:NotificationTemplates}}" StaticName="Subject" ColName="nvarchar6" RowOrdinal="0" />
+            <Field DisplayName="Body" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="Body" Title="Body" Type="Text" ID="{72727da4-d405-4e5c-a194-d32dca1a64df}" SourceID="{{listid:NotificationTemplates}}" StaticName="Body" ColName="nvarchar7" RowOrdinal="0" />
+          </pnp:Fields>
+          <pnp:DataRows UpdateBehavior="Overwrite">
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">1126b092-4d0b-4db6-b615-ebbebe3b3486</pnp:DataValue>
+              <pnp:DataValue FieldName="To">administrator@sgiovannini.onmicrosoft.com;santiagogiovannini@gmail.com</pnp:DataValue>
+              <pnp:DataValue FieldName="Cc">administrator@sgiovannini.onmicrosoft.com;santiagogiovannini@gmail.com</pnp:DataValue>
+              <pnp:DataValue FieldName="Subject">TaskAssigned-{{TITLE}}</pnp:DataValue>
+              <pnp:DataValue FieldName="Body" />
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">c3d52133-1428-41a0-81fa-787b6d9f5bec</pnp:DataValue>
+              <pnp:DataValue FieldName="To">administrator@sgiovannini.onmicrosoft.com;santiagogiovannini@gmail.com</pnp:DataValue>
+              <pnp:DataValue FieldName="Cc">administrator@sgiovannini.onmicrosoft.com;santiagogiovannini@gmail.com</pnp:DataValue>
+              <pnp:DataValue FieldName="Subject">TaskRejected-{{TITLE}}</pnp:DataValue>
+              <pnp:DataValue FieldName="Body" />
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">04953770-d7f8-4223-aee8-1bf86bf777d3</pnp:DataValue>
+              <pnp:DataValue FieldName="To">administrator@sgiovannini.onmicrosoft.com;santiagogiovannini@gmail.com</pnp:DataValue>
+              <pnp:DataValue FieldName="Cc">administrator@sgiovannini.onmicrosoft.com;santiagogiovannini@gmail.com</pnp:DataValue>
+              <pnp:DataValue FieldName="Subject">WorkflowApproved-{{TITLE}}</pnp:DataValue>
+              <pnp:DataValue FieldName="Body" />
+            </pnp:DataRow>
+          </pnp:DataRows>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://northcentralus1.pushnp.svc.ms/notifications?token=3ad493e7-df08-42f3-b1d7-c82cd849ef04" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Productos" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Products" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Products/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Products/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Products/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
