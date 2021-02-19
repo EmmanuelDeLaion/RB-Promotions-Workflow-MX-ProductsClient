@@ -2,11 +2,14 @@ import * as React from 'react';
 import Select from 'react-select';
 import { Label } from "office-ui-fabric-react";
 import { Product } from '../../model/Common';
+import { CommonHelper } from '../../common/CommonHelper';
 
 interface IProductSelectorProps {
     products: Product[];
     onChanged: (product: Product) => void;
     value: Product;
+    errorMessage: string;
+    required: boolean;
 }
 
 export class ProductSelector extends React.Component<IProductSelectorProps, {}> {
@@ -27,7 +30,7 @@ export class ProductSelector extends React.Component<IProductSelectorProps, {}> 
         const selectStyles = {
             control: (styles: any) => ({ 
                 ...styles, 
-                borderColor: "rgb(96, 94, 92) !important",
+                borderColor: (CommonHelper.IsNullOrEmpty(this.props.errorMessage) ? "rgb(96, 94, 92)" : "rgb(164, 38, 44)") + " !important",
                 minHeight: "32px",
                 boxShadow: "0"
             }),
@@ -52,7 +55,7 @@ export class ProductSelector extends React.Component<IProductSelectorProps, {}> 
 
         return (
             <div>
-                <Label required={true}>SKU: </Label>
+                <Label required={this.props.required}>SKU: </Label>
                 <Select 
                     options={options} 
                     theme={selectTheme}
@@ -60,6 +63,7 @@ export class ProductSelector extends React.Component<IProductSelectorProps, {}> 
                     onChange={this.onChange.bind(this)} 
                     value={value}
                 />
+                <div hidden={CommonHelper.IsNullOrEmpty(this.props.errorMessage)} role="alert" className="errorMessage">{this.props.errorMessage}</div>
             </div>
         );
     }

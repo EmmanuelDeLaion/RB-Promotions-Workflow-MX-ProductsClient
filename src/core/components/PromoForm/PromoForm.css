@@ -289,3 +289,16 @@ flex-basis: 0;
 {
     margin-bottom: 0px;
 }
+
+.errorMessage {
+    color: rgb(164, 38, 44);
+    font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 12px;
+    font-weight: 400;
+    padding-top: 5px;
+}
+
+.datePickerError .ms-DatePicker .ms-TextField-fieldGroup {
+    border: 1px solid rgb(164, 38, 44);
+}

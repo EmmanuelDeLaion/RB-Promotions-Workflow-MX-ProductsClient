@@ -32,14 +32,13 @@ import {
   FontWeights,
   mergeStyleSets,
   Spinner,
-  PersonaPresence,
   DialogType,
   IIconProps
 } from 'office-ui-fabric-react';
 import styles from './PromoForm.module.scss';
 import { Category, Client, ClientProduct, Product, Type } from '../../model/Common';
 import { ClientRepository } from '../../data';
-import { PromoItem, PromoWorkflowState } from '../../model/Promo';
+import { PromoItem } from '../../model/Promo';
 import { Constants } from '../../Constants';
 import { LookupValue } from '../../infrastructure';
 import { ProductSelector } from '../ProductSelector/ProductSelector';
@@ -52,6 +51,7 @@ import { initializeTheme } from './Theme';
 import { TestImages } from '@uifabric/example-data';
 import { LastYearVolumesRepository } from '../../data/LastYearVolumesRepository';
 import { LastYearVolumes } from '../../model/Common/LastYearVolumes';
+import { RBDatePicker } from '../RBDatePicker/RBDatePicker';
 
 initializeTheme();
 const theme = getTheme();
@@ -73,7 +73,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       hideDeleteProductDialog: true,
       errorMessage: "",
       hideModalConfirmationDialog: true,
-      effective: true,
       promotionTitle: "",
       client: "",
       hideSavingSpinnerConfirmationDialog: true
@@ -259,7 +258,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 onChange={this.onActivityObjectiveChange.bind(this)}
                                 value={entity.ActivityObjective}
                                 autoComplete="Off"
-                                errorMessage={this.getValidationErrorMessage(entity.ActivityObjective)}                                
+                                errorMessage={this.getValidationErrorMessage(entity.ActivityObjective)}
                                 readOnly={readOnlyForm}
                               />
                             </Stack>
@@ -350,7 +349,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         onText="Si" 
                                         offText="No" 
                                         onChange={this.onCappedActivityChanged.bind(this)} 
-                                        checked={selectedItem.CappedActivity}
+                                        checked={selectedItem.CappedActivity} 
+                                        disabled={readOnlyForm}
                                     />
                                   </Stack>
                                 </Stack>
@@ -382,7 +382,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       value={selectedItem ? selectedItem.ShortDescription : ""} 
                                       required={!readOnlyForm}
                                       autoComplete="Off"
-                                      onGetErrorMessage={this.getValidationErrorMessage.bind(this)}
+                                      errorMessage={this.getValidationErrorMessage(selectedItem.ShortDescription)}
                                       readOnly={readOnlyForm}
                                     />
                                   </Stack>
@@ -392,6 +392,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         products={this.GetFilteredProducts()}
                                         onChanged={this.onProductChanged.bind(this)}
                                         value={selectedItem.Product}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.Product)}
+                                        required={readOnlyForm}
                                       />:
                                       <TextField
                                         label="SKU"
@@ -419,17 +421,20 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     }                                    
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
-                                    <DatePicker
-                                      label="Fecha de comienzo"
-                                      firstDayOfWeek={DayOfWeek.Monday}
-                                      strings={Constants.Miscellaneous.DayPickerStrings}
-                                      placeholder="Seleccione una fecha..."
-                                      ariaLabel="Seleccione una fecha"
-                                      value={selectedItem.StartDate!}
-                                      onSelectDate={this.onSelectStartDate.bind(this)}   
-                                      formatDate={CommonHelper.formatDate}
-                                      isRequired={!readOnlyForm}
-                                    />
+                                    {!readOnlyForm ?
+                                      <RBDatePicker 
+                                        label="Fecha de comienzo"
+                                        onSelectDate={this.onSelectStartDate.bind(this)}
+                                        required={!readOnlyForm}
+                                        value={selectedItem.StartDate!}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.StartDate)}
+                                      />:
+                                      <TextField
+                                        label="Fecha de comienzo"
+                                        value={CommonHelper.formatDate(selectedItem.StartDate)}
+                                        readOnly={true}
+                                      />
+                                    }
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
                                     <TextField 
@@ -439,7 +444,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       required={selectedItem.RequiresDiscountPerPiece() && !readOnlyForm}
                                       autoComplete="Off"
                                       disabled={!selectedItem.RequiresDiscountPerPiece() }
-                                      onGetErrorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
+                                      errorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage(selectedItem.GetDiscountPerPieceAsString()) : CommonHelper.EmptyString}
                                       readOnly={readOnlyForm}
                                     />
                                   </Stack>
@@ -472,7 +477,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       required={selectedItem.RequiresInvestment() && !readOnlyForm}
                                       autoComplete="Off"
                                       disabled={!selectedItem.RequiresInvestment() }
-                                      onGetErrorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }}
+                                      errorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage(selectedItem.GetInvestmentAsString()) : CommonHelper.EmptyString}
                                       readOnly={readOnlyForm}
                                     />
                                   </Stack>
@@ -513,17 +518,20 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     }                                    
                                   </Stack>
                                   <Stack className="padding-right controlPadding">
-                                    <DatePicker
-                                      label="Fecha fin"
-                                      firstDayOfWeek={DayOfWeek.Monday}
-                                      strings={Constants.Miscellaneous.DayPickerStrings}
-                                      placeholder="Seleccione una fecha..."
-                                      ariaLabel="Seleccione una fecha"
-                                      value={selectedItem.EndDate!}
-                                      onSelectDate={this.onSelectEndDate.bind(this)}
-                                      formatDate={CommonHelper.formatDate}
-                                      isRequired={true}
-                                    />
+                                    {!readOnlyForm ?
+                                      <RBDatePicker 
+                                        label="Fecha fin"
+                                        onSelectDate={this.onSelectEndDate.bind(this)}
+                                        required={!readOnlyForm}
+                                        value={selectedItem.EndDate!}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.EndDate)}
+                                      />:
+                                      <TextField
+                                        label="Fecha fin"
+                                        value={CommonHelper.formatDate(selectedItem.EndDate)}
+                                        readOnly={true}
+                                      />
+                                    }
                                   </Stack>                                  
                                   <Stack className="padding-right controlPadding">
                                     <TextField
@@ -533,7 +541,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       required={selectedItem.RequiresRedemption() && !readOnlyForm}
                                       autoComplete="Off"
                                       disabled={!selectedItem.RequiresRedemption()}
-                                      onGetErrorMessage={selectedItem.RequiresRedemption() ? this.getValidationErrorMessage.bind(this) : () => { return CommonHelper.EmptyString; }} 
+                                      errorMessage={selectedItem.RequiresRedemption() ? this.getValidationErrorMessage(selectedItem.GetRedemptionAsString()) : CommonHelper.EmptyString} 
                                       readOnly={readOnlyForm}
                                     />
                                   </Stack>
@@ -632,7 +640,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     value={selectedItem.GetBaseVolumeAsString()}
                                     required={!readOnlyForm}
                                     autoComplete="Off"
-                                    onGetErrorMessage={this.getValidationErrorMessage.bind(this)} 
+                                    errorMessage={this.getValidationErrorMessage(selectedItem.GetBaseVolumeAsString())} 
                                     readOnly={readOnlyForm}
                                   />
                                 </Stack>
@@ -643,7 +651,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     value={selectedItem.GetEstimatedIncrementalVolumeAsString()}
                                     required={!readOnlyForm}
                                     autoComplete="Off"
-                                    onGetErrorMessage={this.getValidationErrorMessage.bind(this)} 
+                                    errorMessage={this.getValidationErrorMessage(selectedItem.GetEstimatedIncrementalVolumeAsString())} 
                                     readOnly={readOnlyForm}
                                   />
                                 </Stack>
@@ -1348,7 +1356,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
           hideSavingSpinnerConfirmationDialog:false
       });
 
-      PromoService.Submit(this.state.viewModel.Entity).then(() => {
+/*       PromoService.Submit(this.state.viewModel.Entity).then(() => {
           this.setState({
               formSubmitted: true,
               resultIsOK: true
@@ -1356,7 +1364,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       }).catch((err) => {
           console.error(err);
           this.setState({ formSubmitted: true, errorMessage: err});
-      });
+      }); */
     }
 
     private approve(): void {
