@@ -48,5 +48,7 @@ export namespace Constants {
 
             invalidInputErrorMessage: 'Formato de fecha inválido.'
         };
+
+        public static ClearSelectionText = "--- Borrar selección ---";
     }
 }

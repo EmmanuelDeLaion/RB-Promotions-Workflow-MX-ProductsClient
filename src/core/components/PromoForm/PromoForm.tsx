@@ -13,8 +13,6 @@ import {
   Dropdown,
   IDropdownOption,
   Toggle,
-  DayOfWeek,
-  DatePicker,
   Label,  
   Modal,
   IconButton,
@@ -139,27 +137,21 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             }) : [];
 
         const businessUnits: Array<{ key: number, text: string }> =
-          this.state.viewModel.BusinessUnits != null ?
-            (this.state.viewModel.BusinessUnits as Array<LookupValue>).map((item): { key: number, text: string } => {
+          this.GetFilteredBUs() != null ?
+            (this.GetFilteredBUs() as Array<LookupValue>).map((item): { key: number, text: string } => {
               return { key: item.ItemId, text: item.Value };
             }) : [];
 
         const brands: Array<{ key: number, text: string }> =
-          this.state.viewModel.Brands != null ?
-            (this.state.viewModel.Brands as Array<LookupValue>).map((item): { key: number, text: string } => {
+          this.GetFilteredBrands() != null ?
+            (this.GetFilteredBrands() as Array<LookupValue>).map((item): { key: number, text: string } => {
               return { key: item.ItemId, text: item.Value };
             }) : [];
 
         const productCategories: Array<{ key: number, text: string }> =
-          this.state.viewModel.ProductCategories != null ?
-            (this.state.viewModel.ProductCategories as Array<LookupValue>).map((item): { key: number, text: string } => {
+          this.GetFilteredProductCategories() != null ?
+            (this.GetFilteredProductCategories() as Array<LookupValue>).map((item): { key: number, text: string } => {
               return { key: item.ItemId, text: item.Value };
-            }) : [];
-
-        const products: Array<{ key: number, text: string }> =
-          this.state.viewModel.Products != null ?
-            (this.state.viewModel.Products as Array<Product>).map((item): { key: number, text: string } => {
-              return { key: item.ItemId, text: item.SKUNumber + ' - ' + item.SKUDescription };
             }) : [];
 
         //#endregion
@@ -1194,32 +1186,86 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         return filteredProducts;
     }
 
-    private onBusinessUnitChanged(item: IDropdownOption) {        
-        const businessUnit = this.state.viewModel.BusinessUnits.filter(x => x.ItemId === item.key as number)[0];
+    private GetFilteredBrands(): LookupValue[] {
+      const filteredBrands = [];
+      const map = new Map();
+      
+      for (const item of this.GetFilteredProducts().map((p) => p.Brand)) {
+          if(!map.has(item.ItemId)){
+              map.set(item.ItemId, true);
+              filteredBrands.push(item);
+          }
+      }
 
+      if(this.state.viewModel.Entity.Items[this.state.selectedIndex].Brand != null)
+        filteredBrands.unshift(new LookupValue({Value: Constants.Miscellaneous.ClearSelectionText}));
+
+      return filteredBrands;
+    }
+
+    private GetFilteredBUs(): LookupValue[] {
+      const filteredBUs = [];
+      const map = new Map();
+      
+      for (const item of this.GetFilteredProducts().map((p) => p.BusinessUnit)) {
+          if(!map.has(item.ItemId)){
+              map.set(item.ItemId, true);
+              filteredBUs.push(item);
+          }
+      }
+
+      if(this.state.viewModel.Entity.Items[this.state.selectedIndex].BusinessUnit != null)
+        filteredBUs.unshift(new LookupValue({Value: Constants.Miscellaneous.ClearSelectionText}));
+
+      return filteredBUs;
+    }
+
+    private GetFilteredProductCategories(): LookupValue[] {
+      const filteredCategories = [];
+      const map = new Map();
+      
+      for (const item of this.GetFilteredProducts().map((p) => p.Category)) {
+          if(!map.has(item.ItemId)){
+              map.set(item.ItemId, true);
+              filteredCategories.push(item);
+          }
+      }
+
+      if(this.state.viewModel.Entity.Items[this.state.selectedIndex].ProductCategory != null)
+        filteredCategories.unshift(new LookupValue({Value: Constants.Miscellaneous.ClearSelectionText}));
+
+      return filteredCategories;
+    }
+
+    private onBusinessUnitChanged(item: IDropdownOption) {        
         this.setState((state) => {         
             state.viewModel.Entity.Items[this.state.selectedIndex].Product = null;
-            state.viewModel.Entity.Items[this.state.selectedIndex].BusinessUnit = businessUnit.ItemId ? businessUnit : null;
+            state.viewModel.Entity.Items[this.state.selectedIndex].BusinessUnit = item.key ? new LookupValue({
+              ItemId: item.key as number, 
+              Value: item.text
+            }) : null;
             return state;
         });
     }
 
     private onBrandChanged(item: IDropdownOption) {        
-        const brand = this.state.viewModel.Brands.filter(x => x.ItemId === item.key as number)[0];
-
         this.setState((state) => {  
             state.viewModel.Entity.Items[this.state.selectedIndex].Product = null;
-            state.viewModel.Entity.Items[this.state.selectedIndex].Brand = brand.ItemId ? brand : null;
+            state.viewModel.Entity.Items[this.state.selectedIndex].Brand = item.key ? new LookupValue({
+              ItemId: item.key as number, 
+              Value: item.text
+            }) : null;
             return state;
         });
     }
 
     private onProductCategoryChanged(item: IDropdownOption) {        
-        const productCategory = this.state.viewModel.ProductCategories.filter(x => x.ItemId === item.key as number)[0];
-
         this.setState((state) => {      
             state.viewModel.Entity.Items[this.state.selectedIndex].Product = null;      
-            state.viewModel.Entity.Items[this.state.selectedIndex].ProductCategory = productCategory.ItemId ? productCategory : null;
+            state.viewModel.Entity.Items[this.state.selectedIndex].ProductCategory = item.key ? new LookupValue({
+              ItemId: item.key as number, 
+              Value: item.text
+            }) : null;
             return state;
         });
     }
@@ -1356,7 +1402,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
           hideSavingSpinnerConfirmationDialog:false
       });
 
-/*       PromoService.Submit(this.state.viewModel.Entity).then(() => {
+      PromoService.Submit(this.state.viewModel.Entity).then(() => {
           this.setState({
               formSubmitted: true,
               resultIsOK: true
@@ -1364,7 +1410,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       }).catch((err) => {
           console.error(err);
           this.setState({ formSubmitted: true, errorMessage: err});
-      }); */
+      });
     }
 
     private approve(): void {
@@ -1487,24 +1533,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     root: {
       minHeight: 320,
     },
-  };
-  
-  private examplePersona: IPersonaSharedProps = {
-    imageUrl: TestImages.personaMale,
-    imageInitials: 'JS',
-    text: 'John Smith',
-    secondaryText: 'Cabeza de Canal',
-    tertiaryText: 'In a meeting',
-    optionalText: 'Available at 4:00pm',
-  };
-  
-  private examplePersona2: IPersonaSharedProps = {
-    imageUrl: TestImages.personaFemale,
-    imageInitials: 'AL',
-    text: 'Annie Lindqvist',
-    secondaryText: 'Gerente KAM',
-    tertiaryText: 'In a meeting',
-    optionalText: 'Available at 4:00pm',
   };
     
   private confirmationDialogStyles = { main: { maxWidth: '450px' } };
