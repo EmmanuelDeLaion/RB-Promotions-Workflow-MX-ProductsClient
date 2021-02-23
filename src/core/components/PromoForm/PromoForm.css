@@ -266,7 +266,7 @@
 }
 .controlPadding
 {
-    min-height: 70px;
+    min-height: 82px;
 }
 
 .detailsControlPadding
@@ -301,4 +301,10 @@ flex-basis: 0;
 
 .datePickerError .ms-DatePicker .ms-TextField-fieldGroup {
     border: 1px solid rgb(164, 38, 44);
+}
+
+.workflowCommentsModal .ms-Dialog-main
+{
+    width: 700px;
+    max-width: initial;
 }

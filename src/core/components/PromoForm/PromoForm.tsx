@@ -546,52 +546,46 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <Label>Detalles de la promoción</Label>
                                   </Stack>
                                   <Stack className="grayContent smallPadding padding-left padding-right" verticalFill>
-                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                    <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                       <Label>Precio neto OFF</Label>
                                       <Label className="toRight">{selectedItem.RequiresNetPrice() ? ("$" + selectedItem.GetNetPriceAsString()) : "N/A"}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                    <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                       <Label>% Descuento</Label>
                                       <Label className="toRight">{selectedItem.RequiresDiscountPerPiece() ? (selectedItem.GetDiscountPercentageAsString() + "%") : "N/A"}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                    <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                       <Label>BEP NR</Label>
                                       <Label className="toRight">{selectedItem.GetBEPNRAsString() + "%"}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
-                                      <Label>COGS</Label>
-                                      <Label className="toRight">{selectedItem.GetCOGSAsString()}</Label>
-                                    </Stack>
-                                    <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                    <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                       <Label>GM %NR</Label>
                                       <Label className="toRight">{selectedItem.GetGMPercentageNRAsString() + "%"}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
+                                    <Stack verticalFill horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
                                       <Label>GM %NR con promo</Label>
                                       <Label className="toRight">{selectedItem.RequiresDiscountPerPiece() ? selectedItem.GetGMPercentageNRWithPromoAsString() + "%" : "N/A"}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
+                                    <Stack verticalFill horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
                                       <Label>GM Base Unit</Label>
                                       <Label className="toRight">{"$" + selectedItem.GetGMBaseUnitAsString()}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
+                                    <Stack verticalFill horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
                                       <Label>GM Promo Unit</Label>
                                       <Label className="toRight">{"$" + selectedItem.GetGMPromoUnitAsString()}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                    <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                       <Label>BEP GM</Label>
                                       <Label className="toRight">{selectedItem.RequiresDiscountPerPiece() ? (selectedItem.GetBEPGMAsString() + "%") : "N/A"}</Label>
                                     </Stack>
                                     <Separator className="graySeparator separatorToTop" />
-                                    <Stack verticalFill></Stack>
                                   </Stack>
                                 </Stack>
                               </Stack>
@@ -961,37 +955,46 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         <Dialog
                           hidden={this.state.hideActionConfirmationDialog}
                           styles={{ main: { width: '450px important!' } }}
+                          className="workflowCommentsModal"
                           dialogContentProps={{
                             title:this.state.actionConfirmationDialogTitle
                           }}>
-                          <div>  
-                            <TextField 
-                              label={"Comentarios" + (this.state.actionConfirmationDialogType == ActionConfirmationType.Approve ? " (opcional)" : "")}
-                              required={this.state.actionConfirmationDialogType == ActionConfirmationType.Reject}
-                              multiline={true}
-                              value={this.state.actionsComments}
-                              onChange={this.onActionCommentsChange.bind(this)}
-                              rows={3}
-                              autoComplete="Off"   
-                              errorMessage={this.state.enableActionValidation && CommonHelper.IsNullOrEmpty(this.state.actionsComments) ? Constants.Messages.RequiredField : ""}
-                            />
-                            <PrimaryButton                              
-                              text="Confirmar" 
-                              allowDisabledFocus 
-                              onClick={this.confirmAction.bind(this)} 
-                              disabled={!this.state.enableSubmit}                               
-                            />
-                            <DefaultButton                               
-                              text="Cancelar" 
-                              allowDisabledFocus 
-                              onClick={() => {this.setState({
-                                hideActionConfirmationDialog: true,
-                                actionsComments: CommonHelper.EmptyString,
-                                enableActionValidation: false                               
-                              });}}
-                              disabled={!this.state.enableSubmit} 
-                            />
-                          </div>
+                          <Stack>
+                            <Stack>
+                              <TextField 
+                                  label={"Comentarios" + (this.state.actionConfirmationDialogType == ActionConfirmationType.Approve ? " (opcional)" : "")}
+                                  required={this.state.actionConfirmationDialogType == ActionConfirmationType.Reject}
+                                  multiline={true}
+                                  value={this.state.actionsComments}
+                                  onChange={this.onActionCommentsChange.bind(this)}
+                                  rows={3}
+                                  autoComplete="Off"   
+                                  errorMessage={this.state.enableActionValidation && CommonHelper.IsNullOrEmpty(this.state.actionsComments) ? Constants.Messages.RequiredField : ""}
+                                />
+                            </Stack>
+                            <Stack horizontal className="padding toRight">
+                              <Stack className="padding-right">
+                                <PrimaryButton                              
+                                  text="Confirmar" 
+                                  allowDisabledFocus 
+                                  onClick={this.confirmAction.bind(this)} 
+                                  disabled={!this.state.enableSubmit}
+                                />
+                              </Stack>
+                              <Stack>
+                                <DefaultButton                               
+                                  text="Cancelar" 
+                                  allowDisabledFocus 
+                                  onClick={() => {this.setState({
+                                    hideActionConfirmationDialog: true,
+                                    actionsComments: CommonHelper.EmptyString,
+                                    enableActionValidation: false                               
+                                  });}}
+                                  disabled={!this.state.enableSubmit} 
+                                />
+                              </Stack>
+                            </Stack>
+                          </Stack>
                         </Dialog>
                       </Stack>
                       <Stack grow={6}>
