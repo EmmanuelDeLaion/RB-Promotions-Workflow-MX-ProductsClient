@@ -23,7 +23,7 @@ export class NotificacionsManager {
         console.log(template.Subject);
         console.log(template.Body);
 
-        var replacements = NotificacionsManager.GetReplacementCollection();
+        var replacements = NotificacionsManager.GetReplacementCollection(notificationTemplateId, entity, to, cc);
 
         replacements.forEach((value: string, key: string) => 
             template.Subject = template.Subject.replace(key, value));
@@ -43,11 +43,17 @@ export class NotificacionsManager {
             template.Body);
     }
 
-    private static GetReplacementCollection(): Map<string, string>
+    private static GetReplacementCollection(notificationTemplateId: NotificationTemplateId, entity: Promo, to: string, cc?: string): Map<string, string>
     {
         let retVal = new Map<string, string>();
 
-        retVal.set("{{TITLE}}", "THIS IS THE TITLE!!!");
+        retVal.set("{{ACTIVITY_OBJECTIVE}}", entity.ActivityObjective);
+        retVal.set("{{APPROVAL_AMOUNT_LIMIT}}", entity.ApprovalAmountLimit.toString());
+        retVal.set("{{NAME}}", entity.Name);
+        retVal.set("{{PROMO_ID}}", entity.PromoID);
+
+        retVal.set("{{CC}}", cc);
+        retVal.set("{{TO}}", to);
 
         return retVal;
     }
