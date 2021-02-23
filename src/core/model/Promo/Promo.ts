@@ -58,6 +58,10 @@ export class Promo extends Entity {
         this._state.Entity = this;
     }
 
+    public InitializeState(): Promise<void> {
+        return this._state.Initialize();
+    }
+
     public GetStatusText():string {
         return this._state.GetStatusText();
     }

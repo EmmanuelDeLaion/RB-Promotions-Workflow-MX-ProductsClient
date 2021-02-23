@@ -1,8 +1,6 @@
 import { Entity } from "../../infrastructure";
 
-export class NotificationTemplate extends Entity {
-    public To: string;
-    public Cc: string;
+export class NotificationTemplate extends Entity {    
     public Subject: string;
     public Body: string;
     

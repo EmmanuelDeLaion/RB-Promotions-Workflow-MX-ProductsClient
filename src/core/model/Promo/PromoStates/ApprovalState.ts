@@ -1,19 +1,19 @@
-import { Promo, PromoStatus } from "..";
+import { PromoStatus } from "..";
 import { Constants } from "../../..";
+import { NotificacionsManager } from "../../../common/NotificacionsManager";
 import { SecurityHelper } from "../../../common/SecurityHelper";
-import { 
-    CategoryRepository, 
-    ClientRepository,  
-    ProductRepository, 
-    PromoRepository, 
-    TypeRepository 
-} from "../../../data";
+import { PromoRepository } from "../../../data";
 import { WorkflowLogRepository } from "../../../data/WorkflowLogRepository";
 import { PromoViewModel } from "../PromoViewModel";
-import { PromoWorkflowState } from "../PromoWorkflowState";
 import { PromoState } from "./PromoState";
 
 export class ApprovalState extends PromoState {
+    public async Initialize(): Promise<void> {
+        const to = (await this.GetCurrentStage().GetPendingUserEmails()).join(";");
+
+        return NotificacionsManager.SendTaskAssignedNotification(this.Entity, to);
+    }
+    
     public GetStatusId(): number {
         return PromoStatus.Approval;
     }
@@ -35,10 +35,6 @@ export class ApprovalState extends PromoState {
         }
 
         return viewModel;
-    }    
-
-    private GetCurrentStage(): PromoWorkflowState {
-        return this.Entity.WorkflowStages[this.Entity.CurrentStageNumber - 1];
     }
 
     public async Approve(comments: string): Promise<void>
@@ -53,7 +49,9 @@ export class ApprovalState extends PromoState {
             }
             else {
                 this.Entity.CurrentStageNumber++;
-                //TODO: Implementar lógica para envío de notificaciones
+                const to = (await this.GetCurrentStage().GetPendingUserEmails()).join(";");
+
+                NotificacionsManager.SendTaskAssignedNotification(this.Entity, to);
             }
         }
 
