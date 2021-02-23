@@ -8,6 +8,7 @@ import {
     PromoRepository, 
     TypeRepository 
 } from "../../../data";
+import { WorkflowLogRepository } from "../../../data/WorkflowLogRepository";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoWorkflowState } from "../PromoWorkflowState";
 import { PromoState } from "./PromoState";
@@ -26,16 +27,7 @@ export class ApprovalState extends PromoState {
 
         viewModel.ReadOnlyForm = true;
 
-        viewModel.Clients = await ClientRepository.GetClients();
-        viewModel.Categories = await CategoryRepository.GetAll();
-        viewModel.Products = await ProductRepository.GetAll();
-        
-        if(this.Entity.Items.length > 0 && this.Entity.Items[0].Category)
-            viewModel.Types = await TypeRepository.GetByCategory(this.Entity.Items[0].Category.ItemId);
-
         const currentUser = await SecurityHelper.GetCurrentUser();
-
-        console.log(this.Entity.WorkflowStages);
 
         if(this.GetCurrentStage().UserCanApprove(currentUser.ItemId)){
             viewModel.ShowApproveButton = true;
@@ -49,7 +41,7 @@ export class ApprovalState extends PromoState {
         return this.Entity.WorkflowStages[this.Entity.CurrentStageNumber - 1];
     }
 
-    public async Approve(): Promise<void>
+    public async Approve(comments: string): Promise<void>
     {
         const stage = this.GetCurrentStage();
         
@@ -65,13 +57,17 @@ export class ApprovalState extends PromoState {
             }
         }
 
-        return PromoRepository.SaveOrUpdate(this.Entity);
+        PromoRepository.SaveOrUpdate(this.Entity);
+
+        return WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Aprobar", comments);
     }
 
-    public Reject(): Promise<void>
+    public Reject(comments: string): Promise<void>
     {
         this.Entity.ChangeState(PromoStatus.Rejected);
 
-        return PromoRepository.SaveOrUpdate(this.Entity);
+        PromoRepository.SaveOrUpdate(this.Entity);
+
+        return WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Rechazar", comments);
     }
 }

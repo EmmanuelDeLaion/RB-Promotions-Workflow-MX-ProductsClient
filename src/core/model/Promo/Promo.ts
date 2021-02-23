@@ -1,5 +1,5 @@
 import { Entity, LookupValue } from "../../infrastructure";
-import { CategoryType, Client } from "../Common";
+import { CategoryType, Client, WorkflowLog } from "../Common";
 import { NewPromoState, PromoState, DraftPromoState } from "./PromoStates";
 import { PromoStatus, PromoViewModel } from "./";
 import { PromoItem } from "./PromoItem";
@@ -7,6 +7,7 @@ import { ApprovalState } from "./PromoStates/ApprovalState";
 import { PromoWorkflowState } from "./PromoWorkflowState";
 import { ApprovedState } from "./PromoStates/ApprovedState";
 import { RejectedState } from "./PromoStates/RejectedState";
+import { WorkflowLogRepository } from "../../data/WorkflowLogRepository";
 
 export class Promo extends Entity {
 
@@ -19,6 +20,7 @@ export class Promo extends Entity {
     public ApprovalAmountLimit: number;
     public CurrentStageNumber: number;
     public WorkflowStages: PromoWorkflowState[];
+    public WorkflowLog: WorkflowLog[] = [];
     protected _state: PromoState;    
 
     constructor(countryCode: string, approvalAmountLimit: number) {
@@ -78,14 +80,14 @@ export class Promo extends Entity {
         return this._state.Submit(entity);
     }
 
-    public Approve(): Promise<void>
+    public Approve(comments: string): Promise<void>
     {       
-        return this._state.Approve();
+        return this._state.Approve(comments);
     }
 
-    public Reject(): Promise<void>
+    public Reject(comments: string): Promise<void>
     {       
-        return this._state.Reject();
+        return this._state.Reject(comments);
     }
 
     public GetBaseGMSum(category: CategoryType) {

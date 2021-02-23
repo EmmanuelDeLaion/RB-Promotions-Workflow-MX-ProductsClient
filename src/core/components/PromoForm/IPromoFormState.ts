@@ -1,3 +1,4 @@
+import { ActionConfirmationType } from "../../infrastructure";
 import { Product } from "../../model/Common";
 import { PromoViewModel } from "../../model/Promo/PromoViewModel";
 
@@ -12,11 +13,15 @@ export interface IPromoFormState {
     selectedIndex: number;
     loadingTypes: boolean;
     filteredProducts: Product[];
+    actionsComments?: string;
 
     mainModalOpen: boolean;
     hideDeleteProductDialog: boolean;
-    hideSavingSpinnerConfirmationDialog: boolean;
+    hideSavingSpinnerConfirmationDialog: boolean;    
     hideModalConfirmationDialog: boolean;
+    hideActionConfirmationDialog: boolean;
+    actionConfirmationDialogTitle?: string;
+    actionConfirmationDialogType?: ActionConfirmationType;
+    enableActionValidation: boolean;
     promotionTitle: string;
-    client: string;
 }

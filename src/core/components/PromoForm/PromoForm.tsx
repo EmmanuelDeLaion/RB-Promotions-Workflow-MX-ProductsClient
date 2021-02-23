@@ -25,7 +25,6 @@ import {
   Icon,
   mergeStyles,
   getTheme,
-  IPersonaSharedProps,
   IStackStyles,
   FontWeights,
   mergeStyleSets,
@@ -38,7 +37,7 @@ import { Category, Client, ClientProduct, Product, Type } from '../../model/Comm
 import { ClientRepository } from '../../data';
 import { PromoItem } from '../../model/Promo';
 import { Constants } from '../../Constants';
-import { LookupValue } from '../../infrastructure';
+import { ActionConfirmationType, LookupValue } from '../../infrastructure';
 import { ProductSelector } from '../ProductSelector/ProductSelector';
 import { CommonHelper } from '../../common/CommonHelper';
 import { ClientProductRepository } from '../../data/ClientProductRepository';
@@ -46,7 +45,6 @@ import { IPivotItemProps, Pivot, PivotItem } from '@fluentui/react-tabs';
 require('../PromoForm/PromoForm.overrides.scss');
 require('./PromoForm.css');
 import { initializeTheme } from './Theme';
-import { TestImages } from '@uifabric/example-data';
 import { LastYearVolumesRepository } from '../../data/LastYearVolumesRepository';
 import { LastYearVolumes } from '../../model/Common/LastYearVolumes';
 import { RBDatePicker } from '../RBDatePicker/RBDatePicker';
@@ -72,8 +70,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       errorMessage: "",
       hideModalConfirmationDialog: true,
       promotionTitle: "",
-      client: "",
-      hideSavingSpinnerConfirmationDialog: true
+      hideSavingSpinnerConfirmationDialog: true,
+      hideActionConfirmationDialog: true,
+      enableActionValidation: false
     };
   }
 
@@ -114,8 +113,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         </div>
       </DialogContent>;
 
-      if (!this.state.isLoading && !this.state.formSubmitted) {
-
+      if (!this.state.isLoading && !this.state.formSubmitted) { 
         //#region Collections
 
         const clients: Array<{ key: number, text: string }> =
@@ -349,6 +347,24 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               </Stack>
                               <Stack horizontal grow={12} styles={{ root: { paddingTop: "16px" } }}>
                                 <Stack className="smallPadding" grow={6}>
+                                <Stack className="padding-right controlPadding">
+                                    {!readOnlyForm ?
+                                      <Dropdown
+                                        placeholder="Seleccione un negocio"
+                                        label="BU:"
+                                        options={businessUnits}
+                                        selectedKey={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.ItemId : null}
+                                        onChanged={this.onBusinessUnitChanged.bind(this)}
+                                        required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.BusinessUnit)}
+                                      />:
+                                      <TextField
+                                        label="BU:"
+                                        value={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.Value : ""}
+                                        readOnly={true}
+                                      />
+                                    }                                    
+                                  </Stack>
                                   <Stack className="padding-right controlPadding">
                                     {!readOnlyForm ?
                                       <Dropdown
@@ -393,25 +409,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         readOnly={true}
                                       />
                                     }
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                    {!readOnlyForm ?
-                                      <Dropdown
-                                        placeholder="Seleccione un negocio"
-                                        label="BU:"
-                                        options={businessUnits}
-                                        selectedKey={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.ItemId : null}
-                                        onChanged={this.onBusinessUnitChanged.bind(this)}
-                                        required={true}
-                                        errorMessage={this.getValidationErrorMessage(selectedItem.BusinessUnit)}
-                                      />:
-                                      <TextField
-                                        label="BU:"
-                                        value={selectedItem.BusinessUnit ? selectedItem.BusinessUnit.Value : ""}
-                                        readOnly={true}
-                                      />
-                                    }                                    
-                                  </Stack>
+                                  </Stack>                                  
                                   <Stack className="padding-right controlPadding">
                                     {!readOnlyForm ?
                                       <RBDatePicker 
@@ -442,6 +440,24 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   </Stack>
                                 </Stack>
                                 <Stack className="smallPadding" grow={6}>
+                                  <Stack className="padding-right controlPadding">
+                                    {!readOnlyForm ?
+                                      <Dropdown
+                                        placeholder="Seleccione una categoría"
+                                        label="Categoría:"
+                                        options={productCategories}
+                                        selectedKey={selectedItem.ProductCategory ? selectedItem.ProductCategory.ItemId : null}
+                                        onChanged={this.onProductCategoryChanged.bind(this)}
+                                        required={true}
+                                        errorMessage={this.getValidationErrorMessage(selectedItem.ProductCategory)}
+                                      />:
+                                      <TextField
+                                        label="Categoría:"
+                                        value={selectedItem.ProductCategory ? selectedItem.ProductCategory.Value : ""}
+                                        readOnly={true}
+                                      />
+                                    }                                    
+                                  </Stack>
                                   <Stack className="padding-right controlPadding">
                                     {!readOnlyForm ?
                                       <Dropdown
@@ -487,24 +503,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       <TextField
                                         label="Marca:"
                                         value={selectedItem.Brand ? selectedItem.Brand.Value : ""}
-                                        readOnly={true}
-                                      />
-                                    }                                    
-                                  </Stack>
-                                  <Stack className="padding-right controlPadding">
-                                    {!readOnlyForm ?
-                                      <Dropdown
-                                        placeholder="Seleccione una categoría"
-                                        label="Categoría:"
-                                        options={productCategories}
-                                        selectedKey={selectedItem.ProductCategory ? selectedItem.ProductCategory.ItemId : null}
-                                        onChanged={this.onProductCategoryChanged.bind(this)}
-                                        required={true}
-                                        errorMessage={this.getValidationErrorMessage(selectedItem.ProductCategory)}
-                                      />:
-                                      <TextField
-                                        label="Categoría:"
-                                        value={selectedItem.ProductCategory ? selectedItem.ProductCategory.Value : ""}
                                         readOnly={true}
                                       />
                                     }                                    
@@ -718,6 +716,24 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             </Stack>
                           </Stack>
                         </Stack>
+                        <div hidden={entity.WorkflowLog == null || entity.WorkflowLog.length == 0}>
+                          <Stack horizontal className="padding">  
+                            <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={12}>
+                              <Label>Aprobaciones</Label>                            
+                              {entity.WorkflowLog.map((log) => { return (
+                                <Stack>
+                                  <Stack horizontal className="verticalPadding">
+                                    <span>{log.DateAndTimeAsString() + " - " + log.User.Value + " - Accion: " + log.Action}</span>
+                                  </Stack>
+                                  <Separator className="graySeparator separatorToTop" />
+                                  <Stack horizontal className="verticalPadding">
+                                    <span>{log.Comments}</span>
+                                  </Stack>
+                                </Stack>
+                              );})}
+                            </Stack>
+                          </Stack>
+                        </div>
                       </Stack>
                     </PivotItem>
                     <PivotItem onRenderItemLink={this._customPromotionSummaryPivotItemRenderer}>
@@ -920,7 +936,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                       <Label className="modalBottomContentValue">{"$" + entity.GetTotalEstimatedInvestmentAsString()}</Label>
                     </Stack>
                     <Stack grow={2} className="modalBottomButtonsContainer fixedStructure" horizontal horizontalAlign="end">
-                      <Stack grow={12}>
+                      <Stack grow={6}>
                         <DefaultButton 
                           style={{display: this.state.viewModel.ShowSaveButton ? "block" : "none"}}
                           text="Guardar borrador" 
@@ -932,7 +948,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           text="Aprobar" 
                           allowDisabledFocus 
                           onClick={this.approve.bind(this)} 
-                          disabled={!this.state.enableSubmit} />
+                          //disabled={!this.state.enableSubmit} 
+                        />
                         <Dialog
                           hidden={this.state.hideSavingSpinnerConfirmationDialog}
                           dialogContentProps={this.savingSpinnerModalDialogContentProps}
@@ -941,20 +958,57 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             <Spinner label="Estamos guardando los datos..." />
                           </div>
                         </Dialog>
+                        <Dialog
+                          hidden={this.state.hideActionConfirmationDialog}
+                          styles={{ main: { width: '450px important!' } }}
+                          dialogContentProps={{
+                            title:this.state.actionConfirmationDialogTitle
+                          }}>
+                          <div>  
+                            <TextField 
+                              label={"Comentarios" + (this.state.actionConfirmationDialogType == ActionConfirmationType.Approve ? " (opcional)" : "")}
+                              required={this.state.actionConfirmationDialogType == ActionConfirmationType.Reject}
+                              multiline={true}
+                              value={this.state.actionsComments}
+                              onChange={this.onActionCommentsChange.bind(this)}
+                              rows={3}
+                              autoComplete="Off"   
+                              errorMessage={this.state.enableActionValidation && CommonHelper.IsNullOrEmpty(this.state.actionsComments) ? Constants.Messages.RequiredField : ""}
+                            />
+                            <PrimaryButton                              
+                              text="Confirmar" 
+                              allowDisabledFocus 
+                              onClick={this.confirmAction.bind(this)} 
+                              disabled={!this.state.enableSubmit}                               
+                            />
+                            <DefaultButton                               
+                              text="Cancelar" 
+                              allowDisabledFocus 
+                              onClick={() => {this.setState({
+                                hideActionConfirmationDialog: true,
+                                actionsComments: CommonHelper.EmptyString,
+                                enableActionValidation: false                               
+                              });}}
+                              disabled={!this.state.enableSubmit} 
+                            />
+                          </div>
+                        </Dialog>
                       </Stack>
-                      <Stack>
+                      <Stack grow={6}>
                         <PrimaryButton
                           style={{display: this.state.viewModel.ShowSubmitButton ? "block" : "none"}}
                           text="Enviar a aprobación" 
                           allowDisabledFocus 
                           onClick={this.submit.bind(this)} 
-                          disabled={!this.state.enableSubmit} />
+                          disabled={!this.state.enableSubmit} 
+                        />
                         <DefaultButton 
                           style={{display: this.state.viewModel.ShowRejectButton ? "block" : "none"}}
                           text="Rechazar" 
                           allowDisabledFocus 
                           onClick={this.reject.bind(this)}
-                          disabled={!this.state.enableSubmit} />
+                          //disabled={!this.state.enableSubmit} 
+                        />                        
                       </Stack>
                     </Stack>
                   </Stack>
@@ -1172,7 +1226,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     private GetFilteredProducts(): Product[] {
         const selectedItem = this.state.viewModel.Entity.Items[this.state.selectedIndex];
-        let filteredProducts = this.state.viewModel.Products;
+        let filteredProducts = this.state.viewModel.Products || [];
         
         if(selectedItem.BusinessUnit)
             filteredProducts = filteredProducts.filter(x => x.BusinessUnit.ItemId === selectedItem.BusinessUnit.ItemId);
@@ -1415,34 +1469,65 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     private approve(): void {
       this.setState({
-        enableSubmit:false,
-      });
-
-      PromoService.Approve(this.state.viewModel.Entity).then(() => {
-        this.setState({
-          formSubmitted: true,
-          resultIsOK: true
-        });
-      }).catch((err) => {
-        console.error(err);
-        this.setState({ formSubmitted: true, errorMessage: err});
-      });
-    }
+        actionConfirmationDialogTitle: "Aprobar",
+        actionConfirmationDialogType: ActionConfirmationType.Approve,
+        hideActionConfirmationDialog: false
+      });     
+    }    
 
     private reject(): void {
       this.setState({
-        enableSubmit:false,
-      });
+        actionConfirmationDialogTitle: "Rechazar",
+        actionConfirmationDialogType: ActionConfirmationType.Reject,
+        hideActionConfirmationDialog: false
+      });      
+    }
 
-      PromoService.Reject(this.state.viewModel.Entity).then(() => {
-        this.setState({
-          formSubmitted: true,
-          resultIsOK: true
+    private onActionCommentsChange(event: any, text: any) {
+      this.setState({actionsComments: text});
+    }
+
+    private confirmAction(): void {
+      if(this.state.actionConfirmationDialogType == ActionConfirmationType.Approve) {
+        this.setState({ 
+          enableSubmit:false, 
+          hideActionConfirmationDialog: true,
+          hideSavingSpinnerConfirmationDialog:false 
         });
-      }).catch((err) => {
-        console.error(err);
-        this.setState({ formSubmitted: true, errorMessage: err});
-      });
+
+        PromoService.Approve(this.state.viewModel.Entity, this.state.actionsComments).then(() => {
+          this.setState({
+            formSubmitted: true,
+            resultIsOK: true
+          });
+        }).catch((err) => {
+          console.error(err);
+          this.setState({ formSubmitted: true, errorMessage: err});
+        });
+      }
+      else {   
+        this.setState({enableActionValidation: true});
+
+        if(!CommonHelper.IsNullOrEmpty(this.state.actionsComments)) {
+          this.setState({ 
+            enableSubmit:false, 
+            hideActionConfirmationDialog: true,
+            hideSavingSpinnerConfirmationDialog:false 
+          });
+
+          PromoService.Reject(this.state.viewModel.Entity, this.state.actionsComments).then(() => {
+            this.setState({
+              formSubmitted: true,
+              resultIsOK: true
+            });
+          }).catch((err) => {
+            console.error(err);
+            this.setState({ formSubmitted: true, errorMessage: err});
+          });
+        }
+        else
+          return;
+      }
     }
     
     private getValidationErrorMessage(value: any): string{

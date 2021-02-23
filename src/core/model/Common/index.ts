@@ -8,3 +8,4 @@ export * from './CategoryType';
 export * from './LastYearVolumes';
 export * from './NotificationTemplate';
 export * from './NotificationTemplateId';
+export * from './WorkflowLog';

@@ -1,9 +1,10 @@
 import { IItemAddResult, sp } from "@pnp/sp/presets/all";
 import { ClientRepository, ConfigurationRepository } from ".";
-import { Client } from "../model/Common";
+import { Client, WorkflowLog } from "../model/Common";
 import { PromoItem, PromoStatus, PromoWorkflowState } from "../model/Promo";
 import { Promo } from "../model/Promo/Promo";
 import { PromoItemRepository } from "./PromoItemRepository";
+import { WorkflowLogRepository } from "./WorkflowLogRepository";
 
 export class PromoRepository {
     private static LIST_NAME: string = "Promociones";
@@ -25,8 +26,9 @@ export class PromoRepository {
         
       const items = await PromoItemRepository.GetByPromo(item.ID, item.ClientId);
       const client = item.ClientId ? await ClientRepository.GetById(item.ClientId) : null;
+      const workflowLog = await WorkflowLogRepository.GetByPromo(item.ID);
 
-      return PromoRepository.BuildEntity(item, items, client);
+      return PromoRepository.BuildEntity(item, items, client, workflowLog);
     }
 
     public static async SaveOrUpdate(entity: Promo): Promise<void> {
@@ -63,7 +65,7 @@ export class PromoRepository {
       return new Promo(configuration.CountryCode, configuration.ApprovalAmountLimit);
     }
 
-    private static async BuildEntity(item: any, items: PromoItem[], client?: Client): Promise<Promo> {
+    private static async BuildEntity(item: any, items: PromoItem[], client: Client, workflowLog: WorkflowLog[]): Promise<Promo> {
 
       let entity = await PromoRepository.GetNewPromo();
 
@@ -73,6 +75,7 @@ export class PromoRepository {
       entity.ActivityObjective = item.ActivityObjective;
       entity.Client = client;     
       entity.CurrentStageNumber = item.SYS_CurrentStageNumber; 
+      entity.WorkflowLog = workflowLog;
 
       items.map((promoItem) => {
         promoItem.GetBaseGMSum = entity.GetBaseGMSum.bind(entity);

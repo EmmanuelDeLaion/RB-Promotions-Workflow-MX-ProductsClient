@@ -21,12 +21,12 @@ export abstract class PromoState {
         throw new Error(Constants.Messages.NotAllowedAction);
     }
 
-    public async Approve(): Promise<void>
+    public async Approve(comments: string): Promise<void>
     {
         throw new Error(Constants.Messages.NotAllowedAction);
     }
 
-    public Reject(): Promise<void>
+    public Reject(comments: string): Promise<void>
     {
         throw new Error(Constants.Messages.NotAllowedAction);
     }

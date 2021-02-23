@@ -1,4 +1,3 @@
-import { FieldDisplayMode, LookupValue } from "../../infrastructure";
 import { Category, Client, Product, Type } from "../Common";
 import { Promo } from "./Promo";
 
