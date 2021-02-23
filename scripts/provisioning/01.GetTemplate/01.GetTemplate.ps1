@@ -10,11 +10,10 @@ Get-PnPProvisioningTemplate -Out $templatePath -IncludeAllClientSidePages -Force
 
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Aprobadores' -Query '' -Fields 'Role'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Canales' -Query '' -Fields 'Title'
-Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Categorías' -Query '' -Fields 'Title'
+Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Categorías' -Query '' -Fields 'Title', 'SYS_Identifier'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List "Categorías de producto" -Query '' -Fields 'Title'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Clientes' -Query '' -Fields 'Title','Channel','Subchannel'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Configuración' -Query '' -Fields 'Title','Value'
-Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'EmailSender' -Query '' -Fields 'Title','Cc', 'Subject', 'Body'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List "Marcas" -Query '' -Fields 'Title'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List "NotificationTemplates" -Query '' -Fields 'Title', 'To', 'Cc', 'Subject', 'Body'
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List "Productos" -Query '' -Fields 'Title','SKUDescription','BusinessUnit','Brand','Category'
