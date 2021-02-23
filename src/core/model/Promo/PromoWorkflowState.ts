@@ -1,3 +1,6 @@
+import { CommonHelper } from "../../common/CommonHelper";
+import { SecurityHelper } from "../../common/SecurityHelper";
+
 export class PromoWorkflowState {
     public ApproverIDs: number[] = [];
     public CompletedBy: number[] = [];
@@ -26,5 +29,17 @@ export class PromoWorkflowState {
             if(this.CompletedBy.indexOf(approverID) == -1)
                 return approverID;
         });
+    }
+
+    public async GetPendingUserEmails(): Promise<string[]> {
+        const emails = [];
+        
+        await Promise.all(this.GetPendingUserIDs().map(async (userId) => {
+            const user = await SecurityHelper.GetUser(userId);            
+            if(!CommonHelper.IsNullOrEmpty(user.Email))
+                emails.push(user.Email);
+        }));
+
+        return emails;
     }
 }

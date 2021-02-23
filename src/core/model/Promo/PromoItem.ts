@@ -58,6 +58,8 @@ export class PromoItem extends Entity {
 
     //#region Required fields
 
+    //TODO: Los métodos que retornan "true" se deben eliminar una vez que se confirme que todo funciona correctamente
+
     public RequiresInvestment():boolean {
         switch (this.GetCategoryType()) {
             case CategoryType.Performance:
@@ -71,14 +73,15 @@ export class PromoItem extends Entity {
     }
 
     public RequiresNetPrice():boolean {
-        switch (this.GetCategoryType()) {
+/*         switch (this.GetCategoryType()) {
             case CategoryType.SpecialExhibitions:
             case CategoryType.Institutional: 
             case CategoryType.Unknown:           
                 return false;
             default:
                 return true;
-        }
+        } */ 
+        return true;
     }
 
     public RequiresDiscountPerPiece():boolean {
@@ -111,27 +114,32 @@ export class PromoItem extends Entity {
     }
 
     public RequiresBaseNR(): boolean {
-        return this.GetCategoryType() != CategoryType.Institutional;
+        //return this.GetCategoryType() != CategoryType.Institutional;
+        return true;
     }
 
     public RequiresEstimatedNR(): boolean {
-        return this.GetCategoryType() != CategoryType.Institutional;
+        //return this.GetCategoryType() != CategoryType.Institutional;
+        return true;
     }
 
     public RequiresIncrementalEstimatedNR(): boolean {
-        return this.GetCategoryType() != CategoryType.Institutional;
+        //return this.GetCategoryType() != CategoryType.Institutional;
+        return true;
     }
 
     public RequiresBaseGM(): boolean {
-        return this.RequiresNetPrice();
+        //return this.RequiresNetPrice();
+        return true;
     }
 
     public RequiresEstimatedGMPromo(): boolean {
-        return this.RequiresTotalEstimatedVolume();
+        //return this.RequiresTotalEstimatedVolume();
+        return true;
     }
 
     public RequiresIncrementalGM(): boolean {
-        switch (this.GetCategoryType()) {
+/*         switch (this.GetCategoryType()) {
             case CategoryType.SpecialExhibitions:
             case CategoryType.Institutional:
             case CategoryType.Visibility:
@@ -140,7 +148,8 @@ export class PromoItem extends Entity {
                 return false;
             default:
                 return true;
-        }
+        } */
+        return true;
     }
 
     //#endregion
@@ -175,7 +184,6 @@ export class PromoItem extends Entity {
     }
 
     public GetGMPercentageNRWithPromo(): number {
-        //TODO: Agregar campo RequiresDiscountPerPiece
         if(this.RequiresDiscountPerPiece() && this.NetPrice > 0)
             return ((this.NetPrice - this.DiscountPerPiece - this.COGS) / this.NetPrice) * 100;
 

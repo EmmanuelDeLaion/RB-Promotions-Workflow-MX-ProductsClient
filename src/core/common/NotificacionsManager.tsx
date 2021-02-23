@@ -1,26 +1,25 @@
 import { EmailSenderRepository } from "../data/EmailSenderRepository";
 import { NotificationTemplateRepository } from "../data/NotificationTemplateRepository";
 import { NotificationTemplateId } from "../model/Common";
+import { Promo } from "../model/Promo";
 
-export class NotificacionsManager{
+export class NotificacionsManager {
 
-    public static SendTaskAssignedNotification(): void {
-        NotificacionsManager.SendNotification(NotificationTemplateId.TaskAssigned);        
+    public static SendTaskAssignedNotification(entity: Promo, to: string, cc?: string): Promise<void> {
+        return NotificacionsManager.SendNotification(NotificationTemplateId.TaskAssigned, entity, to, cc);        
     }
 
-    public static SendTaskRejectedNotification(): void {
-        NotificacionsManager.SendNotification(NotificationTemplateId.TaskRejected);
+    public static SendTaskRejectedNotification(entity: Promo, to: string, cc?: string): Promise<void> {
+        return NotificacionsManager.SendNotification(NotificationTemplateId.TaskRejected, entity, to, cc);
     }
 
-    public static SendWorkflowApprovedNotification(): void {
-        NotificacionsManager.SendNotification(NotificationTemplateId.WorkflowApproved);
+    public static SendWorkflowApprovedNotification(entity: Promo, to: string, cc?: string): Promise<void> {
+        return NotificacionsManager.SendNotification(NotificationTemplateId.WorkflowApproved, entity, to, cc);
     }
 
-    private static async SendNotification(notificationTemplateId: NotificationTemplateId) {
+    private static async SendNotification(notificationTemplateId: NotificationTemplateId, entity: Promo, to: string, cc?: string) {
         var template = await NotificationTemplateRepository.GetByNotificationTemplateId(notificationTemplateId);
         
-        console.log(template.To);
-        console.log(template.Cc);
         console.log(template.Subject);
         console.log(template.Body);
 
@@ -32,14 +31,14 @@ export class NotificacionsManager{
         replacements.forEach((value: string, key: string) => 
             template.Body = template.Body.replace(key, value));
 
-        console.log(template.To);
-        console.log(template.Cc);
+        console.log(to);
+        console.log(cc);
         console.log(template.Subject);
         console.log(template.Body);
 
         EmailSenderRepository.Add(
-            template.To,
-            template.Cc,
+            to,
+            cc,
             template.Subject,
             template.Body);
     }

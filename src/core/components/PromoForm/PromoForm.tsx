@@ -923,7 +923,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     </Stack>
                     <Stack grow={1} className="fixedStructure">
                       <Label className="modalBottomContentHeader">ROI Estimado total</Label>
-                      <Label className="modalBottomContentValue">{"$" + entity.GetROIAsString()}</Label>
+                      <Label className="modalBottomContentValue">{entity.GetROIAsString()}</Label>
                     </Stack>
                     <Stack grow={1} className="fixedStructure">
                       <Label className="modalBottomContentHeader">Inversión estimada total</Label>

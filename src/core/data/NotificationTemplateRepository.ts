@@ -24,8 +24,6 @@ export class NotificationTemplateRepository {
         let entity = new NotificationTemplate();
   
         entity.ItemId = item.ID;
-        entity.To = item.To;
-        entity.Cc = item.Cc;
         entity.Subject = item.Subject;
         entity.Body = item.Body;
 

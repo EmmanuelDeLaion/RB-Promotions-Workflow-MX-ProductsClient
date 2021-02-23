@@ -39,10 +39,6 @@ export default class PromoFormWebPartWebPart extends BaseClientSideWebPart <IPro
     ReactDom.render(element, this.domElement);
   }
 
-  private openPromoFormDialog(): void{
-    console.log("Open promo form...");
-}
-
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
   }

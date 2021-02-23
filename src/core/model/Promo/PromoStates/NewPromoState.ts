@@ -1,5 +1,7 @@
 import { Promo } from "..";
 import { Constants } from "../../..";
+import { CommonHelper } from "../../../common/CommonHelper";
+import { SecurityHelper } from "../../../common/SecurityHelper";
 import { 
     ClientRepository, 
     PromoRepository,
@@ -9,6 +11,7 @@ import {
 import { PromoStatus } from "../PromoStatus";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoState } from "./PromoState";
+import { NotificacionsManager } from '../../../common/NotificacionsManager';
 
 export class NewPromoState extends PromoState {
     public GetStatusId(): number {
@@ -44,7 +47,8 @@ export class NewPromoState extends PromoState {
         entity.ChangeState(PromoStatus.Approval);
 
         await this.InitializeWorkflowState(entity);
+        await PromoRepository.SaveOrUpdate(entity);
 
-        return PromoRepository.SaveOrUpdate(entity);
+        return entity.InitializeState();
     }
 }

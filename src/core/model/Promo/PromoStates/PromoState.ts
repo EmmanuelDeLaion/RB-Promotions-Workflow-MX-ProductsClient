@@ -11,10 +11,14 @@ export abstract class PromoState {
     public abstract GetStatusText():string;
     public abstract GetViewModel():Promise<PromoViewModel>;
 
+    public async Initialize(): Promise<void> {
+        return;
+    }
+
     public Save(entity: Promo): Promise<void>
     {
         throw new Error(Constants.Messages.NotAllowedAction);
-    }
+    }    
 
     public Submit(entity: Promo): Promise<void>
     {
@@ -40,5 +44,9 @@ export abstract class PromoState {
             entity.WorkflowStages.push(new PromoWorkflowState([approvers.Role2.ItemId,approvers.Role3.ItemId]));
 
         entity.CurrentStageNumber = 1;
+    }
+
+    protected GetCurrentStage(): PromoWorkflowState {
+        return this.Entity.WorkflowStages[this.Entity.CurrentStageNumber - 1];
     }
 }
