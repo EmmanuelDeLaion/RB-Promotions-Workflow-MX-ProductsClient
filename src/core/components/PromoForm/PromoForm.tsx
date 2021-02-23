@@ -967,7 +967,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   multiline={true}
                                   value={this.state.actionsComments}
                                   onChange={this.onActionCommentsChange.bind(this)}
-                                  rows={3}
+                                  rows={6}
                                   autoComplete="Off"   
                                   errorMessage={this.state.enableActionValidation && CommonHelper.IsNullOrEmpty(this.state.actionsComments) ? Constants.Messages.RequiredField : ""}
                                 />
