@@ -75,6 +75,31 @@
 		opacity: 1;
 		padding-top: 40px;
   	}
+	.linkButton
+	{
+	  text-overflow: ellipsis;
+		outline: transparent;
+		position: relative;
+		-webkit-font-smoothing: antialiased;
+		font-size: 14px;
+		font-weight: 400;
+		box-sizing: border-box;
+		display: inline-block;
+		text-decoration: none;
+		text-align: center;
+		cursor: pointer;
+		padding: 4px 16px;
+		border-radius: 2px;
+		min-width: 80px;
+		height: 32px;
+		user-select: none;
+		font-family: inherit;
+		flex-shrink: 1;
+		background-color: #DE177E;
+		border: 1px solid rgb(178, 41, 112);
+		color: rgb(255, 255, 255);
+		width: 180px;
+	}
   </style>
 </head>
 <body>
@@ -91,14 +116,14 @@
 			</div>
 			<div class="bodyContent">
 				<p>
-					El usuario {Usuario que rechaza} ha rechazado la promoción {{PROMO_ID}}. 
+					El usuario {Usuario que rechaza} ha rechazado la promoción {{PROMO_ID}}
 					Estos han sido sus comentarios: {Comentarios de rechazo}
 				</p>
 				<p>
-					Haga click en el botón que esta debajo para ser redirccionado.
+					Haga click en el botón que esta debajo para ser redirccionado
 				</p>
 				<p>
-					{{LINK_TO_PROMO}}
+					<a href="{{LINK_TO_PROMO}}" type="button" title="Abrir promoción" class="linkButton" style="width: 180px;">Nueva promoción</a>
 				</p>
 				<div class="disclaimer">
 					No respondas este mensaje. Esta direccion de correos electrónicos, por lo que no recibirás una respuesta.
