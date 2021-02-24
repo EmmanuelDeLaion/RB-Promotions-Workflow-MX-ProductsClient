@@ -239,7 +239,7 @@
 }
 .summarySectionContainer
 {
-    min-height: 800px;
+    min-height: 550px;
 }
 .statusContainer i
 {
@@ -302,7 +302,10 @@ flex-basis: 0;
 .datePickerError .ms-DatePicker .ms-TextField-fieldGroup {
     border: 1px solid rgb(164, 38, 44);
 }
-
+.workflowCommentsModal .controlPadding
+{
+    min-height: 165px;
+}
 .workflowCommentsModal .ms-Dialog-main
 {
     width: 700px;

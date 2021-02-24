@@ -960,7 +960,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             title:this.state.actionConfirmationDialogTitle
                           }}>
                           <Stack>
-                            <Stack>
+                            <Stack className="controlPadding">
                               <TextField 
                                   label={"Comentarios" + (this.state.actionConfirmationDialogType == ActionConfirmationType.Approve ? " (opcional)" : "")}
                                   required={this.state.actionConfirmationDialogType == ActionConfirmationType.Reject}
@@ -972,7 +972,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   errorMessage={this.state.enableActionValidation && CommonHelper.IsNullOrEmpty(this.state.actionsComments) ? Constants.Messages.RequiredField : ""}
                                 />
                             </Stack>
-                            <Stack horizontal className="padding toRight">
+                            <Stack horizontal className="smallPadding toRight">
                               <Stack className="padding-right">
                                 <PrimaryButton                              
                                   text="Confirmar" 
