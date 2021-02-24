@@ -308,3 +308,8 @@ flex-basis: 0;
     width: 700px;
     max-width: initial;
 }
+.pivotInvalid .ms-Pivot-text
+{
+    color: #a4262c !important;
+    text-decoration: underline !important;
+}
