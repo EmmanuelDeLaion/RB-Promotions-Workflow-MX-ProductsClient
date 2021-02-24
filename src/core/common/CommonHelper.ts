@@ -26,4 +26,10 @@ export class CommonHelper{
     public static formatDate (date?: Date): string {
         return !date ? '' : ("0" + date.getDate()).slice(-2) + '/' + ("0" + (date.getMonth() + 1)).slice(-2) + '/' + (date.getFullYear());
     }
+
+    public static replaceAll(str: string, searchValue: string, replaceValue: string): string{
+        var regex = new RegExp(searchValue, 'g');
+        
+        return str.replace(regex, replaceValue);
+    }
 }

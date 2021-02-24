@@ -2,6 +2,7 @@ import { EmailSenderRepository } from "../data/EmailSenderRepository";
 import { NotificationTemplateRepository } from "../data/NotificationTemplateRepository";
 import { NotificationTemplateId } from "../model/Common";
 import { Promo } from "../model/Promo";
+import { CommonHelper } from "./CommonHelper";
 
 export class NotificacionsManager {
 
@@ -25,11 +26,13 @@ export class NotificacionsManager {
 
         var replacements = NotificacionsManager.GetReplacementCollection(notificationTemplateId, entity, to, cc);
 
-        replacements.forEach((value: string, key: string) => 
-            template.Subject = template.Subject.replace(key, value));
+        console.log(replacements);
 
         replacements.forEach((value: string, key: string) => 
-            template.Body = template.Body.replace(key, value));
+            template.Subject = CommonHelper.replaceAll(template.Subject, key, value));
+
+        replacements.forEach((value: string, key: string) => 
+            template.Body = CommonHelper.replaceAll(template.Body, key, value));
 
         console.log(to);
         console.log(cc);
@@ -51,6 +54,7 @@ export class NotificacionsManager {
         retVal.set("{{APPROVAL_AMOUNT_LIMIT}}", entity.ApprovalAmountLimit.toString());
         retVal.set("{{NAME}}", entity.Name);
         retVal.set("{{PROMO_ID}}", entity.PromoID);
+        retVal.set("{{LINK_TO_PROMO}}", "https://sgiovannini.sharepoint.com//sites/RBPromociones/Mexico?itemId=" + entity.ItemId.toString());
 
         retVal.set("{{CC}}", cc);
         retVal.set("{{TO}}", to);
