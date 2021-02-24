@@ -54,7 +54,7 @@ export class NotificacionsManager {
         retVal.set("{{APPROVAL_AMOUNT_LIMIT}}", entity.ApprovalAmountLimit.toString());
         retVal.set("{{NAME}}", entity.Name);
         retVal.set("{{PROMO_ID}}", entity.PromoID);
-        retVal.set("{{LINK_TO_PROMO}}", "https://sgiovannini.sharepoint.com//sites/RBPromociones/Mexico?itemId=" + entity.ItemId.toString());
+        retVal.set("{{LINK_TO_PROMO}}", "https://devbf2019.sharepoint.com/sites/RBPromociones/Mexico?itemId=" + entity.ItemId.toString());
 
         retVal.set("{{CC}}", cc);
         retVal.set("{{TO}}", to);
