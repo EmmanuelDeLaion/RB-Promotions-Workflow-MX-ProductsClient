@@ -1,39 +1,25 @@
-function CleanList($listName)
+function DeleteList($listName)
 {
-    Write-Host "Starting to clean list" $listName
-    $items =Get-PnPListItem -List $listName -PageSize 500
-
-    foreach ($item in $items)
-    {
-        try
-        {
-            Remove-PnPListItem -List $listName -Identity $item.Id -Force
-        }
-        catch
-        {
-            Write-Host "Error Occurred While Deleting the Item from the SharePoint Online List"
-        }
-    }
+    Write-Host "Starting to delete list" $listName
+    Remove-PnPList -Identity $listName -Force
 }
 
 
-CleanList "Aprobadores"
-CleanList "Canales"
-CleanList 'Categorías'
-CleanList "Categorías de producto"
-CleanList "Clientes"
-CleanList "Configuración" 
-CleanList "Marcas"
-CleanList "NotificationTemplates"
-CleanList "Productos"
-CleanList "Productos por cliente"
-CleanList "Subcanales"
-CleanList "Tipos" 
-CleanList "Unidades de negocio"
-CleanList "Volúmenes del último año"
+DeleteList "Aprobadores"
+DeleteList "Canales"
+DeleteList 'Categorías'
+DeleteList "Categorías de producto"
+DeleteList "Clientes"
+DeleteList "Configuración" 
+DeleteList "Marcas"
+DeleteList "NotificationTemplates"
+DeleteList "Productos"
+DeleteList "Productos por cliente"
+DeleteList "Subcanales"
+DeleteList "Tipos" 
+DeleteList "Unidades de negocio"
+DeleteList "Volúmenes del último año"
 
-CleanList "EmailSender"
-
-CleanList "Promo items"
-CleanList "Promociones"
-CleanList "Workflow log"
+DeleteList "Promo items"
+DeleteList "Promociones"
+DeleteList "Workflow log"
