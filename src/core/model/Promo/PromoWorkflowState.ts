@@ -35,7 +35,7 @@ export class PromoWorkflowState {
         const emails = [];
         
         await Promise.all(this.GetPendingUserIDs().map(async (userId) => {
-            const user = await SecurityHelper.GetUser(userId);            
+            const user = await SecurityHelper.GetUserId(userId);            
             if(!CommonHelper.IsNullOrEmpty(user.Email))
                 emails.push(user.Email);
         }));

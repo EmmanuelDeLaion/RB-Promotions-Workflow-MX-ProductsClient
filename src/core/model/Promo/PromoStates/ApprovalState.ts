@@ -46,6 +46,10 @@ export class ApprovalState extends PromoState {
         if(stage.IsComplete()) {
             if(this.Entity.CurrentStageNumber == this.Entity.WorkflowStages.length) {
                 this.Entity.ChangeState(PromoStatus.Approved);
+
+                const to = (await SecurityHelper.GetUserId(this.Entity.Client.KeyAccountManager.ItemId)).Email;
+
+                NotificacionsManager.SendWorkflowApprovedNotification(this.Entity, to);
             }
             else {
                 this.Entity.CurrentStageNumber++;
@@ -60,12 +64,16 @@ export class ApprovalState extends PromoState {
         return WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Aprobar", comments);
     }
 
-    public Reject(comments: string): Promise<void>
+    public async Reject(comments: string): Promise<void>
     {
         this.Entity.ChangeState(PromoStatus.Rejected);
 
         PromoRepository.SaveOrUpdate(this.Entity);
 
-        return WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Rechazar", comments);
+        WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Rechazar", comments);
+
+        const to = (await SecurityHelper.GetUserId(this.Entity.Client.KeyAccountManager.ItemId)).Email;
+
+        NotificacionsManager.SendWorkflowApprovedNotification(this.Entity, to);
     }
 }

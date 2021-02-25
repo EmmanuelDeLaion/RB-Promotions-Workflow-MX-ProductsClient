@@ -7,7 +7,7 @@ export class SecurityHelper {
         return { ItemId: spUser.Id, Value: spUser.Title, Email: spUser.Email };
     }
 
-    public static async GetUser(id: number):Promise<UserValue> {
+    public static async GetUserId(id: number):Promise<UserValue> {
         const spUser = await sp.web.getUserById(id).get();
         return { ItemId: spUser.Id, Value: spUser.Title, Email: spUser.Email };
     }
