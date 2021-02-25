@@ -1,5 +1,3 @@
-import { sp } from "@pnp/sp/presets/all";
-import { EmailSenderRepository } from "../data/EmailSenderRepository";
 import { NotificationTemplateRepository } from "../data/NotificationTemplateRepository";
 import { NotificationTemplateId } from "../model/Common";
 import { Promo } from "../model/Promo";
