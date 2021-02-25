@@ -7,7 +7,7 @@ import { ApprovalState } from "./PromoStates/ApprovalState";
 import { PromoWorkflowState } from "./PromoWorkflowState";
 import { ApprovedState } from "./PromoStates/ApprovedState";
 import { RejectedState } from "./PromoStates/RejectedState";
-import { WorkflowLogRepository } from "../../data/WorkflowLogRepository";
+import { Configuration } from "../../infrastructure/Configuration";
 
 export class Promo extends Entity {
 
@@ -16,19 +16,17 @@ export class Promo extends Entity {
     public ActivityObjective: string = "";
     public Client: Client;
     public Items: PromoItem[];
-    public CountryCode: string;
-    public ApprovalAmountLimit: number;
     public CurrentStageNumber: number;
     public WorkflowStages: PromoWorkflowState[];
     public WorkflowLog: WorkflowLog[] = [];
-    protected _state: PromoState;    
+    public Config: Configuration;
+    protected _state: PromoState;       
 
-    constructor(countryCode: string, approvalAmountLimit: number) {
+    constructor(configuration: Configuration) {
         super();
 
-        this.CountryCode = countryCode;
-        this.ApprovalAmountLimit = approvalAmountLimit;
-        this.PromoID = this.CountryCode + "--";
+        this.Config = configuration;        
+        this.PromoID = this.Config.CountryCode + "--";
         this.Items = [new PromoItem({AdditionalID: this.PromoID + ".1", GetBaseGMSum: this.GetBaseGMSum.bind(this)})];
 
         this.ChangeState(PromoStatus.New);

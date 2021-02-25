@@ -1,3 +1,4 @@
+import { sp } from "@pnp/sp/presets/all";
 import { EmailSenderRepository } from "../data/EmailSenderRepository";
 import { NotificationTemplateRepository } from "../data/NotificationTemplateRepository";
 import { NotificationTemplateId } from "../model/Common";
@@ -24,7 +25,7 @@ export class NotificacionsManager {
         console.log(template.Subject);
         console.log(template.Body);
 
-        var replacements = NotificacionsManager.GetReplacementCollection(notificationTemplateId, entity, to, cc);
+        var replacements = await NotificacionsManager.GetReplacementCollection(notificationTemplateId, entity, to, cc);
 
         console.log(replacements);
 
@@ -46,15 +47,17 @@ export class NotificacionsManager {
             template.Body);
     }
 
-    private static GetReplacementCollection(notificationTemplateId: NotificationTemplateId, entity: Promo, to: string, cc?: string): Map<string, string>
+    private static async GetReplacementCollection(notificationTemplateId: NotificationTemplateId, entity: Promo, to: string, cc?: string): Promise<Map<string, string>>
     {
         let retVal = new Map<string, string>();
 
+        const webData = await sp.web.select("Url")();
+
         retVal.set("{{ACTIVITY_OBJECTIVE}}", entity.ActivityObjective);
-        retVal.set("{{APPROVAL_AMOUNT_LIMIT}}", entity.ApprovalAmountLimit.toString());
+        retVal.set("{{APPROVAL_AMOUNT_LIMIT}}", entity.Config.ApprovalAmountLimit.toString());
         retVal.set("{{NAME}}", entity.Name);
         retVal.set("{{PROMO_ID}}", entity.PromoID);
-        retVal.set("{{LINK_TO_PROMO}}", "https://devbf2019.sharepoint.com/sites/RBPromociones/Mexico?itemId=" + entity.ItemId.toString());
+        retVal.set("{{LINK_TO_PROMO}}", webData.Url + entity.ItemId.toString());
 
         retVal.set("{{CC}}", cc);
         retVal.set("{{TO}}", to);

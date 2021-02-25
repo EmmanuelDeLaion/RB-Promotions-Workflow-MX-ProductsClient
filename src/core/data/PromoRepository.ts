@@ -47,7 +47,7 @@ export class PromoRepository {
 
         //TODO: Obtener prefijo de país desde configuración
         entity.ItemId = iar.data.ID;
-        entity.PromoID = entity.CountryCode + iar.data.ID;
+        entity.PromoID = entity.Config.CountryCode + iar.data.ID;
         
         await sp.web.lists.getByTitle(PromoRepository.LIST_NAME).items.getById(iar.data.ID).update({
           Title: entity.PromoID
@@ -62,7 +62,7 @@ export class PromoRepository {
     public static async GetNewPromo() : Promise<Promo>
     {
       let configuration = await ConfigurationRepository.GetInstance();
-      return new Promo(configuration.CountryCode, configuration.ApprovalAmountLimit);
+      return new Promo(configuration);
     }
 
     private static async BuildEntity(item: any, items: PromoItem[], client: Client, workflowLog: WorkflowLog[]): Promise<Promo> {

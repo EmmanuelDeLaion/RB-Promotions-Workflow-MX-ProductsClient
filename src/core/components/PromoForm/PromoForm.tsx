@@ -550,7 +550,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Stack className="grayContent smallPadding padding-left padding-right" verticalFill>
                                   <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
                                     <Label>Precio neto OFF</Label>
-                                    <Label className="toRight">{selectedItem.RequiresNetPrice() ? ("$" + selectedItem.GetNetPriceAsString()) : "N/A"}</Label>
+                                    <Label className="toRight">{selectedItem.RequiresNetPrice() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetNetPriceAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
@@ -575,12 +575,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack verticalFill horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
                                     <Label>GM Base Unit</Label>
-                                    <Label className="toRight">{"$" + selectedItem.GetGMBaseUnitAsString()}</Label>
+                                    <Label className="toRight">{entity.Config.CurrencySymbol + " " + selectedItem.GetGMBaseUnitAsString()}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack verticalFill horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
                                     <Label>GM Promo Unit</Label>
-                                    <Label className="toRight">{"$" + selectedItem.GetGMPromoUnitAsString()}</Label>
+                                    <Label className="toRight">{entity.Config.CurrencySymbol + " " + selectedItem.GetGMPromoUnitAsString()}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
@@ -601,7 +601,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             </Stack>
                             <Stack grow={3} horizontalAlign="end" className="fixedStructure">
                               <Label>Inversión estimada</Label>
-                              <Label>{"$" + selectedItem.GetEstimatedInvestmentAsString()}</Label>
+                              <Label>{entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedInvestmentAsString()}</Label>
                             </Stack>
                             <Stack grow={3} horizontalAlign="end" className="fixedStructure">
                               <Label>ROI Estimado por SKU</Label>
@@ -658,12 +658,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Separator className="graySeparator separatorToTop" />
                                 <Stack horizontal className="verticalPadding">
                                   <Label>NR incremental estimado</Label>
-                                  <Label className="toRight">{selectedItem.RequiresIncrementalEstimatedNR() ? ("$" + selectedItem.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
+                                  <Label className="toRight">{selectedItem.RequiresIncrementalEstimatedNR() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                                 <Stack horizontal className="verticalPadding">
                                   <Label>GM incremental</Label>
-                                  <Label className="toRight">{selectedItem.RequiresIncrementalGM() ? ("$" + selectedItem.GetIncrementalGMAsString()) : "N/A"}</Label>
+                                  <Label className="toRight">{selectedItem.RequiresIncrementalGM() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetIncrementalGMAsString()) : "N/A"}</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                                 <Stack className="verticalPadding">
@@ -686,12 +686,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Separator className="graySeparator separatorToTop" />
                                 <Stack horizontal className="verticalPadding">
                                   <Label>NR base</Label>
-                                  <Label className="toRight">{selectedItem.RequiresBaseNR() ? ("$" + selectedItem.GetBaseNRAsString()) : "N/A"}</Label>
+                                  <Label className="toRight">{selectedItem.RequiresBaseNR() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetBaseNRAsString()) : "N/A"}</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                                 <Stack horizontal className="verticalPadding">
                                   <Label>GM base</Label>
-                                  <Label className="toRight">{selectedItem.RequiresBaseGM() ? ("$" + selectedItem.GetBaseGMAsString()) : "N/A"}</Label>
+                                  <Label className="toRight">{selectedItem.RequiresBaseGM() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetBaseGMAsString()) : "N/A"}</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                               </Stack>
@@ -703,12 +703,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Separator className="graySeparator separatorToTop" />
                                 <Stack horizontal className="verticalPadding">
                                   <Label>NR Estimado</Label>
-                                  <Label className="toRight">{selectedItem.RequiresEstimatedNR() ? "$" + selectedItem.GetEstimatedNRAsString() : "N/A"}</Label>
+                                  <Label className="toRight">{selectedItem.RequiresEstimatedNR() ? entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedNRAsString() : "N/A"}</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                                 <Stack horizontal className="verticalPadding">
                                   <Label>GM promo estimado</Label>
-                                  <Label className="toRight">{selectedItem.RequiresEstimatedGMPromo() ? ("$" + selectedItem.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
+                                  <Label className="toRight">{selectedItem.RequiresEstimatedGMPromo() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                               </Stack>
@@ -823,7 +823,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 </Stack>
                                 <Stack grow={3} horizontalAlign="end" className="fixedStructure">
                                   <Label>Inversión estimada</Label>
-                                  <Label>{"$" + item.GetEstimatedInvestmentAsString()}</Label>
+                                  <Label>{entity.Config.CurrencySymbol + " " + item.GetEstimatedInvestmentAsString()}</Label>
                                 </Stack>
                                 <Stack grow={3} horizontalAlign="end" className="fixedStructure">
                                   <Label>ROI Estimado por SKU</Label>
@@ -858,12 +858,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>NR incremental estimado</Label>
-                                    <Label className="toRight">{item.RequiresIncrementalEstimatedNR() ? ("$" + item.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
+                                    <Label className="toRight">{item.RequiresIncrementalEstimatedNR() ? (entity.Config.CurrencySymbol + " " + item.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>GM incremental</Label>
-                                    <Label className="toRight">{item.RequiresIncrementalGM() ? ("$" + item.GetIncrementalGMAsString()) : "N/A"}</Label>
+                                    <Label className="toRight">{item.RequiresIncrementalGM() ? (entity.Config.CurrencySymbol + " " + item.GetIncrementalGMAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
@@ -880,17 +880,17 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>NR base</Label>
-                                    <Label className="toRight">{item.RequiresBaseNR() ? ("$" + item.GetBaseNRAsString()) : "N/A"}</Label>
+                                    <Label className="toRight">{item.RequiresBaseNR() ? (entity.Config.CurrencySymbol + " " + item.GetBaseNRAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>GM base</Label>
-                                    <Label className="toRight">{item.RequiresBaseGM() ? ("$" + item.GetBaseGMAsString()) : "N/A"}</Label>
+                                    <Label className="toRight">{item.RequiresBaseGM() ? (entity.Config.CurrencySymbol + " " + item.GetBaseGMAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>Inversión estimada</Label>
-                                    <Label className="toRight">{"$" + selectedItem.GetEstimatedInvestmentAsString()}</Label>
+                                    <Label className="toRight">{entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedInvestmentAsString()}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
@@ -907,12 +907,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>NR Estimado</Label>
-                                    <Label className="toRight">{item.RequiresEstimatedNR() ? "$" + item.GetEstimatedNRAsString() : "N/A"}</Label>
+                                    <Label className="toRight">{item.RequiresEstimatedNR() ? entity.Config.CurrencySymbol + " " + item.GetEstimatedNRAsString() : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                   <Stack horizontal className="verticalPadding">
                                     <Label>GM promo estimado</Label>
-                                    <Label className="toRight">{item.RequiresEstimatedGMPromo() ? ("$" + item.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
+                                    <Label className="toRight">{item.RequiresEstimatedGMPromo() ? (entity.Config.CurrencySymbol + " " + item.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Separator className="graySeparator separatorToTop" />
                                 </Stack>
@@ -949,7 +949,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                   </Stack>
                   <Stack grow={1} className="fixedStructure">
                     <Label className="modalBottomContentHeader">Inversión estimada total</Label>
-                    <Label className="modalBottomContentValue">{"$" + entity.GetTotalEstimatedInvestmentAsString()}</Label>
+                    <Label className="modalBottomContentValue">{entity.Config.CurrencySymbol + " " + entity.GetTotalEstimatedInvestmentAsString()}</Label>
                   </Stack>
                   <Stack grow={2} className="modalBottomButtonsContainer fixedStructure" horizontal horizontalAlign="end">
                     <Stack grow={6}>
