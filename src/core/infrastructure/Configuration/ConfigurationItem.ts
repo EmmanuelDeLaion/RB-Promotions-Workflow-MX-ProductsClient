@@ -1,4 +1,4 @@
-import { Entity, LookupValue } from "../../../infrastructure";
+import { Entity, LookupValue } from "..";
 
 export class ConfigurationItem extends Entity {
     public Key: string;

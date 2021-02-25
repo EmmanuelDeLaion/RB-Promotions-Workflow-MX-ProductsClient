@@ -1,7 +1,7 @@
 import { sp } from "@pnp/sp/presets/all";
-import { ConfigurationItem} from "../model/Common/Configuration/ConfigurationItem";
-import { ConfigurationKey} from "../model/Common/Configuration/ConfigurationKey";
-import { Configuration} from "../model/Common/Configuration/Configuration";
+import { ConfigurationItem} from "../infrastructure/Configuration/ConfigurationItem";
+import { ConfigurationKey} from "../infrastructure/Configuration/ConfigurationKey";
+import { Configuration} from "../infrastructure/Configuration/Configuration";
 import { CommonHelper } from "../common/CommonHelper";
 
 export class ConfigurationRepository {
