@@ -4,6 +4,7 @@ import { NotificationTemplateRepository } from "../data/NotificationTemplateRepo
 import { NotificationTemplateId } from "../model/Common";
 import { Promo } from "../model/Promo";
 import { CommonHelper } from "./CommonHelper";
+import { IEmailProperties, sp } from "@pnp/sp/presets/all";
 
 export class NotificacionsManager {
 
@@ -40,7 +41,7 @@ export class NotificacionsManager {
         console.log(template.Subject);
         console.log(template.Body);
 
-        EmailSenderRepository.Add(
+        NotificacionsManager.SendEmail(
             to,
             cc,
             template.Subject,
@@ -63,5 +64,22 @@ export class NotificacionsManager {
         retVal.set("{{TO}}", to);
 
         return retVal;
+    }
+
+    public static async SendEmail(to: string, cc: string, subject: string, body: string)
+    {
+        //EmailSenderRepository.Add(to, cc, subject, body);
+
+        const emailProps: IEmailProperties = {
+            To: to.split(";"),
+            CC: !CommonHelper.IsNullOrEmpty(cc)? cc.split(";") : [],
+            Subject: subject,
+            Body: body,
+            AdditionalHeaders: {
+                "content-type": "text/html"
+            }
+        };
+
+        await sp.utility.sendEmail(emailProps);
     }
 }
