@@ -642,13 +642,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 />
                               </Stack>
                               <Stack grow={4} className="smallPadding padding-right controlPadding fixedStructure">
-                                <TextField
-                                  label="Inversión adicional (MKT)"
-                                  onChange={this.onAdditionalInvestmentChange.bind(this)}
-                                  value={selectedItem.GetAdditionalInvestmentAsString()}
-                                  autoComplete="Off"
-                                  readOnly={readOnlyForm}
-                                />
                               </Stack>
                             </Stack>
                             <Stack horizontal>
@@ -671,6 +664,17 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Stack horizontal className="verticalPadding">
                                   <Label>GM incremental</Label>
                                   <Label className="toRight">{selectedItem.RequiresIncrementalGM() ? ("$" + selectedItem.GetIncrementalGMAsString()) : "N/A"}</Label>
+                                </Stack>
+                                <Separator className="graySeparator separatorToTop" />
+                                <Stack className="verticalPadding">
+                                  <TextField
+                                    label="Inversión adicional (MKT)"
+                                    onChange={this.onAdditionalInvestmentChange.bind(this)}
+                                    value={selectedItem.GetAdditionalInvestmentAsString()}
+                                    autoComplete="Off"
+                                    readOnly={readOnlyForm}
+                                    width="100%"
+                                  />
                                 </Stack>
                                 <Separator className="graySeparator separatorToTop" />
                               </Stack>
