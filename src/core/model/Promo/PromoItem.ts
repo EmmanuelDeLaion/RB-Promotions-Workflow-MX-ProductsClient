@@ -472,4 +472,25 @@ export class PromoItem extends Entity {
     }    
 
     //#endregion
+
+    public IsValid(): boolean {
+        var invalidCount = 0;
+
+        if (CommonHelper.IsNullOrEmpty(this.ShortDescription)) invalidCount++;
+        if (this.Category == null) invalidCount++;
+        if (this.RequiresInvestment() && !(this.Investment > 0)) invalidCount++;
+        if (this.Type == null) invalidCount++;
+        if (this.BusinessUnit == null) invalidCount++;
+        if (this.Brand == null) invalidCount++;
+        if (this.Product == null) invalidCount++;
+        if (this.ProductCategory == null) invalidCount++;
+        if (!CommonHelper.IsDate(this.StartDate)) invalidCount++;
+        if (!CommonHelper.IsDate(this.EndDate)) invalidCount++;
+        if (this.RequiresDiscountPerPiece() && !(this.DiscountPerPiece > 0)) invalidCount++;
+        if (this.RequiresRedemption() && !(this.Redemption > 0)) invalidCount++;
+        if (!(this.BaseVolume > 0)) invalidCount++;
+        if (!(this.EstimatedIncrementalVolume > 0)) invalidCount++;
+
+        return invalidCount == 0;
+    }
 }

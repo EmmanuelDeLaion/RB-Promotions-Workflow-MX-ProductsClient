@@ -302,11 +302,18 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           overflowBehavior="menu"
                           onLinkClick={this.onTabLinkClicked.bind(this)}
                           selectedKey={this.state.selectedIndex.toString()}>
-                          {entity.Items.map((item, index) => {
+                          {entity.Items.map((item, index) => {                            
+                            const isInvalid = this.state.hasValidationError && !item.IsValid();
+                            console.log("Pivot is invalid: ");
+                            console.log(isInvalid);
                             return (
                               <PivotItem
                                 headerText={item.AdditionalID}
-                                headerButtonProps={{ 'data-order': index + 1, 'data-title': item.AdditionalID }}
+                                headerButtonProps={{ 'data-order': index + 1, 'data-title': item.AdditionalID, style: isInvalid ? { 
+                                  color: "#a4262c",
+                                  border: "1px solid #a4262c",
+                                  borderBottomWidth: "0"
+                                } : null }}
                                 itemKey={index.toString()}>
                               </PivotItem>
                             );
@@ -1454,6 +1461,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
   //#endregion
 
+  //#region Actions
+
   private save(): void {
     console.log(this.state.viewModel.Entity);
 
@@ -1557,6 +1566,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     }
   }
 
+  //#endregion
+
   private getValidationErrorMessage(value: any): string {
     if (value == undefined)
       return this.state.hasValidationError ? Constants.Messages.RequiredField : CommonHelper.EmptyString;
@@ -1577,20 +1588,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     if (this.state.viewModel.Entity.Client == null) invalidCount++;
 
     this.state.viewModel.Entity.Items.map((item) => {
-      if (CommonHelper.IsNullOrEmpty(item.ShortDescription)) invalidCount++;
-      if (item.Category == null) invalidCount++;
-      if (item.RequiresInvestment() && !(item.Investment > 0)) invalidCount++;
-      if (item.Type == null) invalidCount++;
-      if (item.BusinessUnit == null) invalidCount++;
-      if (item.Brand == null) invalidCount++;
-      if (item.Product == null) invalidCount++;
-      if (item.ProductCategory == null) invalidCount++;
-      if (!CommonHelper.IsDate(item.StartDate)) invalidCount++;
-      if (!CommonHelper.IsDate(item.EndDate)) invalidCount++;
-      if (item.RequiresDiscountPerPiece() && !(item.DiscountPerPiece > 0)) invalidCount++;
-      if (item.RequiresRedemption() && !(item.Redemption > 0)) invalidCount++;
-      if (!(item.BaseVolume > 0)) invalidCount++;
-      if (!(item.EstimatedIncrementalVolume > 0)) invalidCount++;
+      if (!item.IsValid()) invalidCount++;      
     });
 
     this.setState({ hasValidationError: invalidCount > 0 });
