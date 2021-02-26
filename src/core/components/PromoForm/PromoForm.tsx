@@ -311,9 +311,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 headerText={item.AdditionalID}
                                 headerButtonProps={{ 'data-order': index + 1, 'data-title': item.AdditionalID, style: isInvalid ? { 
                                   color: "#a4262c",
-                                  border: "1px solid #a4262c",
+                                  border: "1px dashed #a4262c",
                                   borderBottomWidth: "0"
-                                } : null }}
+                                } : { border: "1px solid transparent" } }}
                                 itemKey={index.toString()}>
                               </PivotItem>
                             );
