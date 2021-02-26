@@ -304,8 +304,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           selectedKey={this.state.selectedIndex.toString()}>
                           {entity.Items.map((item, index) => {                            
                             const isInvalid = this.state.hasValidationError && !item.IsValid();
-                            console.log("Pivot is invalid: ");
-                            console.log(isInvalid);
                             return (
                               <PivotItem
                                 headerText={item.AdditionalID}
@@ -731,7 +729,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               <Label>Aprobaciones</Label>
                             </Stack>
                           </Stack>
-                          <Stack horizontal className="grayContent padding padding-left padding-right">
+                          <Stack className="grayContent padding padding-left padding-right">
                             {entity.WorkflowLog.map((log) => {
                               return (
                                 <Stack grow={12}>
@@ -744,7 +742,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         <span> {log.User.Value + " - " + log.DateAndTimeAsString() + " - Accion: " + log.Action}</span>
                                       </Stack>                                
                                       <Stack horizontal className="verticalPadding">
-                                        <span>Comentarios: {log.Comments}</span>
+                                        <span hidden={CommonHelper.IsNullOrEmpty(log.Comments)}>Comentarios: {log.Comments}</span>
                                       </Stack>
                                     </Stack>
                                   </Stack>

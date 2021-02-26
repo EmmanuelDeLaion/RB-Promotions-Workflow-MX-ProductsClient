@@ -10,7 +10,7 @@ export class NotificacionsManager {
         return NotificacionsManager.SendNotification(NotificationTemplateId.TaskAssigned, entity, to, cc);        
     }
 
-    public static SendTaskRejectedNotification(entity: Promo, to: string, cc?: string): Promise<void> {
+    public static SendTaskRejectedNotification(entity: Promo, comments: string, rejectedBy: string, to: string, cc?: string): Promise<void> {
         return NotificacionsManager.SendNotification(NotificationTemplateId.TaskRejected, entity, to, cc);
     }
 
@@ -56,7 +56,7 @@ export class NotificacionsManager {
         retVal.set("{{APPROVAL_AMOUNT_LIMIT}}", entity.Config.ApprovalAmountLimit.toString());
         retVal.set("{{NAME}}", entity.Name);
         retVal.set("{{PROMO_ID}}", entity.PromoID);
-        retVal.set("{{LINK_TO_PROMO}}", webData.Url + entity.ItemId.toString());
+        retVal.set("{{LINK_TO_PROMO}}", webData.Url + "?ItemId=" + entity.ItemId.toString());
 
         retVal.set("{{CC}}", cc);
         retVal.set("{{TO}}", to);

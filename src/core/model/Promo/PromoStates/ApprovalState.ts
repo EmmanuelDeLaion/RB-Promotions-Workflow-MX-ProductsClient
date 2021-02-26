@@ -72,8 +72,9 @@ export class ApprovalState extends PromoState {
 
         WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Rechazar", comments);
 
+        const user = await SecurityHelper.GetCurrentUser();
         const to = (await SecurityHelper.GetUserId(this.Entity.Client.KeyAccountManager.ItemId)).Email;
 
-        NotificacionsManager.SendWorkflowApprovedNotification(this.Entity, to);
+        NotificacionsManager.SendTaskRejectedNotification(this.Entity, comments, user.Value, to);
     }
 }
