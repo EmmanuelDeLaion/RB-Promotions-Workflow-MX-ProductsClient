@@ -353,7 +353,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               </Stack>
                             </Stack>
                             <Stack horizontal grow={12} styles={{ root: { paddingTop: "16px" } }}>
-                              <Stack className="smallPadding" grow={6}>
+                              <Stack className="smallPadding fixedStructure" grow={6}>
                                 <Stack className="padding-right controlPadding">
                                   {!readOnlyForm ?
                                     <Dropdown
@@ -446,7 +446,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   />
                                 </Stack>
                               </Stack>
-                              <Stack className="smallPadding" grow={6}>
+                              <Stack className="smallPadding fixedStructure" grow={6}>
                                 <Stack className="padding-right controlPadding">
                                   {!readOnlyForm ?
                                     <Dropdown
