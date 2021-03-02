@@ -631,20 +631,16 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   />
                                 </Stack>
                                 <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
-                                  <Label>Volume LY</Label>
+                                  <Label>Volumen LY</Label>
                                   <Label className="toRight">{selectedItem.GetLastYearVolumeAsString()}</Label>
                                 </Stack>
                                 <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
-                                  <Label>% Volume Incremental</Label>
-                                  <Label className="toRight">{selectedItem.RequiresIncrementalVolumePercentage() ? (selectedItem.GetIncrementalVolumePercentageAsString() + "%") : "N/A"}</Label>
+                                  <Label>NR base</Label>
+                                  <Label className="toRight">{selectedItem.RequiresBaseNR() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetBaseNRAsString()) : "N/A"}</Label>
                                 </Stack>
                                 <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
-                                  <Label>NR incremental estimado</Label>
-                                  <Label className="toRight">{selectedItem.RequiresIncrementalEstimatedNR() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
-                                </Stack>
-                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
-                                  <Label>GM incremental</Label>
-                                  <Label className="toRight">{selectedItem.RequiresIncrementalGM() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetIncrementalGMAsString()) : "N/A"}</Label>
+                                  <Label>GM base</Label>
+                                  <Label className="toRight">{selectedItem.RequiresBaseGM() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetBaseGMAsString()) : "N/A"}</Label>
                                 </Stack>
                                 <Stack className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <TextField
@@ -675,13 +671,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Label className="toRight">{selectedItem.GetAverageVolumeL3MonthsAsString()}</Label>
                                 </Stack>
                                 <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
-                                  <Label>NR base</Label>
-                                  <Label className="toRight">{selectedItem.RequiresBaseNR() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetBaseNRAsString()) : "N/A"}</Label>
+                                  <Label>NR incremental estimado</Label>
+                                  <Label className="toRight">{selectedItem.RequiresIncrementalEstimatedNR() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
                                 </Stack>
                                 <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
-                                  <Label>GM base</Label>
-                                  <Label className="toRight">{selectedItem.RequiresBaseGM() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetBaseGMAsString()) : "N/A"}</Label>
-                                </Stack>
+                                  <Label>GM promo estimado</Label>
+                                  <Label className="toRight">{selectedItem.RequiresEstimatedGMPromo() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
+                                </Stack>                                
                               </Stack>
                               <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={4}>
                                 <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
@@ -689,12 +685,16 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Label className="toRight">{selectedItem.RequiresTotalEstimatedVolume() ? selectedItem.GetTotalEstimatedVolumeAsString() : "N/A"}</Label>
                                 </Stack>
                                 <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
+                                  <Label>% Volumen Incremental</Label>
+                                  <Label className="toRight">{selectedItem.RequiresIncrementalVolumePercentage() ? (selectedItem.GetIncrementalVolumePercentageAsString() + "%") : "N/A"}</Label>
+                                </Stack>
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>NR Estimado</Label>
                                   <Label className="toRight">{selectedItem.RequiresEstimatedNR() ? entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedNRAsString() : "N/A"}</Label>
                                 </Stack>
                                 <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
-                                  <Label>GM promo estimado</Label>
-                                  <Label className="toRight">{selectedItem.RequiresEstimatedGMPromo() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
+                                  <Label>GM incremental</Label>
+                                  <Label className="toRight">{selectedItem.RequiresIncrementalGM() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetIncrementalGMAsString()) : "N/A"}</Label>
                                 </Stack>
                               </Stack>
                             </Stack>
@@ -828,30 +828,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <Label className="toRight">{item.GetBaseVolumeAsString()}</Label>
                                   </Stack>
                                   <Stack horizontal className="verticalPadding borderBottom alignMiddle">
-                                    <Label>Volume LY</Label>
+                                    <Label>Volumen LY</Label>
                                     <Label className="toRight">{item.GetLastYearVolumeAsString()}</Label>
-                                  </Stack>
-                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
-                                    <Label>% Volume Incremental</Label>
-                                    <Label className="toRight">{item.RequiresIncrementalVolumePercentage() ? (item.GetIncrementalVolumePercentageAsString() + "%") : "N/A"}</Label>
-                                  </Stack>
-                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
-                                    <Label>NR incremental estimado</Label>
-                                    <Label className="toRight">{item.RequiresIncrementalEstimatedNR() ? (entity.Config.CurrencySymbol + " " + item.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
-                                  </Stack>
-                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
-                                    <Label>GM incremental</Label>
-                                    <Label className="toRight">{item.RequiresIncrementalGM() ? (entity.Config.CurrencySymbol + " " + item.GetIncrementalGMAsString()) : "N/A"}</Label>
-                                  </Stack>
-                                </Stack>
-                                <Stack className="smallPadding padding-right fixedStructure" grow={4}>
-                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
-                                    <Label>Volumen incremental estimado</Label>
-                                    <Label className="toRight">{item.GetEstimatedIncrementalVolumeAsString()}</Label>
-                                  </Stack>
-                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
-                                    <Label>Volume Average L 3 Months</Label>
-                                    <Label className="toRight">{item.GetAverageVolumeL3MonthsAsString()}</Label>
                                   </Stack>
                                   <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>NR base</Label>
@@ -862,27 +840,46 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     <Label className="toRight">{item.RequiresBaseGM() ? (entity.Config.CurrencySymbol + " " + item.GetBaseGMAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Stack horizontal className="verticalPadding borderBottom alignMiddle">
-                                    <Label>Inversión estimada</Label>
-                                    <Label className="toRight">{entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedInvestmentAsString()}</Label>
-                                  </Stack>
-                                </Stack>
-                                <Stack className="smallPadding fixedStructure" grow={4}>
-                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>Inversión adicional (MKT)</Label>
                                     <Label className="toRight">{item.GetAdditionalInvestmentAsString()}</Label>
                                   </Stack>
+                                </Stack>
+                                <Stack className="smallPadding padding-right fixedStructure" grow={4}>
+                                <Stack horizontal className="verticalPadding borderBottom alignMiddle">
+                                    <Label>Volumen incremental estimado</Label>
+                                    <Label className="toRight">{item.GetEstimatedIncrementalVolumeAsString()}</Label>
+                                  </Stack>
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
+                                    <Label>Volume Average L 3 Months</Label>
+                                    <Label className="toRight">{item.GetAverageVolumeL3MonthsAsString()}</Label>
+                                  </Stack>
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
+                                    <Label>NR incremental estimado</Label>
+                                    <Label className="toRight">{item.RequiresIncrementalEstimatedNR() ? (entity.Config.CurrencySymbol + " " + item.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
+                                  </Stack>
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
+                                    <Label>GM promo estimado</Label>
+                                    <Label className="toRight">{item.RequiresEstimatedGMPromo() ? (entity.Config.CurrencySymbol + " " + item.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
+                                  </Stack>                                                                    
+                                  
+                                </Stack>
+                                <Stack className="smallPadding fixedStructure" grow={4}>
                                   <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>Total volumen estimado</Label>
                                     <Label className="toRight">{item.RequiresTotalEstimatedVolume() ? item.GetTotalEstimatedVolumeAsString() : "N/A"}</Label>
+                                  </Stack>
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
+                                    <Label>% Volumen Incremental</Label>
+                                    <Label className="toRight">{item.RequiresIncrementalVolumePercentage() ? (item.GetIncrementalVolumePercentageAsString() + "%") : "N/A"}</Label>
                                   </Stack>
                                   <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>NR Estimado</Label>
                                     <Label className="toRight">{item.RequiresEstimatedNR() ? entity.Config.CurrencySymbol + " " + item.GetEstimatedNRAsString() : "N/A"}</Label>
                                   </Stack>
                                   <Stack horizontal className="verticalPadding borderBottom alignMiddle">
-                                    <Label>GM promo estimado</Label>
-                                    <Label className="toRight">{item.RequiresEstimatedGMPromo() ? (entity.Config.CurrencySymbol + " " + item.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
-                                  </Stack>
+                                    <Label>GM incremental</Label>
+                                    <Label className="toRight">{item.RequiresIncrementalGM() ? (entity.Config.CurrencySymbol + " " + item.GetIncrementalGMAsString()) : "N/A"}</Label>
+                                  </Stack>                
                                 </Stack>
                               </Stack>
                             </Stack>
