@@ -324,3 +324,10 @@ flex-basis: 0;
     font-size: 25px;
     padding: 10px;
 }
+.controlPadding > .ms-TextField
+{
+    width: 100%;
+}
+.alignMiddle{
+    align-items: center;
+}

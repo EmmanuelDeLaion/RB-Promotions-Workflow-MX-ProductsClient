@@ -19,7 +19,6 @@ import {
   Dialog,
   Stack,
   Persona,
-  Separator,
   PersonaSize,
   Link,
   Icon,
@@ -302,16 +301,18 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           overflowBehavior="menu"
                           onLinkClick={this.onTabLinkClicked.bind(this)}
                           selectedKey={this.state.selectedIndex.toString()}>
-                          {entity.Items.map((item, index) => {                            
+                          {entity.Items.map((item, index) => {
                             const isInvalid = this.state.hasValidationError && !item.IsValid();
                             return (
                               <PivotItem
                                 headerText={item.AdditionalID}
-                                headerButtonProps={{ 'data-order': index + 1, 'data-title': item.AdditionalID, style: isInvalid ? { 
-                                  color: "#a4262c",
-                                  border: "1px dashed #a4262c",
-                                  borderBottomWidth: "0"
-                                } : { border: "1px solid transparent" } }}
+                                headerButtonProps={{
+                                  'data-order': index + 1, 'data-title': item.AdditionalID, style: isInvalid ? {
+                                    color: "#a4262c",
+                                    border: "1px dashed #a4262c",
+                                    borderBottomWidth: "0"
+                                  } : { border: "1px solid transparent" }
+                                }}
                                 itemKey={index.toString()}>
                               </PivotItem>
                             );
@@ -553,46 +554,38 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Label>Detalles de la promoción</Label>
                                 </Stack>
                                 <Stack className="grayContent smallPadding padding-left padding-right" verticalFill>
-                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding borderBottom" verticalAlign="center">
                                     <Label>Precio neto OFF</Label>
                                     <Label className="toRight">{selectedItem.RequiresNetPrice() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetNetPriceAsString()) : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding borderBottom" verticalAlign="center">
                                     <Label>% Descuento</Label>
                                     <Label className="toRight">{selectedItem.RequiresDiscountPerPiece() ? (selectedItem.GetDiscountPercentageAsString() + "%") : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding borderBottom" verticalAlign="center">
                                     <Label>BEP NR</Label>
                                     <Label className="toRight">{selectedItem.GetBEPNRAsString() + "%"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding borderBottom" verticalAlign="center">
                                     <Label>GM %NR</Label>
                                     <Label className="toRight">{selectedItem.GetGMPercentageNRAsString() + "%"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
+                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding borderBottom" verticalAlign="center">
                                     <Label>GM %NR con promo</Label>
                                     <Label className="toRight">{selectedItem.RequiresDiscountPerPiece() ? selectedItem.GetGMPercentageNRWithPromoAsString() + "%" : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
+                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding borderBottom" verticalAlign="center">
                                     <Label>GM Base Unit</Label>
                                     <Label className="toRight">{entity.Config.CurrencySymbol + " " + selectedItem.GetGMBaseUnitAsString()}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding " verticalAlign="center">
+                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding borderBottom" verticalAlign="center">
                                     <Label>GM Promo Unit</Label>
                                     <Label className="toRight">{entity.Config.CurrencySymbol + " " + selectedItem.GetGMPromoUnitAsString()}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding" verticalAlign="center">
+                                  <Stack verticalFill horizontal className="verticalPadding detailsControlPadding borderBottom" verticalAlign="center">
                                     <Label>BEP GM</Label>
                                     <Label className="toRight">{selectedItem.RequiresDiscountPerPiece() ? (selectedItem.GetBEPGMAsString() + "%") : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
                               </Stack>
                             </Stack>
@@ -624,54 +617,36 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           </Stack>
                           <Stack className="grayContent padding padding-left padding-right">
                             <Stack horizontal>
-                              <Stack grow={4} className="smallPadding padding-right controlPadding fixedStructure">
-                                <TextField
-                                  label="Volumen base"
-                                  onChange={this.onBaseVolumeChange.bind(this)}
-                                  value={selectedItem.GetBaseVolumeAsString()}
-                                  required={!readOnlyForm}
-                                  autoComplete="Off"
-                                  errorMessage={this.getValidationErrorMessage(selectedItem.GetBaseVolumeAsString())}
-                                  readOnly={readOnlyForm}
-                                />
-                              </Stack>
-                              <Stack grow={4} className="smallPadding padding-right controlPadding fixedStructure">
-                                <TextField
-                                  label="Volumen incremental estimado"
-                                  onChange={this.onEstimatedIncrementalVolumeChange.bind(this)}
-                                  value={selectedItem.GetEstimatedIncrementalVolumeAsString()}
-                                  required={!readOnlyForm}
-                                  autoComplete="Off"
-                                  errorMessage={this.getValidationErrorMessage(selectedItem.GetEstimatedIncrementalVolumeAsString())}
-                                  readOnly={readOnlyForm}
-                                />
-                              </Stack>
-                              <Stack grow={4} className="smallPadding padding-right controlPadding fixedStructure">
-                              </Stack>
-                            </Stack>
-                            <Stack horizontal>
                               <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={4}>
-                                <Stack horizontal className="verticalPadding">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom">
+                                  <TextField
+                                    label="Volumen base"
+                                    onChange={this.onBaseVolumeChange.bind(this)}
+                                    value={selectedItem.GetBaseVolumeAsString()}
+                                    required={!readOnlyForm}
+                                    autoComplete="Off"
+                                    errorMessage={this.getValidationErrorMessage(selectedItem.GetBaseVolumeAsString())}
+                                    readOnly={readOnlyForm}
+                                    width="100%"
+                                  />
+                                </Stack>
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>Volume LY</Label>
                                   <Label className="toRight">{selectedItem.GetLastYearVolumeAsString()}</Label>
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>% Volume Incremental</Label>
                                   <Label className="toRight">{selectedItem.RequiresIncrementalVolumePercentage() ? (selectedItem.GetIncrementalVolumePercentageAsString() + "%") : "N/A"}</Label>
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>NR incremental estimado</Label>
                                   <Label className="toRight">{selectedItem.RequiresIncrementalEstimatedNR() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>GM incremental</Label>
                                   <Label className="toRight">{selectedItem.RequiresIncrementalGM() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetIncrementalGMAsString()) : "N/A"}</Label>
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack className="verticalPadding">
+                                <Stack className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <TextField
                                     label="Inversión adicional (MKT)"
                                     onChange={this.onAdditionalInvestmentChange.bind(this)}
@@ -681,41 +656,46 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     width="100%"
                                   />
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
                               </Stack>
                               <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={4}>
-                                <Stack horizontal className="verticalPadding">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
+                                  <TextField
+                                    label="Volumen incremental estimado"
+                                    onChange={this.onEstimatedIncrementalVolumeChange.bind(this)}
+                                    value={selectedItem.GetEstimatedIncrementalVolumeAsString()}
+                                    required={!readOnlyForm}
+                                    autoComplete="Off"
+                                    errorMessage={this.getValidationErrorMessage(selectedItem.GetEstimatedIncrementalVolumeAsString())}
+                                    readOnly={readOnlyForm}
+                                    width="100%"
+                                  />
+                                </Stack>
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>Volume Average L 3 Months</Label>
                                   <Label className="toRight">{selectedItem.GetAverageVolumeL3MonthsAsString()}</Label>
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>NR base</Label>
                                   <Label className="toRight">{selectedItem.RequiresBaseNR() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetBaseNRAsString()) : "N/A"}</Label>
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>GM base</Label>
                                   <Label className="toRight">{selectedItem.RequiresBaseGM() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetBaseGMAsString()) : "N/A"}</Label>
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
                               </Stack>
                               <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={4}>
-                                <Stack horizontal className="verticalPadding">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>Total volumen estimado</Label>
                                   <Label className="toRight">{selectedItem.RequiresTotalEstimatedVolume() ? selectedItem.GetTotalEstimatedVolumeAsString() : "N/A"}</Label>
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>NR Estimado</Label>
                                   <Label className="toRight">{selectedItem.RequiresEstimatedNR() ? entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedNRAsString() : "N/A"}</Label>
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
-                                <Stack horizontal className="verticalPadding">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <Label>GM promo estimado</Label>
                                   <Label className="toRight">{selectedItem.RequiresEstimatedGMPromo() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
                                 </Stack>
-                                <Separator className="graySeparator separatorToTop" />
                               </Stack>
                             </Stack>
                           </Stack>
@@ -733,20 +713,19 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             {entity.WorkflowLog.map((log) => {
                               return (
                                 <Stack grow={12}>
-                                  <Stack grow={12} horizontal>
+                                  <Stack grow={12} horizontal className="borderBottom">
                                     <Stack>
                                       <Icon className="workflowIcon" iconName={log.Action == "Aprobar" ? "CheckMark" : "Cancel"} />
                                     </Stack>
                                     <Stack grow={10}>
                                       <Stack horizontal className="verticalPadding">
                                         <span> {log.User.Value + " - " + log.DateAndTimeAsString() + " - Accion: " + log.Action}</span>
-                                      </Stack>                                
+                                      </Stack>
                                       <Stack horizontal className="verticalPadding">
                                         <span hidden={CommonHelper.IsNullOrEmpty(log.Comments)}>Comentarios: {log.Comments}</span>
                                       </Stack>
                                     </Stack>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
                               );
                             })}
@@ -766,16 +745,14 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         <Stack horizontal className="padding">
                           <Stack grow={8} verticalAlign="start" className="fixedStructure">
                             <Stack grow={12} className="grayContent padding padding-left padding-right">
-                              <Stack horizontal className="verticalPadding">
+                              <Stack horizontal className="verticalPadding borderBottom">
                                 <Label>Cliente</Label>
                                 <Label className="toRight">{entity.Client ? entity.Client.Name : null}</Label>
                               </Stack>
-                              <Separator className="graySeparator separatorToTop" />
-                              <Stack className="verticalPadding">
+                              <Stack className="verticalPadding borderBottom">
                                 <Label>Objetivo de la promoción</Label>
                                 <span className="twoColumnsContentMaxWidth">{entity.ActivityObjective}</span>
                               </Stack>
-                              <Separator className="graySeparator separatorToTop" />
                             </Stack>
                           </Stack>
                           <Stack grow={4} horizontal className="fixedStructure">
@@ -846,80 +823,66 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               </Stack>
                               <Stack horizontal className="grayContent padding padding-left padding-right">
                                 <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={4}>
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>Volumen base</Label>
                                     <Label className="toRight">{item.GetBaseVolumeAsString()}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>Volume LY</Label>
                                     <Label className="toRight">{item.GetLastYearVolumeAsString()}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>% Volume Incremental</Label>
                                     <Label className="toRight">{item.RequiresIncrementalVolumePercentage() ? (item.GetIncrementalVolumePercentageAsString() + "%") : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>NR incremental estimado</Label>
                                     <Label className="toRight">{item.RequiresIncrementalEstimatedNR() ? (entity.Config.CurrencySymbol + " " + item.GetIncrementalEstimatedNRAsString()) : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>GM incremental</Label>
                                     <Label className="toRight">{item.RequiresIncrementalGM() ? (entity.Config.CurrencySymbol + " " + item.GetIncrementalGMAsString()) : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
                                 <Stack className="smallPadding padding-right fixedStructure" grow={4}>
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>Volumen incremental estimado</Label>
                                     <Label className="toRight">{item.GetEstimatedIncrementalVolumeAsString()}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>Volume Average L 3 Months</Label>
                                     <Label className="toRight">{item.GetAverageVolumeL3MonthsAsString()}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>NR base</Label>
                                     <Label className="toRight">{item.RequiresBaseNR() ? (entity.Config.CurrencySymbol + " " + item.GetBaseNRAsString()) : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>GM base</Label>
                                     <Label className="toRight">{item.RequiresBaseGM() ? (entity.Config.CurrencySymbol + " " + item.GetBaseGMAsString()) : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>Inversión estimada</Label>
                                     <Label className="toRight">{entity.Config.CurrencySymbol + " " + selectedItem.GetEstimatedInvestmentAsString()}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
                                 <Stack className="smallPadding fixedStructure" grow={4}>
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>Inversión adicional (MKT)</Label>
                                     <Label className="toRight">{item.GetAdditionalInvestmentAsString()}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>Total volumen estimado</Label>
                                     <Label className="toRight">{item.RequiresTotalEstimatedVolume() ? item.GetTotalEstimatedVolumeAsString() : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>NR Estimado</Label>
                                     <Label className="toRight">{item.RequiresEstimatedNR() ? entity.Config.CurrencySymbol + " " + item.GetEstimatedNRAsString() : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
-                                  <Stack horizontal className="verticalPadding">
+                                  <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>GM promo estimado</Label>
                                     <Label className="toRight">{item.RequiresEstimatedGMPromo() ? (entity.Config.CurrencySymbol + " " + item.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
                                   </Stack>
-                                  <Separator className="graySeparator separatorToTop" />
                                 </Stack>
                               </Stack>
                             </Stack>
@@ -936,9 +899,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
               {/* Modal Bottom*/}
 
               <div className="modalBottom">
-                <Label>Estado general de la promoción</Label>
-                <Separator className="graySeparator separatorToTop" />
-                <Stack className="modalBottomContent" horizontal grow={12}>
+                <Stack className="borderBottom">
+                  <Label>Estado general de la promoción</Label>
+                </Stack>
+                <Stack className="modalBottomContent verticalPadding" horizontal grow={12}>
                   <Stack grow={1}>
                     <Label className="modalBottomContentHeader">Efectividad</Label>
                     <div hidden={!entity.IsEffective()} className="effectiveLabelContainer">
@@ -1586,7 +1550,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     if (this.state.viewModel.Entity.Client == null) invalidCount++;
 
     this.state.viewModel.Entity.Items.map((item) => {
-      if (!item.IsValid()) invalidCount++;      
+      if (!item.IsValid()) invalidCount++;
     });
 
     this.setState({ hasValidationError: invalidCount > 0 });
