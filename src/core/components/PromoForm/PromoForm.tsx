@@ -618,7 +618,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           <Stack className="grayContent padding padding-left padding-right">
                             <Stack horizontal>
                               <Stack className="smallPadding padding-right controlPadding fixedStructure" grow={4}>
-                                <Stack horizontal className="verticalPadding controlPadding borderBottom">
+                                <Stack horizontal className="verticalPadding controlPadding borderBottom alignMiddle">
                                   <TextField
                                     label="Volumen base"
                                     onChange={this.onBaseVolumeChange.bind(this)}
