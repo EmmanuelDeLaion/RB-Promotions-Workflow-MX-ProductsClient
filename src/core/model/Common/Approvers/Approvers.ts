@@ -2,8 +2,8 @@ import { Entity, LookupValue } from "../../../infrastructure";
 
 export class Approvers {
 
-    public Role1: LookupValue;
-    public Role2: LookupValue;
-    public Role3: LookupValue;
+    public Phase1Approver1: LookupValue;
+    public Phase2Approver1: LookupValue;
+    public Phase2Approver2: LookupValue;
     
 }

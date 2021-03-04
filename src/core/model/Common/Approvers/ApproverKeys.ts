@@ -1,5 +1,5 @@
 export enum ApproverKeys {
-    Role1 = "Rol 1",
-    Role2 = "Rol 2",
-    Role3 = "Rol 3"
+    Phase1Approver1 = "Etapa 1 - Aprobador 1",
+    Phase2Approver1 = "Etapa 2 - Aprobador 1",
+    Phase2Approver2 = "Etapa 2 - Aprobador 2"
 }

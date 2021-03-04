@@ -38,10 +38,10 @@ export abstract class PromoState {
     public async InitializeWorkflowState(entity: Promo): Promise<void> {
         const approvers = await ApproversRepository.GetInstance();
 
-        entity.WorkflowStages = [new PromoWorkflowState([entity.Client.Channel.HeadOfChannel.ItemId, approvers.Role1.ItemId])];
+        entity.WorkflowStages = [new PromoWorkflowState([entity.Client.Channel.HeadOfChannel.ItemId, approvers.Phase1Approver1.ItemId])];
 
         if(entity.GetTotalEstimatedInvestment() > entity.Config.ApprovalAmountLimit)
-            entity.WorkflowStages.push(new PromoWorkflowState([approvers.Role2.ItemId,approvers.Role3.ItemId]));
+            entity.WorkflowStages.push(new PromoWorkflowState([approvers.Phase2Approver1.ItemId,approvers.Phase2Approver2.ItemId]));
 
         entity.CurrentStageNumber = 1;
     }

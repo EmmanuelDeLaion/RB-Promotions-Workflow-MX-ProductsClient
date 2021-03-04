@@ -21,9 +21,9 @@ export class ApproversRepository {
 
         const entity = ApproversRepository.GetValues().then((items) => {
                 let approvers = new Approvers();
-                approvers.Role1 = ApproversRepository.GetApproverValue(items, ApproverKeys.Role1);
-                approvers.Role2 = ApproversRepository.GetApproverValue(items, ApproverKeys.Role2);
-                approvers.Role3 = ApproversRepository.GetApproverValue(items, ApproverKeys.Role3);
+                approvers.Phase1Approver1 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase1Approver1);
+                approvers.Phase2Approver1 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase2Approver1);
+                approvers.Phase2Approver2 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase2Approver2);
                 return approvers;
             });
   
