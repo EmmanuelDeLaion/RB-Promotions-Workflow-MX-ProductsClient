@@ -22,7 +22,7 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, {}> {
     private mainStakStyles = {
         backgroundImage: "url(" + this.banner + ")",
         padding: "16px",
-        height: "200px",
+        height: "240px",
         backgroundSize: 'cover'
     };
 
