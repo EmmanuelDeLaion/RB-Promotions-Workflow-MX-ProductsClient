@@ -61,7 +61,6 @@ export class NotificacionsManager {
         /*Validar*/
         retVal.set("{{KAM}}", "_KAM_");
         retVal.set("{{CLIENT_NAME}}", entity.Client.Name);
-        retVal.set("{{BRAND}}", "_BRAND_");
         retVal.set("{{PROMO_DATE}}", "_PROMO_DATE_");
         retVal.set("{{ADDITIONAL_INVESTMENT}}", entity.GetTotalEstimatedInvestmentAsString());
         retVal.set("{{ROI}}", entity.GetROIAsString());
