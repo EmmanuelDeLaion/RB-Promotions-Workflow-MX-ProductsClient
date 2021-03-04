@@ -75,8 +75,6 @@ export class NotificacionsManager {
 
     public static async SendEmail(to: string, cc: string, subject: string, body: string)
     {
-        //EmailSenderRepository.Add(to, cc, subject, body);
-
         const emailProps: IEmailProperties = {
             To: to.split(";"),
             CC: !CommonHelper.IsNullOrEmpty(cc)? cc.split(";") : [],

@@ -6,7 +6,7 @@ $Credentials = New-Object System.Management.Automation.PSCredential ($userName, 
 Connect-PnPOnline -Url $siteUrl –Credentials $Credentials
 
 $templatePath = "../template.xml"
-Get-PnPProvisioningTemplate -Out $templatePath -IncludeAllClientSidePages -Force -Handlers "Lists", "Pages" -ListsToExtract "Aprobadores", "Canales", "Categorías", "Categorías de producto", "Clientes", "Configuración", "EmailSender", "Marcas", "NotificationTemplates", "Productos", "Productos por cliente", "Promo items", "Promociones", "Subcanales", "Tipos", "Unidades de negocio", "Volúmenes del último año", "Workflow log"
+Get-PnPProvisioningTemplate -Out $templatePath -IncludeAllClientSidePages -Force -Handlers "Lists", "Pages" -ListsToExtract "Aprobadores", "Canales", "Categorías", "Categorías de producto", "Clientes", "Configuración", "Marcas", "NotificationTemplates", "Productos", "Productos por cliente", "Promo items", "Promociones", "Subcanales", "Tipos", "Unidades de negocio", "Volúmenes del último año", "Workflow log"
 
 
 Add-PnPDataRowsToProvisioningTemplate -Path $templatePath -List 'Aprobadores' -Query '' -Fields 'Role'
