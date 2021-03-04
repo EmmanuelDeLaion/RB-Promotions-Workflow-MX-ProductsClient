@@ -37,7 +37,9 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, {}> {
     };
 
     private openPromotionButtonStyles = {
-        width: "180px"
+        width: "180px",
+        backgroundColor: "#425C68",
+        border: "transparent"
     };
 
     public componentDidMount(){
