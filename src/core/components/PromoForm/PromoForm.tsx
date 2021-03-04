@@ -185,7 +185,11 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     text="Cancelar" />
                   <PrimaryButton
                     onClick={this.props.close}
-                    text="Salir sin guardar" />
+                    text="Salir sin guardar"
+                    style={{
+                      backgroundColor: "#425C68",
+                      border: "transparent"
+                    }} />
                 </DialogFooter>
               </Dialog>
 
@@ -330,7 +334,11 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             dialogContentProps={this.deleteProductDialogContentProps}
                             styles={this.confirmationDialogStyles}>
                             <DialogFooter>
-                              <PrimaryButton onClick={this.RemovePromoItem.bind(this)} text="Eliminar" />
+                              <PrimaryButton onClick={this.RemovePromoItem.bind(this)} text="Eliminar"
+                              style={{
+                                backgroundColor: "#425C68",
+                                border: "transparent"
+                              }} />
                               <DefaultButton onClick={() => this.setState({ hideDeleteProductDialog: true })} text="Cancelar" />
                             </DialogFooter>
                           </Dialog>
@@ -926,7 +934,11 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         onClick={this.save.bind(this)}
                         disabled={!this.state.enableSubmit} />
                       <PrimaryButton
-                        style={{ display: this.state.viewModel.ShowApproveButton ? "block" : "none" }}
+                        style={{ 
+                          display: this.state.viewModel.ShowApproveButton ? "block" : "none",
+                          backgroundColor: "#425C68",
+                          border: "transparent"
+                        }}
                         text="Aprobar"
                         allowDisabledFocus
                         onClick={this.approve.bind(this)}
@@ -967,6 +979,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 allowDisabledFocus
                                 onClick={this.confirmAction.bind(this)}
                                 disabled={!this.state.enableSubmit}
+                                style={{
+                                  backgroundColor: "#425C68",
+                                  border: "transparent"
+                                }}
                               />
                             </Stack>
                             <Stack>
@@ -989,7 +1005,11 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     </Stack>
                     <Stack grow={6}>
                       <PrimaryButton
-                        style={{ display: this.state.viewModel.ShowSubmitButton ? "block" : "none" }}
+                        style={{ 
+                          display: this.state.viewModel.ShowSubmitButton ? "block" : "none", 
+                          backgroundColor: "#425C68",
+                          border: "transparent" 
+                        }}
                         text="Enviar a aprobación"
                         allowDisabledFocus
                         onClick={this.submit.bind(this)}
