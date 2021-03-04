@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Notificación de flujo de aprobación completado - {{PROMO_ID}}</title>
+	<title>Notificación de tarea aprobada - {{PROMO_ID}}</title>
 	<style>
 		body {
 			margin: 0;
@@ -166,7 +166,7 @@
 			<div class="headerTitle">
 				Trade Promotions Management
 				<div class="headerSecondTitle">
-					Notificación de flujo de aprobación completado
+					Notificación de tarea aprobada
 				</div>
 			</div>
 		</div>
@@ -176,7 +176,7 @@
 					Hola, {{KAM}}:
 				</p>
 				<p>
-					La actividad promocional para el cliente {{CLIENT_NAME}}, para la marca {{BRAND}} ha sido aprobada en su totalidad y puede ejecutarse.
+					La actividad promocional para el cliente {{CLIENT_NAME}}, para la marca {{BRAND}} ha sido aprobada por {{TASK_APPROVER}}:
 				</p>
 				<p class="promoTableTitle">
 					DETALLES DE LA PROMOCIÓN
@@ -227,6 +227,9 @@
 						</td>
 					</tr>
 				</table>
+				<p>
+					<a href="{{LINK_TO_PROMO}}" title="Para más detalles da click aquí">Para más detalles da click aquí</a>
+				</p>
 				<p>
 					Saludos,
 				</p>

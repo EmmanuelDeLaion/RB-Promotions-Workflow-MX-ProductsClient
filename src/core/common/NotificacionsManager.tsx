@@ -55,8 +55,18 @@ export class NotificacionsManager {
         retVal.set("{{ACTIVITY_OBJECTIVE}}", entity.ActivityObjective);
         retVal.set("{{APPROVAL_AMOUNT_LIMIT}}", entity.Config.ApprovalAmountLimit.toString());
         retVal.set("{{NAME}}", entity.Name);
-        retVal.set("{{PROMO_ID}}", entity.PromoID);
+        retVal.set("{{PROMO_ID}}", entity.PromoID);        
         retVal.set("{{LINK_TO_PROMO}}", webData.Url + "?ItemId=" + entity.ItemId.toString());
+        
+        /*Validar*/
+        retVal.set("{{KAM}}", "_KAM_");
+        retVal.set("{{CLIENT_NAME}}", entity.Client.Name);
+        retVal.set("{{BRAND}}", "_BRAND_");
+        retVal.set("{{PROMO_DATE}}", "_PROMO_DATE_");
+        retVal.set("{{ADDITIONAL_INVESTMENT}}", entity.GetTotalEstimatedInvestmentAsString());
+        retVal.set("{{ROI}}", entity.GetROIAsString());
+        retVal.set("{{TASK_APPROVER}}", "_TASK_APPROVER_");
+        /* Fin Validar*/
 
         retVal.set("{{CC}}", cc);
         retVal.set("{{TO}}", to);
