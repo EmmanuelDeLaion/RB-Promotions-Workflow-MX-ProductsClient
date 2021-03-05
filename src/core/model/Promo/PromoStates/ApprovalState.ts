@@ -11,6 +11,8 @@ export class ApprovalState extends PromoState {
     public async Initialize(): Promise<void> {
         const to = (await this.GetCurrentStage().GetPendingUserEmails()).join(";");
 
+        await SecurityHelper.SetPromoPermissions(this.Entity.ItemId, [this.Entity.Client.KeyAccountManager.ItemId], this.GetCurrentStage().GetPendingUserIDs());
+
         return NotificacionsManager.SendTaskAssignedNotification(this.Entity, to);
     }
     
@@ -47,7 +49,7 @@ export class ApprovalState extends PromoState {
             if(this.Entity.CurrentStageNumber == this.Entity.WorkflowStages.length) {
                 this.Entity.ChangeState(PromoStatus.Approved);
 
-                const to = (await SecurityHelper.GetUserId(this.Entity.Client.KeyAccountManager.ItemId)).Email;
+                const to = (await SecurityHelper.GetUserById(this.Entity.Client.KeyAccountManager.ItemId)).Email;
 
                 NotificacionsManager.SendWorkflowApprovedNotification(this.Entity, to);
             }
@@ -59,7 +61,13 @@ export class ApprovalState extends PromoState {
             }
         }
 
-        PromoRepository.SaveOrUpdate(this.Entity);
+        let readerIDs = [this.Entity.Client.KeyAccountManager.ItemId];
+
+        for(let i = 0; i < this.Entity.CurrentStageNumber; i++) 
+            readerIDs = readerIDs.concat(this.Entity.WorkflowStages[i].CompletedBy);
+
+        await SecurityHelper.SetPromoPermissions(this.Entity.ItemId, readerIDs, this.GetCurrentStage().GetPendingUserIDs());
+        await PromoRepository.SaveOrUpdate(this.Entity);
 
         return WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Aprobar", comments);
     }
@@ -68,13 +76,21 @@ export class ApprovalState extends PromoState {
     {
         this.Entity.ChangeState(PromoStatus.Rejected);
 
-        PromoRepository.SaveOrUpdate(this.Entity);
+        await PromoRepository.SaveOrUpdate(this.Entity);
+        await WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Rechazar", comments);
 
-        WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Rechazar", comments);
+        let readerIDs = [this.Entity.Client.KeyAccountManager.ItemId];
+
+        for(let i = 0; i < this.Entity.CurrentStageNumber; i++) 
+            readerIDs = readerIDs.concat(this.Entity.WorkflowStages[i].CompletedBy);
+
+        readerIDs = readerIDs.concat(this.GetCurrentStage().GetPendingUserIDs());
+
+        await SecurityHelper.SetPromoPermissions(this.Entity.ItemId, readerIDs);
 
         const user = await SecurityHelper.GetCurrentUser();
-        const to = (await SecurityHelper.GetUserId(this.Entity.Client.KeyAccountManager.ItemId)).Email;
+        const to = (await SecurityHelper.GetUserById(this.Entity.Client.KeyAccountManager.ItemId)).Email;
 
-        NotificacionsManager.SendTaskRejectedNotification(this.Entity, comments, user.Value, to);
+        return NotificacionsManager.SendTaskRejectedNotification(this.Entity, comments, user.Value, to);
     }
 }

@@ -8,14 +8,28 @@ import { Stack,
 import { CommonHelper } from "../../common/CommonHelper";
 
 import { initializeTheme } from './Theme';
+import { SecurityHelper } from "../../common";
+import { Constants } from "../../Constants";
+import { ClientRepository } from "../../data";
 initializeTheme();
 const theme = getTheme();
 
-export interface IPromoFormLinkProps{
+export interface IPromoFormLinkProps {
     context: ExtensionContext | WebPartContext;
 }
 
-export class PromoFormLink extends React.Component<IPromoFormLinkProps, {}> {
+export interface IPromoFormLinkState {
+    showButton: boolean;
+}
+
+export class PromoFormLink extends React.Component<IPromoFormLinkProps, IPromoFormLinkState> {
+
+    constructor(props: IPromoFormLinkProps) {
+        super(props);
+        this.state = {
+          showButton: false
+        };
+      }
 
     private banner: any = require('../../../assets/images/banner.png');
 
@@ -47,6 +61,16 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, {}> {
 
         if(itemId != null)
             this.openPromoFormDialog();
+
+        SecurityHelper.GetCurrentUser().then((user) => {
+            SecurityHelper.UserIsMemberOfGroup(user.ItemId, Constants.Groups.KAMsGroupName).then((isMember) => {                
+                if(isMember) {
+                    ClientRepository.UserIsKAM(user.ItemId).then((isKAM) => {
+                        this.setState({showButton: isKAM});
+                    });
+                }
+            });
+        });
     }
 
     public render(): React.ReactElement<IPromoFormLinkProps> {
@@ -57,11 +81,13 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, {}> {
                     <span style={this.subHeaderStyles}>Portal de carga y aprobaciones de Promociones</span>
                 </Stack>
                 <Stack verticalAlign="end" horizontal>
-                    <PrimaryButton 
-                        onClick={() => this.openPromoFormDialog()} 
-                        style={this.openPromotionButtonStyles} 
-                        text="Nueva promoción" 
-                        title="Nueva promoción" />
+                    <div hidden={!this.state.showButton}>
+                        <PrimaryButton 
+                            onClick={() => this.openPromoFormDialog()} 
+                            style={this.openPromotionButtonStyles} 
+                            text="Nueva promoción" 
+                            title="Nueva promoción" />
+                    </div>
                 </Stack>
             </Stack>;
 

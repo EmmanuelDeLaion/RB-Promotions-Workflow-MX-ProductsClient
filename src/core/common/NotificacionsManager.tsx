@@ -21,12 +21,12 @@ export class NotificacionsManager {
     private static async SendNotification(notificationTemplateId: NotificationTemplateId, entity: Promo, to: string, cc?: string) {
         var template = await NotificationTemplateRepository.GetByNotificationTemplateId(notificationTemplateId);
         
-        console.log(template.Subject);
-        console.log(template.Body);
+        //console.log(template.Subject);
+        //console.log(template.Body);
 
         var replacements = await NotificacionsManager.GetReplacementCollection(notificationTemplateId, entity, to, cc);
 
-        console.log(replacements);
+        //console.log(replacements);
 
         replacements.forEach((value: string, key: string) => 
             template.Subject = CommonHelper.replaceAll(template.Subject, key, value));
@@ -34,10 +34,10 @@ export class NotificacionsManager {
         replacements.forEach((value: string, key: string) => 
             template.Body = CommonHelper.replaceAll(template.Body, key, value));
 
-        console.log(to);
-        console.log(cc);
-        console.log(template.Subject);
-        console.log(template.Body);
+        //console.log(to);
+        //console.log(cc);
+        //console.log(template.Subject);
+        //console.log(template.Body);
 
         NotificacionsManager.SendEmail(
             to,

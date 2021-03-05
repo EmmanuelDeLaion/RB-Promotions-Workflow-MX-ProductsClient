@@ -14,6 +14,11 @@ export namespace Constants {
         public static RequiredField:string = "Este campo es requerido.";
     }
 
+    export class Groups {
+        public static ReadOnlyGroupName = "RB - Solo consulta";
+        public static KAMsGroupName = "RB - KAMs";
+    }
+
     export class Miscellaneous{
         public static DayPickerStrings: IDatePickerStrings = {
             months: [
@@ -49,6 +54,6 @@ export namespace Constants {
             invalidInputErrorMessage: 'Formato de fecha inválido.'
         };
 
-        public static ClearSelectionText = "--- Borrar selección ---";
+        public static ClearSelectionText = "--- Borrar selección ---";        
     }
 }
