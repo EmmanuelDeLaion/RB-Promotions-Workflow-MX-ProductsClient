@@ -61,9 +61,9 @@ export class NotificacionsManager {
         retVal.set("{{CLIENT_NAME}}", entity.Client.Name);
         retVal.set("{{ADDITIONAL_INVESTMENT}}", entity.GetTotalEstimatedInvestmentAsString());
         retVal.set("{{ROI}}", entity.GetROIAsString());
+        retVal.set("{{PROMO_DATE}}", NotificacionsManager.GetFormattedPromoDate(entity));
 
-        /*Validar*/
-        retVal.set("{{PROMO_DATE}}", "_PROMO_DATE_");
+        /*Validar*/        
         retVal.set("{{TASK_APPROVER}}", "_TASK_APPROVER_");
         /* Fin Validar*/
 
@@ -71,6 +71,11 @@ export class NotificacionsManager {
         retVal.set("{{TO}}", to);
 
         return retVal;
+    }
+
+    public static GetFormattedPromoDate(entity: Promo): string
+    {
+        return `Desde ${entity.GetFromDate().toLocaleDateString()} hasta ${entity.GetToDate().toLocaleDateString()}`;
     }
 
     public static async SendEmail(to: string, cc: string, subject: string, body: string)
