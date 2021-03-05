@@ -150,4 +150,18 @@ export class Promo extends Entity {
         const roi = this.GetROI();
         return (roi != null && roi >=1);
     }
+
+    public GetFromDate(): Date
+    {
+        return this.Items.reduce(function(prev, current) {
+            return (prev.StartDate < current.StartDate) ? prev : current
+        }).StartDate;
+    }
+
+    public GetToDate(): Date
+    {
+        return this.Items.reduce(function(prev, current) {
+            return (prev.EndDate > current.EndDate) ? prev : current
+        }).EndDate;
+    }
 }
