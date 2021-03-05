@@ -15,7 +15,7 @@ export abstract class PromoState {
         return;
     }
 
-    public Save(entity: Promo): Promise<void>
+    public async Save(entity: Promo): Promise<void>
     {
         throw new Error(Constants.Messages.NotAllowedAction);
     }    

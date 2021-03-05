@@ -25,17 +25,21 @@ export class PromoWorkflowState {
     }
 
     public GetPendingUserIDs(): number[] {
-        return this.ApproverIDs.map((approverID) => {
+        let userIDs = [];
+
+        this.ApproverIDs.map((approverID) => {
             if(this.CompletedBy.indexOf(approverID) == -1)
-                return approverID;
+                userIDs.push(approverID);
         });
+
+        return userIDs;
     }
 
     public async GetPendingUserEmails(): Promise<string[]> {
         const emails = [];
         
         await Promise.all(this.GetPendingUserIDs().map(async (userId) => {
-            const user = await SecurityHelper.GetUserId(userId);            
+            const user = await SecurityHelper.GetUserById(userId);            
             if(!CommonHelper.IsNullOrEmpty(user.Email))
                 emails.push(user.Email);
         }));

@@ -40,6 +40,13 @@ export class ClientRepository {
         return collection;
     }
 
+    public static async UserIsKAM(kamUserId: number): Promise<boolean> {
+        const collection = await sp.web.lists.getByTitle(ClientRepository.LIST_NAME)
+            .items.select("KeyAccountManager/ID").expand("KeyAccountManager").filter(`KeyAccountManagerId eq ${kamUserId}`).get();
+
+        return collection.length > 0;
+    }
+
     private static BuildEntity(item: any, channel?:Channel): Client {
         let entity = new Client();
   

@@ -1,5 +1,6 @@
 import { Promo, PromoStatus } from "..";
 import { Constants } from "../../..";
+import { SecurityHelper } from "../../../common";
 import { 
     CategoryRepository, 
     ClientRepository, 
@@ -11,6 +12,13 @@ import { PromoViewModel } from "../PromoViewModel";
 import { PromoState } from "./PromoState";
 
 export class DraftPromoState extends PromoState {
+    public async Initialize(): Promise<void> {
+        const currentUser = await SecurityHelper.GetCurrentUser();
+
+        console.log("Initialize draft state. ItemId: " + this.Entity.ItemId);
+        SecurityHelper.SetPromoPermissions(this.Entity.ItemId, null, [currentUser.ItemId]);
+    }
+
     public GetStatusId(): number {
         return PromoStatus.Draft;
     }
@@ -35,7 +43,7 @@ export class DraftPromoState extends PromoState {
         return viewModel;
     }    
 
-    public Save(entity: Promo): Promise<void>
+    public async Save(entity: Promo): Promise<void>
     {
         entity.ChangeState(PromoStatus.Draft);
 

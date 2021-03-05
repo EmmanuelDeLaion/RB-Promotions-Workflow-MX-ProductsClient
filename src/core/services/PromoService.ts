@@ -17,19 +17,19 @@ export class PromoService {
   }
 
   public static async Save(entity: Promo): Promise<void> {
-    return (await this.GetPromo(entity.ItemId)).Save(entity);
+    return await (await this.GetPromo(entity.ItemId)).Save(entity);
   }
 
   public static async Submit(entity: Promo): Promise<void> {
-    return (await this.GetPromo(entity.ItemId)).Submit(entity);
+    return await (await this.GetPromo(entity.ItemId)).Submit(entity);
   }
 
   public static async Approve(entity: Promo, comments: string): Promise<void> {
-    return (await this.GetPromo(entity.ItemId)).Approve(comments);
+    return await (await this.GetPromo(entity.ItemId)).Approve(comments);
   }
 
   public static async Reject(entity: Promo, comments: string): Promise<void> {
-    return (await this.GetPromo(entity.ItemId)).Reject(comments);
+    return await (await this.GetPromo(entity.ItemId)).Reject(comments);
   }
 
   public static async GetTypesByCategory(categoryId: number): Promise<Type[]> {

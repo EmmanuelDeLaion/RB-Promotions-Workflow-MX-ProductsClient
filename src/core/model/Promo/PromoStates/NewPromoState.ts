@@ -35,11 +35,13 @@ export class NewPromoState extends PromoState {
         return viewModel;
     }
 
-    public Save(entity: Promo): Promise<void>
+    public async Save(entity: Promo): Promise<void>
     {
         entity.ChangeState(PromoStatus.Draft);
 
-        return PromoRepository.SaveOrUpdate(entity);
+        await PromoRepository.SaveOrUpdate(entity);
+        
+        return entity.InitializeState();
     }
 
     public async Submit(entity: Promo): Promise<void>
