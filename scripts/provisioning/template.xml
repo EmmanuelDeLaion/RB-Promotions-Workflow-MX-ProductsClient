@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 <pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2020/02/ProvisioningSchema">
   <pnp:Preferences Generator="OfficeDevPnP.Core, Version=3.28.2012.0, Culture=neutral, PublicKeyToken=5e633289e95c321a" />
-  <pnp:Templates ID="CONTAINER-TEMPLATE-431BB72E1B9D4D6C8DE241B0EDD28969">
-    <pnp:ProvisioningTemplate ID="TEMPLATE-431BB72E1B9D4D6C8DE241B0EDD28969" Version="1" BaseSiteTemplate="GROUP#0">
+  <pnp:Templates ID="CONTAINER-TEMPLATE-F0C9D2A30C6F43069E6E28E900D85282">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-F0C9D2A30C6F43069E6E28E900D85282" Version="1" BaseSiteTemplate="GROUP#0">
       <pnp:Lists>
         <pnp:ListInstance Title="Promo items" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/PromoItems" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PromoItems/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PromoItems/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PromoItems/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{62DFD243-1E02-417D-9F00-C7CCA03730FF}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/PromoItems/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{2C822EF8-C041-4E76-AB9E-7F63CCCDF9A0}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/PromoItems/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query>
                 <OrderBy>
                   <FieldRef Name="ID" Ascending="FALSE" />
@@ -53,17 +54,10 @@
           </pnp:Views>
           <pnp:Fields>
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Descripción corta" Format="Dropdown" MaxLength="255" Name="ShortDescription" Title="Descripción corta" Type="Text" ID="{f7d456a5-44ed-49ae-a21b-6337704a65fe}" Version="2" StaticName="ShortDescription" SourceID="{{listid:Promo items}}" ColName="nvarchar4" RowOrdinal="0" />
-            <Field Type="Lookup" DisplayName="Categoría de la promoción" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Categorías}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{b4518a04-f090-4280-bf0a-71dd8435cc94}" SourceID="{{listid:Promo items}}" StaticName="Category" Name="Category" ColName="int1" RowOrdinal="0" Version="4" />
-            <Field Type="Lookup" DisplayName="Promoción" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Promociones}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{5f2881a6-c99f-4e55-a535-ed5caaae2369}" SourceID="{{listid:Promo items}}" StaticName="Promo" Name="Promo" ColName="int2" RowOrdinal="0" Version="3" />
-            <Field Type="Lookup" DisplayName="Tipo de promoción" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Tipos}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{2e4d0d40-aa1a-4aca-b5ae-0797c9ae9e58}" SourceID="{{listid:Promo items}}" StaticName="Type" Name="Type" ColName="int3" RowOrdinal="0" Version="3" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="0" DisplayName="Inversión ($)" Format="Dropdown" Name="Investment" Percentage="FALSE" Title="Inversión ($)" Type="Number" ID="{d331b177-31e7-4ae2-bbb8-378b0a76e21b}" Version="2" StaticName="Investment" SourceID="{{listid:Promo items}}" ColName="float1" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Actividad topada" Format="Dropdown" Name="CappedActivity" Title="Actividad topada" Type="Boolean" ID="{190bbcba-6cf8-4f77-aad7-1573635be1f3}" Version="2" StaticName="CappedActivity" SourceID="{{listid:Promo items}}" ColName="bit1" RowOrdinal="0">
               <Default>1</Default>
             </Field>
-            <Field Type="Lookup" DisplayName="Product" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Productos}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{74e248bb-bb93-4fc8-8e92-540997196c8c}" SourceID="{{listid:Promo items}}" StaticName="Product" Name="Product" ColName="int4" RowOrdinal="0" Version="2" />
-            <Field Type="Lookup" DisplayName="BU" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Unidades de negocio}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{5f7766fe-bf06-468b-bd52-e4389f74313c}" SourceID="{{listid:Promo items}}" StaticName="BusinessUnit" Name="BusinessUnit" ColName="int5" RowOrdinal="0" Version="1" />
-            <Field Type="Lookup" DisplayName="Marca" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Marcas}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{48e38ef9-236f-4b4f-b836-393d8ab3f475}" SourceID="{{listid:Promo items}}" StaticName="Brand" Name="Brand" ColName="int6" RowOrdinal="0" Version="1" />
-            <Field Type="Lookup" DisplayName="Categoría" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Categorías de producto}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{6a793df2-0a6d-44ee-8ff1-b0d2196b0d09}" SourceID="{{listid:Promo items}}" StaticName="ProductCategory" Name="ProductCategory" ColName="int7" RowOrdinal="0" Version="1" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Fecha comienzo" FriendlyDisplayFormat="Disabled" Format="DateOnly" Name="StartDate" Title="Fecha comienzo" Type="DateTime" ID="{600e8312-e6fe-4c3f-9722-4a8addbb0414}" Version="2" StaticName="StartDate" SourceID="{{listid:Promo items}}" ColName="datetime1" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Fecha fin" FriendlyDisplayFormat="Disabled" Format="DateOnly" Name="EndDate" Title="Fecha fin" Type="DateTime" ID="{52169a1a-5273-46c1-97fa-dc3d808f7d91}" Version="2" StaticName="EndDate" SourceID="{{listid:Promo items}}" ColName="datetime2" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="0" DisplayName="Descuento por pieza ($)" Format="Dropdown" Name="DiscountPerPiece" Percentage="FALSE" Title="Descuento por pieza ($)" Type="Number" ID="{5caf607c-feff-40aa-94cf-75be8d72fd65}" Version="2" StaticName="DiscountPerPiece" SourceID="{{listid:Promo items}}" ColName="float2" RowOrdinal="0" />
@@ -74,22 +68,27 @@
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="GM %NR con promo" Format="Dropdown" Name="GMPercentageNRWithPromo" Percentage="FALSE" Title="GM %NR con promo" Type="Number" ID="{b0cb4e56-6c4a-4991-8d61-c285234f8c33}" Version="2" StaticName="GMPercentageNRWithPromo" SourceID="{{listid:Promo items}}" ColName="float7" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="GM Base Unit" Format="Dropdown" Name="GMBaseUnit" Percentage="FALSE" Title="GM Base Unit" Type="Number" ID="{4896abb8-4fae-461f-a0b1-504a265cec9b}" Version="2" StaticName="GMBaseUnit" SourceID="{{listid:Promo items}}" ColName="float8" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="GM Promo Unit" Format="Dropdown" Name="GMPromoUnit" Percentage="FALSE" Title="GM Promo Unit" Type="Number" ID="{4926e8f3-d0c2-45aa-812e-b5251f667443}" Version="2" StaticName="GMPromoUnit" SourceID="{{listid:Promo items}}" ColName="float9" RowOrdinal="0" />
-            <Field Type="Number" DisplayName="Volumen incremental estimado" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Decimals="0" ID="{63e46917-38ea-4a2f-8f8a-5524d2108f04}" SourceID="{{listid:Promo items}}" StaticName="EstimatedIncrementalVolume" Name="EstimatedIncrementalVolume" ColName="float11" RowOrdinal="0" CustomFormatter="" Percentage="FALSE" Version="1" />
-            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="0" DisplayName="Redención" Format="Dropdown" Name="Redemption" Percentage="FALSE" Title="Redención" Type="Number" ID="{ed140812-5840-4816-ad5d-e17fbc2b3942}" Version="2" StaticName="Redemption" SourceID="{{listid:Promo items}}" ColName="float12" RowOrdinal="0" />
-            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Inversion adicional (MKT)" Format="Dropdown" Name="AdditionalInvestment" Percentage="FALSE" Title="Inversion adicional (MKT)" Type="Number" ID="{4020b903-a2e4-4cc1-ab8e-573413aeb7d0}" Version="2" StaticName="AdditionalInvestment" SourceID="{{listid:Promo items}}" ColName="float10" RowOrdinal="0" />
+            <Field Type="Number" DisplayName="Volumen incremental estimado" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Decimals="0" ID="{63e46917-38ea-4a2f-8f8a-5524d2108f04}" SourceID="{{listid:Promo items}}" StaticName="EstimatedIncrementalVolume" Name="EstimatedIncrementalVolume" ColName="float10" RowOrdinal="0" CustomFormatter="" Percentage="FALSE" Version="1" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="0" DisplayName="Redención" Format="Dropdown" Name="Redemption" Percentage="FALSE" Title="Redención" Type="Number" ID="{ed140812-5840-4816-ad5d-e17fbc2b3942}" Version="2" StaticName="Redemption" SourceID="{{listid:Promo items}}" ColName="float11" RowOrdinal="0" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Inversion adicional (MKT)" Format="Dropdown" Name="AdditionalInvestment" Percentage="FALSE" Title="Inversion adicional (MKT)" Type="Number" ID="{4020b903-a2e4-4cc1-ab8e-573413aeb7d0}" Version="2" StaticName="AdditionalInvestment" SourceID="{{listid:Promo items}}" ColName="float12" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="0" DisplayName="Volumen base" Format="Dropdown" Name="BaseVolume" Percentage="FALSE" Title="Volumen base" Type="Number" ID="{2193956f-4af2-46af-a4a2-45a75b30e217}" Version="2" StaticName="BaseVolume" SourceID="{{listid:Promo items}}" ColName="float13" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="ROI Estimado" Format="Dropdown" Name="EstimatedROI" Percentage="FALSE" Title="ROI Estimado" Type="Number" ID="{275a0a63-48b2-4344-92f0-9f5187af3d65}" Version="2" StaticName="EstimatedROI" SourceID="{{listid:Promo items}}" ColName="float14" RowOrdinal="0" />
+            <Field Type="Lookup" DisplayName="Categoría de la promoción" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Categorías}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{b4518a04-f090-4280-bf0a-71dd8435cc94}" SourceID="{{listid:Promo items}}" StaticName="Category" Name="Category" ColName="int1" RowOrdinal="0" Version="4" />
+            <Field Type="Lookup" DisplayName="Promoción" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Promociones}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{5f2881a6-c99f-4e55-a535-ed5caaae2369}" SourceID="{{listid:Promo items}}" StaticName="Promo" Name="Promo" ColName="int2" RowOrdinal="0" Version="3" />
+            <Field Type="Lookup" DisplayName="Tipo de promoción" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Tipos}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{2e4d0d40-aa1a-4aca-b5ae-0797c9ae9e58}" SourceID="{{listid:Promo items}}" StaticName="Type" Name="Type" ColName="int3" RowOrdinal="0" Version="3" />
+            <Field Type="Lookup" DisplayName="Product" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Productos}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{74e248bb-bb93-4fc8-8e92-540997196c8c}" SourceID="{{listid:Promo items}}" StaticName="Product" Name="Product" ColName="int4" RowOrdinal="0" Version="2" />
+            <Field Type="Lookup" DisplayName="BU" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Unidades de negocio}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{5f7766fe-bf06-468b-bd52-e4389f74313c}" SourceID="{{listid:Promo items}}" StaticName="BusinessUnit" Name="BusinessUnit" ColName="int5" RowOrdinal="0" Version="1" />
+            <Field Type="Lookup" DisplayName="Marca" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Marcas}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{48e38ef9-236f-4b4f-b836-393d8ab3f475}" SourceID="{{listid:Promo items}}" StaticName="Brand" Name="Brand" ColName="int6" RowOrdinal="0" Version="1" />
+            <Field Type="Lookup" DisplayName="Categoría" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Categorías de producto}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{6a793df2-0a6d-44ee-8ff1-b0d2196b0d09}" SourceID="{{listid:Promo items}}" StaticName="ProductCategory" Name="ProductCategory" ColName="int7" RowOrdinal="0" Version="1" />
           </pnp:Fields>
-          <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=994a8f1c-25d4-454a-962c-2d37d1a155f2" ExpiresInDays="1" />
-          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Promociones" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Promotions" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Promotions/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Promotions/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Promotions/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{3329EBD3-5D51-4402-9830-C68F28CCF3D7}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Promotions/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{675DC237-7F00-460C-840F-862BBE381F30}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Promotions/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query>
                 <OrderBy>
                   <FieldRef Name="ID" Ascending="FALSE" />
@@ -113,7 +112,7 @@
               <CustomFormatter />
               <ViewData />
             </View>
-            <View Name="{7C6E9A80-A9B9-47E5-B8B0-1CFE50CF8778}" Type="HTML" DisplayName="Mis Promociones" Url="{site}/Lists/Promotions/Mis Promociones.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{7965C4F7-FB84-4024-8EF0-F201A97EBE14}" Type="HTML" DisplayName="Mis Promociones" Url="{site}/Lists/Promotions/Mis Promociones.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -126,7 +125,7 @@
               <RowLimit Paged="TRUE">30</RowLimit>
               <JSLink>clienttemplates.js</JSLink>
             </View>
-            <View Name="{B194E235-EA47-4D2F-A9B0-745FC0E1A9D5}" Type="HTML" DisplayName="Mis pendientes de aprobación" Url="{site}/Lists/Promotions/Mis pendientes de aprobacin.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{0AF63AF1-D38A-4220-8F68-618006ED2772}" Type="HTML" DisplayName="Mis pendientes de aprobación" Url="{site}/Lists/Promotions/Mis pendientes de aprobacin.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="Client" />
@@ -141,25 +140,23 @@
             </View>
           </pnp:Views>
           <pnp:Fields>
-            <Field AppendOnly="FALSE" ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Objetivo de la actividad" Format="Dropdown" IsolateStyles="FALSE" Name="ActivityObjective" RichText="FALSE" RichTextMode="Compatible" Title="Objetivo de la actividad" Type="Note" ID="{625371b6-c8cc-4c7d-86eb-b6227972d1f6}" Version="2" StaticName="ActivityObjective" SourceID="{{listid:Promociones}}" ColName="ntext3" RowOrdinal="0" />
-            <Field Type="Lookup" DisplayName="Cliente" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Clientes}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{93c105e0-715d-4b80-a720-fd93d6a6c450}" SourceID="{{listid:Promociones}}" StaticName="Client" Name="Client" ColName="int1" RowOrdinal="0" CustomFormatter="{&#xD;&#xA;   &quot;$schema&quot;: &quot;https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json&quot;,&#xD;&#xA;   &quot;elmType&quot;: &quot;div&quot;,&#xD;&#xA;   &quot;txtContent&quot;: &quot;@currentField.lookupValue&quot;&#xD;&#xA;}" Group="" Version="6" />
-            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Estado" Format="Dropdown" MaxLength="255" Name="Status" Title="Estado" Type="Text" ID="{eb1a11ed-7291-418f-90c3-12cc1d065c9d}" Version="2" StaticName="Status" SourceID="{{listid:Promociones}}" ColName="nvarchar5" RowOrdinal="0" />
+            <Field AppendOnly="FALSE" ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Objetivo de la actividad" Format="Dropdown" IsolateStyles="FALSE" Name="ActivityObjective" RichText="FALSE" RichTextMode="Compatible" Title="Objetivo de la actividad" Type="Note" ID="{625371b6-c8cc-4c7d-86eb-b6227972d1f6}" Version="2" StaticName="ActivityObjective" SourceID="{{listid:Promociones}}" ColName="ntext2" RowOrdinal="0" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Estado" Format="Dropdown" MaxLength="255" Name="Status" Title="Estado" Type="Text" ID="{eb1a11ed-7291-418f-90c3-12cc1d065c9d}" Version="2" StaticName="Status" SourceID="{{listid:Promociones}}" ColName="nvarchar4" RowOrdinal="0" />
             <Field CommaSeparator="TRUE" Decimals="0" DisplayName="StatusId" Format="Dropdown" IsModern="TRUE" Name="StatusId" Percentage="FALSE" Title="StatusId" Type="Number" ID="{d6e9c6fc-670d-4e21-aff5-640625eaf7ed}" SourceID="{{listid:Promociones}}" StaticName="StatusId" ColName="float1" RowOrdinal="0" />
-            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Nombre de la promoción" Format="Dropdown" MaxLength="255" Name="PromoName" Title="Nombre de la promoción" Type="Text" ID="{5c1c7eb9-431e-4ecc-b05e-38e6c8a5b383}" Version="2" StaticName="PromoName" SourceID="{{listid:Promociones}}" ColName="nvarchar4" RowOrdinal="0" />
-            <Field AppendOnly="FALSE" DisplayName="SYS_WorkflowStages" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="SYS_WorkflowStages" RichText="FALSE" RichTextMode="Compatible" Title="SYS_WorkflowStages" Type="Note" ID="{f77468ee-3786-4102-8075-da73cf0498c8}" SourceID="{{listid:Promociones}}" StaticName="SYS_WorkflowStages" ColName="ntext4" RowOrdinal="0" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Nombre de la promoción" Format="Dropdown" MaxLength="255" Name="PromoName" Title="Nombre de la promoción" Type="Text" ID="{5c1c7eb9-431e-4ecc-b05e-38e6c8a5b383}" Version="2" StaticName="PromoName" SourceID="{{listid:Promociones}}" ColName="nvarchar5" RowOrdinal="0" />
+            <Field AppendOnly="FALSE" DisplayName="SYS_WorkflowStages" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="SYS_WorkflowStages" RichText="FALSE" RichTextMode="Compatible" Title="SYS_WorkflowStages" Type="Note" ID="{f77468ee-3786-4102-8075-da73cf0498c8}" SourceID="{{listid:Promociones}}" StaticName="SYS_WorkflowStages" ColName="ntext3" RowOrdinal="0" />
             <Field CommaSeparator="TRUE" Decimals="0" DisplayName="SYS_CurrentStageNumber" Format="Dropdown" IsModern="TRUE" Name="SYS_CurrentStageNumber" Percentage="FALSE" Title="SYS_CurrentStageNumber" Type="Number" ID="{372bb452-d710-46c2-9a25-7befea17f84a}" SourceID="{{listid:Promociones}}" StaticName="SYS_CurrentStageNumber" ColName="float2" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="ROI total estimado" Format="Dropdown" Name="TotalEstimatedROI" Percentage="FALSE" Title="ROI total estimado" Type="Number" ID="{1918b0f3-027e-41b1-b94c-9b3c313443c4}" Version="2" StaticName="TotalEstimatedROI" SourceID="{{listid:Promociones}}" ColName="float3" RowOrdinal="0" />
+            <Field Type="Lookup" DisplayName="Cliente" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Clientes}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{93c105e0-715d-4b80-a720-fd93d6a6c450}" SourceID="{{listid:Promociones}}" StaticName="Client" Name="Client" ColName="int1" RowOrdinal="0" CustomFormatter="{&#xD;&#xA;   &quot;$schema&quot;: &quot;https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json&quot;,&#xD;&#xA;   &quot;elmType&quot;: &quot;div&quot;,&#xD;&#xA;   &quot;txtContent&quot;: &quot;@currentField.lookupValue&quot;&#xD;&#xA;}" Group="" Version="6" />
           </pnp:Fields>
-          <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=edf96439-f549-4efb-bf6a-3f2d48f32b4a" ExpiresInDays="1" />
-          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="SYS_PermissionChangeRequests" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/PermissionChangeRequests" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PermissionChangeRequests/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PermissionChangeRequests/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PermissionChangeRequests/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{9CB3CA3D-6588-4422-9231-70D2C3558E7F}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/PermissionChangeRequests/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{47D58635-2874-4CC2-97A1-8ABCBCD9EAA1}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/PermissionChangeRequests/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -177,10 +174,6 @@
             <Field AppendOnly="FALSE" DisplayName="ContributorIDs" Format="Dropdown" IsModern="TRUE" IsolateStyles="FALSE" Name="ContributorIDs" RichText="FALSE" RichTextMode="Compatible" Title="ContributorIDs" Type="Note" ID="{03c30b84-5047-4213-95f5-f5ca41a46c49}" SourceID="{{listid:SYS_PermissionChangeRequests}}" StaticName="ContributorIDs" ColName="ntext3" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="0" DisplayName="PromoItemId" Format="Dropdown" Name="PromoItemId" Percentage="FALSE" Title="PromoItemId" Type="Number" ID="{275dfad2-6794-4dc4-893e-6e44605c6f94}" Version="2" StaticName="PromoItemId" SourceID="{{listid:SYS_PermissionChangeRequests}}" ColName="float1" RowOrdinal="0" />
           </pnp:Fields>
-          <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=b505e3dd-21fd-42db-b8a1-e94b441ed379" ExpiresInDays="1" />
-            <pnp:Webhook ServerNotificationUrl="https://flow-apim-msmanaged-na-northcentralus-01.azure-apim.net/apim/sharepointonline/ontableupdatedhook?r=https%253a%252f%252fprod-91.westus.logic.azure.com%252fworkflows%252f3f77e076dfe944f6a59e8caba2b03f74%252ftriggers%252fWhen_an_item_is_created_or_modified%252fpaths%252finvoke%253fapi-version%253d2016-06-01%2526sp%253d%25252Ftriggers%25252FWhen_an_item_is_created_or_modified%25252Frun%25252C%25252Ftriggers%25252FWhen_an_item_is_created_or_modified%25252Fread%2526sv%253d1.0%2526sig%253ddKq9NdUnoYx2sUrvDqY7eDpt40Fm9eEm6hHF-IbOtc4" ExpiresInDays="3" />
-          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Workflow log" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/WorkflowLog" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/WorkflowLog/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/WorkflowLog/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/WorkflowLog/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:PropertyBagEntries>
@@ -188,9 +181,10 @@
           </pnp:PropertyBagEntries>
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{26DDE57B-1C8C-4320-AC8C-A0558F2E83A2}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/WorkflowLog/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{8A70F968-1170-478A-A2F9-D032C62A0138}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/WorkflowLog/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="DateAndTime" />
@@ -201,7 +195,7 @@
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
               <JSLink>clienttemplates.js</JSLink>
-              <CustomFormatter><![CDATA[]]></CustomFormatter>
+              <CustomFormatter />
             </View>
           </pnp:Views>
           <pnp:Fields>
@@ -209,15 +203,16 @@
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Usuario" Format="Dropdown" List="UserInfo" Name="User" Title="Usuario" Type="User" UserSelectionMode="0" UserSelectionScope="0" ID="{a163691f-45b9-4286-a5c8-b0d2830960ce}" StaticName="User" ColName="int1" RowOrdinal="0" SourceID="{{listid:Workflow log}}" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Acción" Format="Dropdown" MaxLength="255" Name="Action" Title="Acción" Type="Text" ID="{cd57532e-a6c9-47bc-a57a-a1ee02e8ce26}" StaticName="Action" ColName="nvarchar4" RowOrdinal="0" SourceID="{{listid:Workflow log}}" />
             <Field AppendOnly="FALSE" ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Comentarios" Format="Dropdown" IsolateStyles="FALSE" Name="Comments" RichText="FALSE" RichTextMode="Compatible" Title="Comentarios" Type="Note" ID="{e7c6a1d3-19e8-462a-9284-f2c85cb5affd}" StaticName="Comments" ColName="ntext2" RowOrdinal="0" SourceID="{{listid:Workflow log}}" />
-            <Field Type="Lookup" DisplayName="Promo" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Promociones}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{0eacf94b-8e96-4af2-9f3f-9099ea66be3c}" SourceID="{{listid:Workflow log}}" StaticName="Promo" Name="Promo" ColName="int2" RowOrdinal="0" />
+            <Field Type="Lookup" DisplayName="Promo" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Promociones}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{0eacf94b-8e96-4af2-9f3f-9099ea66be3c}" SourceID="{{listid:Workflow log}}" StaticName="Promo" Name="Promo" ColName="int2" RowOrdinal="0" />
           </pnp:Fields>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Aprobadores" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/Approvers" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Approvers/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Approvers/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Approvers/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{7DBA4A29-B635-4E4B-8A2A-A4570D5AC5FB}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Approvers/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{3CBA6563-B420-4D55-AFDF-27CFDBDF1A5E}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Approvers/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="Role" />
@@ -251,16 +246,14 @@
               <pnp:DataValue FieldName="Role">Etapa 2 - Aprobador 2</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
-          <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=ec1dd9bd-8427-4bf7-911e-25f3e0d175f6" ExpiresInDays="1" />
-          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Canales" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Channels" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Channels/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Channels/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Channels/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{F035887C-2A77-480D-90B6-7D8C6D3F2A91}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Channels/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{D0AAD5F8-F1CE-4CE2-A703-B3B864CB6DEB}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Channels/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -294,9 +287,10 @@
         <pnp:ListInstance Title="Subcanales" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Subchannels" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Subchannels/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Subchannels/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Subchannels/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{3A0CDAD0-8B19-47D8-89F0-1FE46E0EA3E9}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Subchannels/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{0B769B0E-09D3-4F0A-B88B-214EDE0540AB}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Subchannels/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -307,7 +301,7 @@
             </View>
           </pnp:Views>
           <pnp:Fields>
-            <Field Type="Lookup" DisplayName="Canal" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Canales}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{ac74f6ed-f074-461d-a615-8863645ecaec}" SourceID="{28fa7f80-86c3-45f5-ac80-86362d9c0937}" StaticName="Channel" Name="Channel" ColName="int1" RowOrdinal="0" Group="" Version="3" />
+            <Field Type="Lookup" DisplayName="Canal" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Canales}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{ac74f6ed-f074-461d-a615-8863645ecaec}" SourceID="{28fa7f80-86c3-45f5-ac80-86362d9c0937}" StaticName="Channel" Name="Channel" ColName="int1" RowOrdinal="0" Group="" Version="3" />
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
@@ -363,9 +357,10 @@
         <pnp:ListInstance Title="Categorías" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Categories" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Categories/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Categories/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Categories/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{C4F25B63-8BE6-44B1-B77A-CBA6591B34E8}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Categories/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{E2EBEDD6-E082-4C8C-8530-3076ECD9CEBF}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Categories/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -409,9 +404,10 @@
         <pnp:ListInstance Title="Tipos" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Types" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Types/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Types/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Types/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{231FA13F-BF73-457C-9A0F-ACE0D7AF0457}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Types/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{8B0C50D7-B6B4-4E87-BA67-67F40DB05B15}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Types/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -422,7 +418,7 @@
             </View>
           </pnp:Views>
           <pnp:Fields>
-            <Field Type="Lookup" DisplayName="Category" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Categorías}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{959d4777-0dc9-4144-9e6b-ae54377708c9}" SourceID="{{listid:Tipos}}" StaticName="Category" Name="Category" ColName="int1" RowOrdinal="0" Version="2" />
+            <Field Type="Lookup" DisplayName="Category" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Categorías}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{959d4777-0dc9-4144-9e6b-ae54377708c9}" SourceID="{{listid:Tipos}}" StaticName="Category" Name="Category" ColName="int1" RowOrdinal="0" Version="2" />
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
@@ -457,14 +453,23 @@
               <pnp:DataValue FieldName="Title">POR SKU</pnp:DataValue>
               <pnp:DataValue FieldName="Category">7</pnp:DataValue>
             </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">INSTITUCIONAL</pnp:DataValue>
+              <pnp:DataValue FieldName="Category">9</pnp:DataValue>
+            </pnp:DataRow>
+            <pnp:DataRow>
+              <pnp:DataValue FieldName="Title">VISIBILITY</pnp:DataValue>
+              <pnp:DataValue FieldName="Category">8</pnp:DataValue>
+            </pnp:DataRow>
           </pnp:DataRows>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Categorías de producto" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/ProductCategories" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/ProductCategories/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/ProductCategories/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/ProductCategories/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{6F86BC05-3BE3-46E1-875E-6F40ED560814}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/ProductCategories/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{9EBD3851-5658-4E40-937B-17832253DF37}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/ProductCategories/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query>
                 <OrderBy>
                   <FieldRef Name="Title" />
@@ -503,9 +508,10 @@
         <pnp:ListInstance Title="Clientes" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Clients" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Clients/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Clients/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Clients/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{6D7BC749-2672-4FFE-8ED0-74CE2CF3D33E}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Clients/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{B84137DB-9A26-40BB-B559-4051B6A39F9F}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Clients/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -519,9 +525,9 @@
             </View>
           </pnp:Views>
           <pnp:Fields>
-            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Gerente/Kam" Format="Dropdown" List="UserInfo" Name="KeyAccountManager" Title="Gerente/Kam" Type="User" UserSelectionMode="0" UserSelectionScope="0" ID="{a4732191-5953-4bc5-8db5-6035def2910a}" Version="4" StaticName="KeyAccountManager" SourceID="{{listid:Clientes}}" ColName="int2" RowOrdinal="0" />
-            <Field Type="Lookup" DisplayName="Canal" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Canales}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{3a306b74-9a48-4a88-9f2f-77caae96fcbe}" SourceID="{{listid:Clientes}}" StaticName="Channel" Name="Channel" ColName="int1" RowOrdinal="0" Version="3" />
-            <Field Type="Lookup" DisplayName="Subcanal" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Subcanales}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{759584ab-ed60-4246-8612-a7e427d2c727}" SourceID="{{listid:Clientes}}" StaticName="Subchannel" Name="Subchannel" ColName="int3" RowOrdinal="0" Version="3" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Gerente/Kam" Format="Dropdown" List="UserInfo" Name="KeyAccountManager" Title="Gerente/Kam" Type="User" UserSelectionMode="0" UserSelectionScope="0" ID="{a4732191-5953-4bc5-8db5-6035def2910a}" Version="4" StaticName="KeyAccountManager" SourceID="{{listid:Clientes}}" ColName="int1" RowOrdinal="0" />
+            <Field Type="Lookup" DisplayName="Canal" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Canales}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{3a306b74-9a48-4a88-9f2f-77caae96fcbe}" SourceID="{{listid:Clientes}}" StaticName="Channel" Name="Channel" ColName="int2" RowOrdinal="0" Version="3" />
+            <Field Type="Lookup" DisplayName="Subcanal" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Subcanales}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{759584ab-ed60-4246-8612-a7e427d2c727}" SourceID="{{listid:Clientes}}" StaticName="Subchannel" Name="Subchannel" ColName="int3" RowOrdinal="0" Version="3" />
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
@@ -575,16 +581,14 @@
               <pnp:DataValue FieldName="Subchannel">18</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
-          <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=bdfbfed4-b31b-4056-87e7-4145057f21c6" ExpiresInDays="1" />
-          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Configuración" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/Configuration" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Configuration/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Configuration/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Configuration/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{8266CF5B-4789-4D39-A22C-4F9E1313CE7B}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Configuration/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{D54C1F53-6FC6-4FB9-A0FB-FBE6F50F8367}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Configuration/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -623,9 +627,10 @@
         <pnp:ListInstance Title="Marcas" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Brands" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Brands/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Brands/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Brands/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{7284C46B-BC59-491D-8085-88DEA6901ED9}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Brands/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{47057CFE-7F8C-473A-80E8-2074AC151C62}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Brands/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query>
                 <OrderBy>
                   <FieldRef Name="Title" />
@@ -688,9 +693,10 @@
         <pnp:ListInstance Title="NotificationTemplates" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/NotificationTemplates" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/NotificationTemplates/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/NotificationTemplates/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/NotificationTemplates/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{39DE4F31-3FBD-446A-89E5-844C2DE332D2}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/NotificationTemplates/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{DC1421B0-19E1-4285-9445-C5511628A2F0}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/NotificationTemplates/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -703,7 +709,7 @@
             </View>
           </pnp:Views>
           <pnp:Fields>
-            <Field DisplayName="Subject" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="Subject" Title="Subject" Type="Text" ID="{7b562099-771f-45d5-8b17-ad8e11339e2a}" SourceID="{{listid:NotificationTemplates}}" StaticName="Subject" ColName="nvarchar6" RowOrdinal="0" />
+            <Field DisplayName="Subject" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="Subject" Title="Subject" Type="Text" ID="{7b562099-771f-45d5-8b17-ad8e11339e2a}" SourceID="{{listid:NotificationTemplates}}" StaticName="Subject" ColName="nvarchar4" RowOrdinal="0" />
             <Field Name="Body" FromBaseType="FALSE" Type="Note" DisplayName="Body" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" RichTextMode="Compatible" IsolateStyles="FALSE" Sortable="FALSE" ID="{72727da4-d405-4e5c-a194-d32dca1a64df}" Version="2" StaticName="Body" SourceID="{{listid:NotificationTemplates}}" ColName="ntext2" RowOrdinal="0" CustomFormatter="" RestrictedMode="TRUE" AppendOnly="FALSE" />
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
@@ -1974,16 +1980,14 @@
 &lt;/html&gt;</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
-          <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=f23c2936-ae32-4f59-a558-f6be2164d0ed" ExpiresInDays="1" />
-          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Unidades de negocio" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/BusinessUnits" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/BusinessUnits/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/BusinessUnits/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/BusinessUnits/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{C2AEFF22-16B0-4B11-BA68-97A814F9845A}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/BusinessUnits/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{5F5E9474-71CC-4E4F-B4FA-C6AE39380DC4}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/BusinessUnits/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -2004,9 +2008,10 @@
         <pnp:ListInstance Title="Productos" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Products" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Products/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Products/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Products/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{52722AA5-769E-4E50-B187-A66E9297F1C4}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Products/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{9CB2CCE5-2929-4208-9AA5-2E6F9D58DA74}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Products/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="LinkTitle" />
@@ -2022,9 +2027,9 @@
           </pnp:Views>
           <pnp:Fields>
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Descripción SKU" Format="Dropdown" MaxLength="255" Name="SKUDescription" Title="Descripción SKU" Type="Text" ID="{afe992b0-312e-4379-bf52-97a5977a202e}" Version="2" StaticName="SKUDescription" SourceID="{{listid:Productos}}" ColName="nvarchar4" RowOrdinal="0" />
-            <Field Type="Lookup" DisplayName="BU" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Unidades de negocio}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{93e4c8ee-1e58-4a7a-8896-38dccf88ec30}" SourceID="{{listid:Productos}}" StaticName="BusinessUnit" Name="BusinessUnit" ColName="int1" RowOrdinal="0" Group="" Version="1" />
-            <Field Type="Lookup" DisplayName="Marca" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Marcas}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{ad85cace-06b8-4199-9110-9a951b9ded10}" SourceID="{{listid:Productos}}" StaticName="Brand" Name="Brand" ColName="int2" RowOrdinal="0" Version="1" />
-            <Field Type="Lookup" DisplayName="Categoría" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Categorías de producto}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{a9f4f816-fc7a-4eeb-b33e-56bee9cb1777}" SourceID="{{listid:Productos}}" StaticName="ProductCategory" Name="ProductCategory" ColName="int3" RowOrdinal="0" Version="1" />
+            <Field Type="Lookup" DisplayName="BU" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Unidades de negocio}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{93e4c8ee-1e58-4a7a-8896-38dccf88ec30}" SourceID="{{listid:Productos}}" StaticName="BusinessUnit" Name="BusinessUnit" ColName="int1" RowOrdinal="0" Group="" Version="1" />
+            <Field Type="Lookup" DisplayName="Marca" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Marcas}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{ad85cace-06b8-4199-9110-9a951b9ded10}" SourceID="{{listid:Productos}}" StaticName="Brand" Name="Brand" ColName="int2" RowOrdinal="0" Version="1" />
+            <Field Type="Lookup" DisplayName="Categoría" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Categorías de producto}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{a9f4f816-fc7a-4eeb-b33e-56bee9cb1777}" SourceID="{{listid:Productos}}" StaticName="ProductCategory" Name="ProductCategory" ColName="int3" RowOrdinal="0" Version="1" />
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
@@ -2179,9 +2184,10 @@
         <pnp:ListInstance Title="Productos por cliente" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/ClientProducts" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/ClientProducts/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/ClientProducts/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/ClientProducts/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{1CEF1437-7BCC-4DDC-A226-4C68F7C0C694}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/ClientProducts/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{91A80C05-5234-4518-9C6C-83364A0D9B84}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/ClientProducts/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="Client" />
@@ -2195,10 +2201,10 @@
             </View>
           </pnp:Views>
           <pnp:Fields>
-            <Field Type="Lookup" DisplayName="Cliente" Required="TRUE" EnforceUniqueValues="FALSE" List="{listid:Clientes}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{17047afc-3142-443e-bbd5-156b9d957ba4}" SourceID="{{listid:Productos por cliente}}" StaticName="Client" Name="Client" ColName="int1" RowOrdinal="0" Version="1" />
-            <Field Type="Lookup" DisplayName="Producto" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Productos}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{c17defe6-fa1f-478b-b6bf-846afbc5e9b9}" SourceID="{{listid:Productos por cliente}}" StaticName="Product" Name="Product" ColName="int2" RowOrdinal="0" Version="1" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Precio" Format="Dropdown" Name="Price" Percentage="FALSE" Required="TRUE" Title="Precio" Type="Number" ID="{420fa3bb-ad6a-48c6-aaf3-f1d091b89ea9}" Version="4" StaticName="Price" SourceID="{{listid:Productos por cliente}}" ColName="float1" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="5" DisplayName="COGS" Format="Dropdown" Name="COGS" Percentage="FALSE" Required="TRUE" Title="COGS" Type="Number" ID="{624a5d33-05e2-449e-9e97-c2ef4986acb7}" Version="2" StaticName="COGS" SourceID="{{listid:Productos por cliente}}" ColName="float2" RowOrdinal="0" />
+            <Field Type="Lookup" DisplayName="Cliente" Required="TRUE" EnforceUniqueValues="FALSE" List="{listid:Clientes}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{17047afc-3142-443e-bbd5-156b9d957ba4}" SourceID="{{listid:Productos por cliente}}" StaticName="Client" Name="Client" ColName="int1" RowOrdinal="0" Version="1" />
+            <Field Type="Lookup" DisplayName="Producto" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Productos}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{c17defe6-fa1f-478b-b6bf-846afbc5e9b9}" SourceID="{{listid:Productos por cliente}}" StaticName="Product" Name="Product" ColName="int2" RowOrdinal="0" Version="1" />
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
@@ -2353,9 +2359,10 @@
         <pnp:ListInstance Title="Volúmenes del último año" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/LastYearVolumes" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/LastYearVolumes/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/LastYearVolumes/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/LastYearVolumes/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{89037EFA-6AD4-4256-A552-51401C275639}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/LastYearVolumes/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{CB855D10-0F4B-4DD8-8983-EDE7C6957C8E}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/LastYearVolumes/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query />
               <ViewFields>
                 <FieldRef Name="Client" />
@@ -2379,8 +2386,6 @@
             </View>
           </pnp:Views>
           <pnp:Fields>
-            <Field Type="Lookup" DisplayName="Cliente" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Clientes}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{b4ff0ac8-0a4d-44d3-b9e3-21870c151fa6}" SourceID="{{listid:Volúmenes del último año}}" StaticName="Client" Name="Client" ColName="int1" RowOrdinal="0" Version="1" />
-            <Field Type="Lookup" DisplayName="Producto" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Productos}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" RelationshipDeleteBehavior="None" ID="{38fed346-7434-4134-9d7f-e3f007ffae0a}" SourceID="{{listid:Volúmenes del último año}}" StaticName="Product" Name="Product" ColName="int2" RowOrdinal="0" Version="1" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Enero" Format="Dropdown" Name="Volume01" Percentage="FALSE" Title="Enero" Type="Number" ID="{7b52f009-9f0d-44d9-8a46-ca24be1e4ed7}" Version="4" StaticName="Volume01" SourceID="{{listid:Volúmenes del último año}}" ColName="float1" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Febrero" Format="Dropdown" Name="Volume02" Percentage="FALSE" Title="Febrero" Type="Number" ID="{b6a2025c-800e-4e75-92b6-669e7de5473d}" Version="2" StaticName="Volume02" SourceID="{{listid:Volúmenes del último año}}" ColName="float2" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Marzo" Format="Dropdown" Name="Volume03" Percentage="FALSE" Title="Marzo" Type="Number" ID="{7c344dd4-077e-48cc-9b2b-e5b61d8729db}" Version="2" StaticName="Volume03" SourceID="{{listid:Volúmenes del último año}}" ColName="float3" RowOrdinal="0" />
@@ -2393,6 +2398,8 @@
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Octubre" Format="Dropdown" Name="Volume10" Percentage="FALSE" Title="Octubre" Type="Number" ID="{c9704414-2887-45c7-af27-c96a13b52930}" Version="2" StaticName="Volume10" SourceID="{{listid:Volúmenes del último año}}" ColName="float10" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Noviembre" Format="Dropdown" Name="Volume11" Percentage="FALSE" Title="Noviembre" Type="Number" ID="{f5bce791-3333-48df-9ceb-3b434ebdae51}" Version="2" StaticName="Volume11" SourceID="{{listid:Volúmenes del último año}}" ColName="float11" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="Diciembre" Format="Dropdown" Name="Volume12" Percentage="FALSE" Title="Diciembre" Type="Number" ID="{c868d005-37fd-4983-a03c-70bce52c17cd}" Version="2" StaticName="Volume12" SourceID="{{listid:Volúmenes del último año}}" ColName="float12" RowOrdinal="0" />
+            <Field Type="Lookup" DisplayName="Cliente" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Clientes}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{b4ff0ac8-0a4d-44d3-b9e3-21870c151fa6}" SourceID="{{listid:Volúmenes del último año}}" StaticName="Client" Name="Client" ColName="int1" RowOrdinal="0" Version="1" />
+            <Field Type="Lookup" DisplayName="Producto" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Productos}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{38fed346-7434-4134-9d7f-e3f007ffae0a}" SourceID="{{listid:Volúmenes del último año}}" StaticName="Product" Name="Product" ColName="int2" RowOrdinal="0" Version="1" />
           </pnp:Fields>
           <pnp:DataRows UpdateBehavior="Overwrite">
             <pnp:DataRow>
