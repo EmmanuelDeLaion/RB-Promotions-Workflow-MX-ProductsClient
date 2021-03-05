@@ -221,6 +221,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 onChange={this.onNameChange.bind(this)}
                                 autoComplete="Off"
                                 readOnly={readOnlyForm}
+                                maxLength={100}
                               />
                             </Stack>
                             <Stack grow={6} className="padding-right controlPadding fixedStructure">
@@ -253,6 +254,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               autoComplete="Off"
                               errorMessage={this.getValidationErrorMessage(entity.ActivityObjective)}
                               readOnly={readOnlyForm}
+                              maxLength={500}
                             />
                           </Stack>
                         </Stack>
@@ -408,6 +410,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     autoComplete="Off"
                                     errorMessage={this.getValidationErrorMessage(selectedItem.ShortDescription)}
                                     readOnly={readOnlyForm}
+                                    maxLength={100}
                                   />
                                 </Stack>
                                 <Stack className="padding-right controlPadding">
