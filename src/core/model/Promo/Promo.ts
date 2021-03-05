@@ -153,15 +153,15 @@ export class Promo extends Entity {
 
     public GetFromDate(): Date
     {
-        return this.Items.reduce(function(prev, current) {
-            return (prev.StartDate < current.StartDate) ? prev : current
+        return this.Items.reduce((prev, current) => {
+            return (prev.StartDate < current.StartDate) ? prev : current;
         }).StartDate;
     }
 
     public GetToDate(): Date
     {
-        return this.Items.reduce(function(prev, current) {
-            return (prev.EndDate > current.EndDate) ? prev : current
+        return this.Items.reduce((prev, current) => {
+            return (prev.EndDate > current.EndDate) ? prev : current;
         }).EndDate;
     }
 }
