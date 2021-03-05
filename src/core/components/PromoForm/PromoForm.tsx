@@ -437,6 +437,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       required={!readOnlyForm}
                                       value={selectedItem.StartDate!}
                                       errorMessage={this.getValidationErrorMessage(selectedItem.StartDate)}
+                                      maxDate={selectedItem.EndDate}
                                     /> :
                                     <TextField
                                       label="Fecha de comienzo"
@@ -534,6 +535,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       required={!readOnlyForm}
                                       value={selectedItem.EndDate!}
                                       errorMessage={this.getValidationErrorMessage(selectedItem.EndDate)}
+                                      minDate={selectedItem.StartDate}
                                     /> :
                                     <TextField
                                       label="Fecha fin"
