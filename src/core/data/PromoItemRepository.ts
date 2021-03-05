@@ -82,7 +82,8 @@ export class PromoItemRepository {
                 GMBaseUnit: entity.GetGMBaseUnit(),
                 GMPromoUnit: entity.GetGMPromoUnit(),
                 Redemption: entity.Redemption,  
-                BaseVolume: entity.BaseVolume,              
+                BaseVolume: entity.BaseVolume,
+                EstimatedROI: entity.GetROI(),
                 EstimatedIncrementalVolume: entity.EstimatedIncrementalVolume,
                 AdditionalInvestment: entity.AdditionalInvestment
             };
