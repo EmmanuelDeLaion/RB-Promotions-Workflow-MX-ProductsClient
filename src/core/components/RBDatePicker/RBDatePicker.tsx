@@ -8,7 +8,9 @@ interface IRBDatePickerProps {
     required: boolean;
     onSelectDate: (date: Date) => void;
     value: Date;
-    errorMessage?: string;        
+    errorMessage?: string; 
+    minDate?: Date;
+    maxDate?: Date;
 }
 
 export class RBDatePicker extends React.Component<IRBDatePickerProps, {}> {
@@ -29,6 +31,8 @@ export class RBDatePicker extends React.Component<IRBDatePickerProps, {}> {
                     value={this.props.value}
                     onSelectDate={this.onSelectDate.bind(this)}   
                     formatDate={CommonHelper.formatDate}
+                    minDate={this.props.minDate}
+                    maxDate={this.props.maxDate}
                 />
                 <div hidden={CommonHelper.IsNullOrEmpty(this.props.errorMessage)} role="alert" className="errorMessage">{this.props.errorMessage}</div>
             </div>
