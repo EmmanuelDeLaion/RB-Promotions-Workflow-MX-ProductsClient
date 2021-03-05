@@ -57,13 +57,13 @@ export class NotificacionsManager {
         retVal.set("{{NAME}}", entity.Name);
         retVal.set("{{PROMO_ID}}", entity.PromoID);        
         retVal.set("{{LINK_TO_PROMO}}", webData.Url + "?ItemId=" + entity.ItemId.toString());
-        
-        /*Validar*/
-        retVal.set("{{KAM}}", "_KAM_");
+        retVal.set("{{KAM}}", entity.Client.KeyAccountManager.Value);
         retVal.set("{{CLIENT_NAME}}", entity.Client.Name);
-        retVal.set("{{PROMO_DATE}}", "_PROMO_DATE_");
         retVal.set("{{ADDITIONAL_INVESTMENT}}", entity.GetTotalEstimatedInvestmentAsString());
         retVal.set("{{ROI}}", entity.GetROIAsString());
+
+        /*Validar*/
+        retVal.set("{{PROMO_DATE}}", "_PROMO_DATE_");
         retVal.set("{{TASK_APPROVER}}", "_TASK_APPROVER_");
         /* Fin Validar*/
 
