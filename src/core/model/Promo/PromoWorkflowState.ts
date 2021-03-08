@@ -1,5 +1,6 @@
 import { CommonHelper } from "../../common/CommonHelper";
 import { SecurityHelper } from "../../common/SecurityHelper";
+import { UserValue } from "../../infrastructure/UserValue";
 
 export class PromoWorkflowState {
     public ApproverIDs: number[] = [];
@@ -35,15 +36,15 @@ export class PromoWorkflowState {
         return userIDs;
     }
 
-    public async GetPendingUserEmails(): Promise<string[]> {
-        const emails = [];
+    public async GetPendingUsers(): Promise<UserValue[]> {
+        const users = [];
         
         await Promise.all(this.GetPendingUserIDs().map(async (userId) => {
             const user = await SecurityHelper.GetUserById(userId);            
             if(!CommonHelper.IsNullOrEmpty(user.Email))
-                emails.push(user.Email);
+                users.push(user);
         }));
 
-        return emails;
+        return users;
     }
 }

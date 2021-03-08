@@ -50,7 +50,10 @@ export class NewPromoState extends PromoState {
 
         await this.InitializeWorkflowState(entity);
         await PromoRepository.SaveOrUpdate(entity);
+        await entity.InitializeState();
 
-        return entity.InitializeState();
+        const user = await SecurityHelper.GetCurrentUser();
+
+        return NotificacionsManager.SendWorkflowStartedNotification(entity, user.Email);
     }
 }
