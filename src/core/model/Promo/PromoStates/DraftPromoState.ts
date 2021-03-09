@@ -1,6 +1,6 @@
 import { Promo, PromoStatus } from "..";
 import { Constants } from "../../..";
-import { SecurityHelper } from "../../../common";
+import { NotificacionsManager, SecurityHelper } from "../../../common";
 import { 
     CategoryRepository, 
     ClientRepository, 
@@ -56,7 +56,10 @@ export class DraftPromoState extends PromoState {
 
         await this.InitializeWorkflowState(entity);
         await PromoRepository.SaveOrUpdate(entity);
+        await  entity.InitializeState();
 
-        return entity.InitializeState();
+        const user = await SecurityHelper.GetCurrentUser();
+
+        return NotificacionsManager.SendWorkflowStartedNotification(entity, user.Email);
     }
 }

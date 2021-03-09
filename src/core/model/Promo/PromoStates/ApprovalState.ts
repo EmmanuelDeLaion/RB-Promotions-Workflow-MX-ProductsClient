@@ -9,11 +9,13 @@ import { PromoState } from "./PromoState";
 
 export class ApprovalState extends PromoState {
     public async Initialize(): Promise<void> {
-        const to = (await this.GetCurrentStage().GetPendingUserEmails()).join(";");
+        const users = await this.GetCurrentStage().GetPendingUsers();
 
         await SecurityHelper.SetPromoPermissions(this.Entity.ItemId, [this.Entity.Client.KeyAccountManager.ItemId], this.GetCurrentStage().GetPendingUserIDs());
 
-        return NotificacionsManager.SendTaskAssignedNotification(this.Entity, to);
+        await Promise.all(users.map(async (user) => {
+            await NotificacionsManager.SendTaskAssignedNotification(this.Entity, user.Email, null, user.Value);
+        }));
     }
     
     public GetStatusId(): number {
@@ -42,22 +44,26 @@ export class ApprovalState extends PromoState {
     public async Approve(comments: string): Promise<void>
     {
         const stage = this.GetCurrentStage();
+        const user = await SecurityHelper.GetCurrentUser();
+        const kam = await SecurityHelper.GetUserById(this.Entity.Client.KeyAccountManager.ItemId);
         
-        stage.AddToCompletBy((await SecurityHelper.GetCurrentUser()).ItemId);
+        stage.AddToCompletBy(user.ItemId);
 
         if(stage.IsComplete()) {
             if(this.Entity.CurrentStageNumber == this.Entity.WorkflowStages.length) {
                 this.Entity.ChangeState(PromoStatus.Approved);
 
-                const to = (await SecurityHelper.GetUserById(this.Entity.Client.KeyAccountManager.ItemId)).Email;
+                const to = kam.Email;
 
                 NotificacionsManager.SendWorkflowApprovedNotification(this.Entity, to);
             }
             else {
                 this.Entity.CurrentStageNumber++;
-                const to = (await this.GetCurrentStage().GetPendingUserEmails()).join(";");
+                const users = await this.GetCurrentStage().GetPendingUsers();
 
-                NotificacionsManager.SendTaskAssignedNotification(this.Entity, to);
+                await Promise.all(users.map(async (user) => {
+                    await NotificacionsManager.SendTaskAssignedNotification(this.Entity, user.Email, null, user.Value);
+                }));
             }
         }
 
@@ -68,8 +74,9 @@ export class ApprovalState extends PromoState {
 
         await SecurityHelper.SetPromoPermissions(this.Entity.ItemId, readerIDs, this.GetCurrentStage().GetPendingUserIDs());
         await PromoRepository.SaveOrUpdate(this.Entity);
+        await WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Aprobar", comments);
 
-        return WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Aprobar", comments);
+        return NotificacionsManager.SendTaskApprovedNotification(this.Entity, user.Value, kam.Email);
     }
 
     public async Reject(comments: string): Promise<void>
