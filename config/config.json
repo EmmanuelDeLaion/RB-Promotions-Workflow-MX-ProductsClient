@@ -9,10 +9,19 @@
           "manifest": "./src/webparts/promoFormWebPart/PromoFormWebPartWebPart.manifest.json"
         }
       ]
+    },
+    "promo-list-view-link-field-customizer": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/promoListViewLink/PromoListViewLinkFieldCustomizer.js",
+          "manifest": "./src/extensions/promoListViewLink/PromoListViewLinkFieldCustomizer.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
-    "PromoFormWebPartWebPartStrings": "lib/webparts/promoFormWebPart/loc/{locale}.js"
+    "PromoFormWebPartWebPartStrings": "lib/webparts/promoFormWebPart/loc/{locale}.js",
+    "PromoListViewLinkFieldCustomizerStrings": "lib/extensions/promoListViewLink/loc/{locale}.js"
   }
 }
