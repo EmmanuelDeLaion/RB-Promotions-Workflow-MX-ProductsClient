@@ -7,11 +7,7 @@
         {
           "entrypoint": "./lib/webparts/promoFormWebPart/PromoFormWebPartWebPart.js",
           "manifest": "./src/webparts/promoFormWebPart/PromoFormWebPartWebPart.manifest.json"
-        }
-      ]
-    },
-    "promo-list-view-link-field-customizer": {
-      "components": [
+        },
         {
           "entrypoint": "./lib/extensions/promoListViewLink/PromoListViewLinkFieldCustomizer.js",
           "manifest": "./src/extensions/promoListViewLink/PromoListViewLinkFieldCustomizer.manifest.json"
