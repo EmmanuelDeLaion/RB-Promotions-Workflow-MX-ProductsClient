@@ -61,8 +61,8 @@ export class ApprovalState extends PromoState {
                 this.Entity.CurrentStageNumber++;
                 const users = await this.GetCurrentStage().GetPendingUsers();
 
-                await Promise.all(users.map(async (user) => {
-                    await NotificacionsManager.SendTaskAssignedNotification(this.Entity, user.Email, null, user.Value);
+                await Promise.all(users.map(async (usr) => {
+                    await NotificacionsManager.SendTaskAssignedNotification(this.Entity, usr.Email, null, usr.Value);
                 }));
             }
         }
@@ -81,7 +81,12 @@ export class ApprovalState extends PromoState {
 
     public async Reject(comments: string): Promise<void>
     {
-        this.Entity.ChangeState(PromoStatus.Rejected);
+        const stage = this.GetCurrentStage();
+        const user = await SecurityHelper.GetCurrentUser();
+
+        this.Entity.ChangeState(PromoStatus.Rejected);        
+
+        stage.AddToCompletBy(user.ItemId);
 
         await PromoRepository.SaveOrUpdate(this.Entity);
         await WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Rechazar", comments);
@@ -91,11 +96,10 @@ export class ApprovalState extends PromoState {
         for(let i = 0; i < this.Entity.CurrentStageNumber; i++) 
             readerIDs = readerIDs.concat(this.Entity.WorkflowStages[i].CompletedBy);
 
-        readerIDs = readerIDs.concat(this.GetCurrentStage().GetPendingUserIDs());
+        readerIDs = readerIDs.concat(stage.GetPendingUserIDs());
 
         await SecurityHelper.SetPromoPermissions(this.Entity.ItemId, readerIDs);
-
-        const user = await SecurityHelper.GetCurrentUser();
+        
         const to = (await SecurityHelper.GetUserById(this.Entity.Client.KeyAccountManager.ItemId)).Email;
 
         return NotificacionsManager.SendTaskRejectedNotification(this.Entity, comments, user.Value, to);

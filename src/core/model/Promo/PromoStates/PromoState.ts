@@ -46,7 +46,7 @@ export abstract class PromoState {
         entity.CurrentStageNumber = 1;
     }
 
-    protected GetCurrentStage(): PromoWorkflowState {
-        return this.Entity.WorkflowStages[this.Entity.CurrentStageNumber - 1];
+    public GetCurrentStage(): PromoWorkflowState {
+        return this.Entity.CurrentStageNumber > 0 ? this.Entity.WorkflowStages[this.Entity.CurrentStageNumber - 1] : null;
     }
 }

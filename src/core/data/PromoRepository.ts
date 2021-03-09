@@ -32,6 +32,8 @@ export class PromoRepository {
     }
 
     public static async SaveOrUpdate(entity: Promo): Promise<void> {
+      const pendingApprovers = entity.GetPendingApproverIDs();
+
       const data = {       
         PromoName: entity.Name, 
         ActivityObjective: entity.ActivityObjective,
@@ -40,7 +42,8 @@ export class PromoRepository {
         Status: entity.GetStatusText(),
         StatusId: entity.GetStatusId(),
         SYS_WorkflowStages: entity.WorkflowStages ? JSON.stringify(entity.WorkflowStages) : null,
-        SYS_CurrentStageNumber: entity.CurrentStageNumber
+        SYS_CurrentStageNumber: entity.CurrentStageNumber,
+        PendingApproversId: { results: pendingApprovers ? entity.GetPendingApproverIDs() : [] }
       };
 
       if(!entity.ItemId) {

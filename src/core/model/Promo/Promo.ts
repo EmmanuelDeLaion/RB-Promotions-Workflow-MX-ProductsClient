@@ -68,6 +68,10 @@ export class Promo extends Entity {
         return this._state.GetStatusId();
     }
 
+    public GetPendingApproverIDs(): number[] {
+        return this.GetStatusId() == PromoStatus.Approval ? this._state.GetCurrentStage().GetPendingUserIDs(): null;
+    }
+
     public GetViewModel(): Promise<PromoViewModel> {
         return this._state.GetViewModel();
     }
