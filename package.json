@@ -9,11 +9,12 @@
   "scripts": {
     "serve": "gulp serve",
     "serve-sgiovannini": "gulp serve --config=sgiovannini",
+    "serve-promoListViewLink": "gulp serve --config=promoListViewLink",
     "build": "gulp bundle",
     "clean": "gulp clean",
     "test": "gulp test",
     "build-package": "gulp bundle && gulp package-solution",
-    "build-package-production": "gulp bundle --production && gulp package-solution --production"
+    "build-package-production": "gulp bundle --ship && gulp package-solution --ship"
   },
   "dependencies": {
     "@microsoft/sp-core-library": "1.11.0",
@@ -32,7 +33,9 @@
     "react-dom": "16.8.5",
     "react-select": "^3.1.1",
     "@fluentui/react-tabs": "^0.6.21",
-    "@uifabric/example-data": "^7.1.5"
+    "@uifabric/example-data": "^7.1.5",
+    "@microsoft/decorators": "1.11.0",
+    "@microsoft/sp-listview-extensibility": "1.11.0"
   },
   "resolutions": {
     "@types/react": "16.8.8"
