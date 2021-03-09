@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2020/02/ProvisioningSchema">
   <pnp:Preferences Generator="OfficeDevPnP.Core, Version=3.28.2012.0, Culture=neutral, PublicKeyToken=5e633289e95c321a" />
-  <pnp:Templates ID="CONTAINER-TEMPLATE-F0C9D2A30C6F43069E6E28E900D85282">
-    <pnp:ProvisioningTemplate ID="TEMPLATE-F0C9D2A30C6F43069E6E28E900D85282" Version="1" BaseSiteTemplate="GROUP#0">
+  <pnp:Templates ID="CONTAINER-TEMPLATE-AF0BB748F6EF42FEB015779CD6B1CA43">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-AF0BB748F6EF42FEB015779CD6B1CA43" Version="1" BaseSiteTemplate="GROUP#0">
       <pnp:Lists>
         <pnp:ListInstance Title="Promo items" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/PromoItems" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PromoItems/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PromoItems/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PromoItems/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -105,6 +105,7 @@
                 <FieldRef Name="SYS_CurrentStageNumber" />
                 <FieldRef Name="StatusId" />
                 <FieldRef Name="TotalEstimatedROI" />
+                <FieldRef Name="PendingApprovers" />
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
               <Aggregations Value="Off" />
@@ -148,6 +149,7 @@
             <Field CommaSeparator="TRUE" Decimals="0" DisplayName="SYS_CurrentStageNumber" Format="Dropdown" IsModern="TRUE" Name="SYS_CurrentStageNumber" Percentage="FALSE" Title="SYS_CurrentStageNumber" Type="Number" ID="{372bb452-d710-46c2-9a25-7befea17f84a}" SourceID="{{listid:Promociones}}" StaticName="SYS_CurrentStageNumber" ColName="float2" RowOrdinal="0" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="ROI total estimado" Format="Dropdown" Name="TotalEstimatedROI" Percentage="FALSE" Title="ROI total estimado" Type="Number" ID="{1918b0f3-027e-41b1-b94c-9b3c313443c4}" Version="2" StaticName="TotalEstimatedROI" SourceID="{{listid:Promociones}}" ColName="float3" RowOrdinal="0" />
             <Field Type="Lookup" DisplayName="Cliente" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Clientes}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{93c105e0-715d-4b80-a720-fd93d6a6c450}" SourceID="{{listid:Promociones}}" StaticName="Client" Name="Client" ColName="int1" RowOrdinal="0" CustomFormatter="{&#xD;&#xA;   &quot;$schema&quot;: &quot;https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json&quot;,&#xD;&#xA;   &quot;elmType&quot;: &quot;div&quot;,&#xD;&#xA;   &quot;txtContent&quot;: &quot;@currentField.lookupValue&quot;&#xD;&#xA;}" Group="" Version="6" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Asignado a" Format="Dropdown" List="UserInfo" Mult="TRUE" Name="PendingApprovers" Title="Asignado a" Type="UserMulti" UserSelectionMode="0" UserSelectionScope="0" ID="{c85d263a-3013-4727-b445-19eab1ebcba5}" Version="2" StaticName="PendingApprovers" SourceID="{{listid:Promociones}}" ColName="int2" RowOrdinal="0" />
           </pnp:Fields>
         </pnp:ListInstance>
         <pnp:ListInstance Title="SYS_PermissionChangeRequests" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/PermissionChangeRequests" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PermissionChangeRequests/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PermissionChangeRequests/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PermissionChangeRequests/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
@@ -338,19 +340,19 @@
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">DTS</pnp:DataValue>
-              <pnp:DataValue FieldName="Channel">7</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">4</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">Mayoreo</pnp:DataValue>
-              <pnp:DataValue FieldName="Channel">7</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">4</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">Pastilleros</pnp:DataValue>
-              <pnp:DataValue FieldName="Channel">7</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">4</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">US Business</pnp:DataValue>
-              <pnp:DataValue FieldName="Channel">8</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">5</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
         </pnp:ListInstance>
@@ -462,6 +464,9 @@
               <pnp:DataValue FieldName="Category">8</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=cb682b05-b176-4dbf-8652-00a9becf8505" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Categorías de producto" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/ProductCategories" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/ProductCategories/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/ProductCategories/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/ProductCategories/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -562,23 +567,23 @@
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">ABARROTERA ARENAS</pnp:DataValue>
-              <pnp:DataValue FieldName="Channel">7</pnp:DataValue>
-              <pnp:DataValue FieldName="Subchannel">16</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">4</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">10</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">ABARROTERA AVILA</pnp:DataValue>
-              <pnp:DataValue FieldName="Channel">7</pnp:DataValue>
-              <pnp:DataValue FieldName="Subchannel">16</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">4</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">10</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">MIDWAY</pnp:DataValue>
-              <pnp:DataValue FieldName="Channel">8</pnp:DataValue>
-              <pnp:DataValue FieldName="Subchannel">18</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">5</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">12</pnp:DataValue>
             </pnp:DataRow>
             <pnp:DataRow>
               <pnp:DataValue FieldName="Title">VILORE</pnp:DataValue>
-              <pnp:DataValue FieldName="Channel">8</pnp:DataValue>
-              <pnp:DataValue FieldName="Subchannel">18</pnp:DataValue>
+              <pnp:DataValue FieldName="Channel">5</pnp:DataValue>
+              <pnp:DataValue FieldName="Subchannel">12</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
         </pnp:ListInstance>
@@ -728,11 +733,11 @@
 		}
 
 		.wrapper {
-			width: 650px;
+			min-width: 480px;
 		}
 
 		.header {
-			height: 101px;
+			min-height: 101px;
 			background: var(--primary-color) 0% 0% no-repeat padding-box;
 			background: #e1dfdd 0% 0% no-repeat padding-box;
 			opacity: 1;
@@ -858,6 +863,7 @@
 
 		.promoTable {
 			width: 100%;
+			max-width: 700px;
 		}
 
 		.promoTableHeader {
@@ -983,11 +989,11 @@
 		}
 
 		.wrapper {
-			width: 650px;
+			min-width: 480px;
 		}
 
 		.header {
-			height: 101px;
+			min-height: 101px;
 			background: var(--primary-color) 0% 0% no-repeat padding-box;
 			background: #e1dfdd 0% 0% no-repeat padding-box;
 			opacity: 1;
@@ -1113,6 +1119,7 @@
 
 		.promoTable {
 			width: 100%;
+			max-width: 700px;
 		}
 
 		.promoTableHeader {
@@ -1235,11 +1242,11 @@
 		}
 
 		.wrapper {
-			width: 650px;
+			min-width: 480px;
 		}
 
 		.header {
-			height: 101px;
+			min-height: 101px;
 			background: var(--primary-color) 0% 0% no-repeat padding-box;
 			background: #e1dfdd 0% 0% no-repeat padding-box;
 			opacity: 1;
@@ -1365,6 +1372,7 @@
 
 		.promoTable {
 			width: 100%;
+			max-width: 700px;
 		}
 
 		.promoTableHeader {
@@ -1487,11 +1495,11 @@
 		}
 
 		.wrapper {
-			width: 650px;
+			min-width: 480px;
 		}
 
 		.header {
-			height: 101px;
+			min-height: 101px;
 			background: var(--primary-color) 0% 0% no-repeat padding-box;
 			background: #e1dfdd 0% 0% no-repeat padding-box;
 			opacity: 1;
@@ -1617,6 +1625,7 @@
 
 		.promoTable {
 			width: 100%;
+			max-width: 700px;
 		}
 
 		.promoTableHeader {
@@ -1739,11 +1748,11 @@
 		}
 
 		.wrapper {
-			width: 650px;
+			min-width: 480px;
 		}
 
 		.header {
-			height: 101px;
+			min-height: 101px;
 			background: var(--primary-color) 0% 0% no-repeat padding-box;
 			background: #e1dfdd 0% 0% no-repeat padding-box;
 			opacity: 1;
@@ -1869,6 +1878,7 @@
 
 		.promoTable {
 			width: 100%;
+			max-width: 700px;
 		}
 
 		.promoTableHeader {
@@ -1980,6 +1990,9 @@
 &lt;/html&gt;</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=1ed49cf2-bffb-4bef-a7b4-ccad0bcf2a40" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Unidades de negocio" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/BusinessUnits" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/BusinessUnits/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/BusinessUnits/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/BusinessUnits/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
