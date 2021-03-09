@@ -1,4 +1,5 @@
 import { sp } from "@pnp/sp/presets/all";
+import { SecurityHelper } from "../common";
 import { Client } from "../model/Common";
 import { Channel } from "../model/Common/Channel";
 import { ChannelRepository } from "./ChannelRepository";
@@ -30,12 +31,13 @@ export class ClientRepository {
 
     public static async GetClients():Promise<Client[]>
     {
+        const user = await SecurityHelper.GetCurrentUser();
         const collection = sp.web.lists.getByTitle(ClientRepository.LIST_NAME)
-            .items.select("ID", "Title").get().then((items) => { 
+            .items.select("ID", "Title", "KeyAccountManager/ID").expand("KeyAccountManager").filter(`KeyAccountManagerId eq ${user.ItemId}`).get().then((items) => { 
                 return items.map((item) => {                     
                     return ClientRepository.BuildEntity(item);
                 });
-            });        
+            });
 
         return collection;
     }
