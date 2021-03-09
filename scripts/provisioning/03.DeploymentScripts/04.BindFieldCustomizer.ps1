@@ -5,11 +5,11 @@ Add-Type -Path "C:\Program Files\Common Files\Microsoft Shared\Web Server Extens
 #Set Config Parameters
 
 #$SiteURL = "https://sgiovannini.sharepoint.com/sites/RB-Promociones/Peru"
-#$SiteURL = "https://sgiovannini.sharepoint.com/sites/RB-Promociones/Mexico"
+$SiteURL = "https://sgiovannini.sharepoint.com/sites/RB-Promociones/Mexico"
 #$SiteURL = "https://sgiovannini.sharepoint.com/sites/RB-Promociones/"
 
 #$SiteURL = "https://devbf2019.sharepoint.com/sites/RBPromociones/"
-$SiteURL = "https://devbf2019.sharepoint.com/sites/RBPromociones/Mexico"
+#$SiteURL = "https://devbf2019.sharepoint.com/sites/RBPromociones/Mexico"
 #$SiteURL = "https://devbf2019.sharepoint.com/sites/RBPromociones/Peru"
 
 #$SiteURL = "https://rbcom.sharepoint.com/sites/TPM-TradePromotionManagementLATAM-QA/Root"

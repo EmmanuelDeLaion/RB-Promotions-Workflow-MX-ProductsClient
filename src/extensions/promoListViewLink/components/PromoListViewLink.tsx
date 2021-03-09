@@ -30,7 +30,7 @@ export default class PromoListViewLink extends React.Component<IPromoListViewLin
   public render(): React.ReactElement<{}> {
     return (
       <div className={styles.cell}>
-        <a className="ms-Link" onClick={() => this.openPromoFormDialog()}>{this.props.title}</a>
+        <a className="ms-Link" onClick={() => this.openPromoFormDialog()}><span className={styles.link}>{this.props.title}</span></a>
       </div>
     );
   }
