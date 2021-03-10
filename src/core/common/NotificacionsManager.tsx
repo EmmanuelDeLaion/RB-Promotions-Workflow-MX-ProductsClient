@@ -70,6 +70,7 @@ export class NotificacionsManager {
         retVal.set("{{ADDITIONAL_INVESTMENT}}", entity.GetTotalEstimatedInvestmentAsString());
         retVal.set("{{ROI}}", entity.GetROIAsString());
         retVal.set("{{PROMO_DATE}}", NotificacionsManager.GetFormattedPromoDate(entity));
+        retVal.set("{{CURRENCY_SYMBOL}}", entity.Config.CurrencySymbol);
 
         /*Validar*/     
         if(!CommonHelper.IsNullOrEmpty(approver))
