@@ -111,8 +111,8 @@ export class PromoItemRepository {
         entity.Brand = item.Brand ? { ItemId: item.Brand.ID, Value: item.Brand.Title } : null;
         entity.ProductCategory = item.ProductCategory ? { ItemId: item.ProductCategory.ID, Value: item.ProductCategory.Title } : null;
         entity.Product = product;
-        entity.StartDate = new Date(item.StartDate);
-        entity.EndDate = new Date(item.EndDate);
+        entity.StartDate = item.StartDate ? new Date(item.StartDate) : null;
+        entity.EndDate = item.EndDate ? new Date(item.EndDate) : null;
         entity.DiscountPerPiece = item.DiscountPerPiece;
         entity.NetPrice= item.NetPrice;
         entity.COGS = item.COGS;

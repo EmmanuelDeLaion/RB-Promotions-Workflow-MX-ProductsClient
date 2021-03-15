@@ -39,6 +39,8 @@ export class PromoRepository {
         ActivityObjective: entity.ActivityObjective,
         ClientId: entity.Client ? entity.Client.ItemId : null,
         TotalEstimatedROI: entity.GetROI(),
+        StartDate: entity.GetFromDate(),
+        EndDate: entity.GetToDate(),
         Status: entity.GetStatusText(),
         StatusId: entity.GetStatusId(),
         SYS_WorkflowStages: entity.WorkflowStages ? JSON.stringify(entity.WorkflowStages) : null,
