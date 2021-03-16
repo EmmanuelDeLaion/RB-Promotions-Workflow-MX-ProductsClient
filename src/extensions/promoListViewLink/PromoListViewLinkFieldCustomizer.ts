@@ -10,6 +10,7 @@ import {
 
 import * as strings from 'PromoListViewLinkFieldCustomizerStrings';
 import PromoListViewLink, { IPromoListViewLinkProps } from './components/PromoListViewLink';
+import { CommonHelper } from '../../core/common';
 
 /**
  * If your field customizer uses the ClientSideComponentProperties JSON input,
@@ -28,12 +29,9 @@ export default class PromoListViewLinkFieldCustomizer
 
   @override
   public onInit(): Promise<void> {
-    // Add your custom initialization to this method.  The framework will wait
-    // for the returned promise to resolve before firing any BaseFieldCustomizer events.
-    Log.info(LOG_SOURCE, 'Activated PromoListViewLinkFieldCustomizer with properties:');
-    Log.info(LOG_SOURCE, JSON.stringify(this.properties, undefined, 2));
-    Log.info(LOG_SOURCE, `The following string should be equal: "PromoListViewLinkFieldCustomizer" and "${strings.Title}"`);
-    return Promise.resolve();
+    return super.onInit().then(_ => { 
+      CommonHelper.ensurePnPJs(this.context);
+    });
   }
 
   @override

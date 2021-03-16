@@ -35,9 +35,14 @@ export class ProductRepository {
                 "Brand/Title",
                 "ProductCategory/ID",
                 "ProductCategory/Title").expand("BusinessUnit", "Brand", "ProductCategory").get().then((items) => { 
-                return items.map((item) => {                     
-                    return ProductRepository.BuildEntity(item);
+                let result: Product[] = [];
+                items.map((item) => {
+                    if(item.BusinessUnit && item.BusinessUnit.ID && item.BusinessUnit.Title && 
+                       item.Brand && item.Brand.ID && item.Brand.Title &&
+                       item.ProductCategory && item.ProductCategory.ID && item.ProductCategory.Title)
+                        result.push(ProductRepository.BuildEntity(item));
                 });
+                return result;
             });
 
         return collection;

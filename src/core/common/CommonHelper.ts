@@ -1,5 +1,9 @@
+import { FieldCustomizerContext } from '@microsoft/sp-listview-extensibility';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { sp } from '@pnp/sp';
+import '../GlobalVariables';
 
-export class CommonHelper{
+export class CommonHelper {
     public static EmptyString: string = "";
 
     public static IsNullOrEmpty(value: string): boolean {
@@ -31,5 +35,15 @@ export class CommonHelper{
         var regex = new RegExp(searchValue, 'g');
         
         return str.replace(regex, replaceValue);
+    }
+
+    public static ensurePnPJs(context: WebPartContext | FieldCustomizerContext) {
+        if(!_spInitialized) {
+            console.log("PNP initialized...");
+            sp.setup({
+                spfxContext: context
+            });
+            _spInitialized = true;
+        }
     }
 }

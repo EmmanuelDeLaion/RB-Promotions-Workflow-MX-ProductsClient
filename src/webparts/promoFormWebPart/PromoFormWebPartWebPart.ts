@@ -11,6 +11,7 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'PromoFormWebPartWebPartStrings';
 import { IPromoFormLinkProps, PromoFormLink } from '../../core/components/PromoForm';
 import { sp } from '@pnp/sp';
+import { CommonHelper } from '../../core/common';
 
 export interface IPromoFormWebPartWebPartProps {
   description: string;
@@ -20,11 +21,8 @@ export default class PromoFormWebPartWebPart extends BaseClientSideWebPart <IPro
 
   @override
   protected onInit(): Promise<void> {
-
     return super.onInit().then(_ => { 
-      sp.setup({
-        spfxContext: this.context
-      });
+      CommonHelper.ensurePnPJs(this.context);
     });
   }
 
