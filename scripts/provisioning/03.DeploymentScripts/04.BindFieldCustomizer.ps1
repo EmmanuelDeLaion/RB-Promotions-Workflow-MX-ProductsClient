@@ -21,7 +21,7 @@ $SiteURL = "https://devbf2019.sharepoint.com/sites/RBPromociones/Mexico"
 #$SiteURL = "https://rbcom.sharepoint.com/sites/TPM-TradePromotionManagementLATAM-QA/Peru"
 
 $ListName="Promociones"
-$FieldName="Liga" #Internal Name
+$FieldName="PromoLink" #Internal Name
  
 #Get Credentials to connect
 $Cred = Get-Credential
