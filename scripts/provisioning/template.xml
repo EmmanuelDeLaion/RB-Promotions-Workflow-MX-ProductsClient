@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2020/02/ProvisioningSchema">
   <pnp:Preferences Generator="OfficeDevPnP.Core, Version=3.28.2012.0, Culture=neutral, PublicKeyToken=5e633289e95c321a" />
-  <pnp:Templates ID="CONTAINER-TEMPLATE-AF0BB748F6EF42FEB015779CD6B1CA43">
-    <pnp:ProvisioningTemplate ID="TEMPLATE-AF0BB748F6EF42FEB015779CD6B1CA43" Version="1" BaseSiteTemplate="GROUP#0">
+  <pnp:Templates ID="CONTAINER-TEMPLATE-368A6EB2EBD545FF900565BB640AB4D4">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-368A6EB2EBD545FF900565BB640AB4D4" Version="1" BaseSiteTemplate="GROUP#0" Scope="RootSite">
       <pnp:Lists>
         <pnp:ListInstance Title="Promo items" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/PromoItems" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PromoItems/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PromoItems/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PromoItems/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -88,24 +88,19 @@
             <pnp:ContentTypeBinding ContentTypeID="0x0120" />
           </pnp:ContentTypeBindings>
           <pnp:Views>
-            <View Name="{675DC237-7F00-460C-840F-862BBE381F30}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los elementos" Url="{site}/Lists/Promotions/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+            <View Name="{675DC237-7F00-460C-840F-862BBE381F30}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos las promociones" Url="{site}/Lists/Promotions/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
               <Query>
                 <OrderBy>
                   <FieldRef Name="ID" Ascending="FALSE" />
                 </OrderBy>
               </Query>
               <ViewFields>
-                <FieldRef Name="ID" />
-                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="PromoLink" />
                 <FieldRef Name="PromoName" />
-                <FieldRef Name="ActivityObjective" />
                 <FieldRef Name="Client" />
                 <FieldRef Name="Status" />
-                <FieldRef Name="SYS_WorkflowStages" />
-                <FieldRef Name="SYS_CurrentStageNumber" />
-                <FieldRef Name="StatusId" />
-                <FieldRef Name="TotalEstimatedROI" />
-                <FieldRef Name="PendingApprovers" />
+                <FieldRef Name="StartDate" />
+                <FieldRef Name="EndDate" />
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
               <Aggregations Value="Off" />
@@ -113,26 +108,57 @@
               <CustomFormatter />
               <ViewData />
             </View>
-            <View Name="{7965C4F7-FB84-4024-8EF0-F201A97EBE14}" Type="HTML" DisplayName="Mis Promociones" Url="{site}/Lists/Promotions/Mis Promociones.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
-              <Query />
+            <View Name="{7965C4F7-FB84-4024-8EF0-F201A97EBE14}" Type="HTML" DisplayName="Vista KAM" Url="{site}/Lists/Promotions/VistaKAM.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query>
+                <GroupBy Collapse="TRUE" GroupLimit="30">
+                  <FieldRef Name="Status" />
+                </GroupBy>
+                <OrderBy>
+                  <FieldRef Name="ID" Ascending="FALSE" />
+                </OrderBy>
+                <Where>
+                  <Eq>
+                    <FieldRef Name="Author" />
+                    <Value Type="Integer">
+                      <UserID Type="Integer" />
+                    </Value>
+                  </Eq>
+                </Where>
+              </Query>
               <ViewFields>
-                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="PromoLink" />
+                <FieldRef Name="PromoName" />
                 <FieldRef Name="Client" />
                 <FieldRef Name="Status" />
-                <FieldRef Name="PromoName" />
-                <FieldRef Name="ActivityObjective" />
-                <FieldRef Name="StatusId" />
+                <FieldRef Name="StartDate" />
+                <FieldRef Name="EndDate" />
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
               <JSLink>clienttemplates.js</JSLink>
+              <ViewData />
             </View>
-            <View Name="{0AF63AF1-D38A-4220-8F68-618006ED2772}" Type="HTML" DisplayName="Mis pendientes de aprobación" Url="{site}/Lists/Promotions/Mis pendientes de aprobacin.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
-              <Query />
+            <View Name="{0AF63AF1-D38A-4220-8F68-618006ED2772}" Type="HTML" DisplayName="Vista de aprobador" Url="{site}/Lists/Promotions/VistaAprobador.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/generic.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="ID" Ascending="FALSE" />
+                </OrderBy>
+                <Where>
+                  <Eq>
+                    <FieldRef Name="PendingApprovers" />
+                    <Value Type="Integer">
+                      <UserID Type="Integer" />
+                    </Value>
+                  </Eq>
+                </Where>
+              </Query>
               <ViewFields>
-                <FieldRef Name="Client" />
-                <FieldRef Name="LinkTitle" />
-                <FieldRef Name="Status" />
+                <FieldRef Name="PromoLink" />
                 <FieldRef Name="PromoName" />
+                <FieldRef Name="Client" />
+                <FieldRef Name="Status" />
+                <FieldRef Name="StartDate" />
+                <FieldRef Name="EndDate" />
               </ViewFields>
               <RowLimit Paged="TRUE">30</RowLimit>
               <Aggregations Value="Off" />
@@ -150,7 +176,13 @@
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="2" DisplayName="ROI total estimado" Format="Dropdown" Name="TotalEstimatedROI" Percentage="FALSE" Title="ROI total estimado" Type="Number" ID="{1918b0f3-027e-41b1-b94c-9b3c313443c4}" Version="2" StaticName="TotalEstimatedROI" SourceID="{{listid:Promociones}}" ColName="float3" RowOrdinal="0" />
             <Field Type="Lookup" DisplayName="Cliente" Required="FALSE" EnforceUniqueValues="FALSE" List="{listid:Clientes}" ShowField="Title" UnlimitedLengthInDocumentLibrary="FALSE" ID="{93c105e0-715d-4b80-a720-fd93d6a6c450}" SourceID="{{listid:Promociones}}" StaticName="Client" Name="Client" ColName="int1" RowOrdinal="0" CustomFormatter="{&#xD;&#xA;   &quot;$schema&quot;: &quot;https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json&quot;,&#xD;&#xA;   &quot;elmType&quot;: &quot;div&quot;,&#xD;&#xA;   &quot;txtContent&quot;: &quot;@currentField.lookupValue&quot;&#xD;&#xA;}" Group="" Version="6" />
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Asignado a" Format="Dropdown" List="UserInfo" Mult="TRUE" Name="PendingApprovers" Title="Asignado a" Type="UserMulti" UserSelectionMode="0" UserSelectionScope="0" ID="{c85d263a-3013-4727-b445-19eab1ebcba5}" Version="2" StaticName="PendingApprovers" SourceID="{{listid:Promociones}}" ColName="int2" RowOrdinal="0" />
+            <Field DisplayName="Link" Format="Dropdown" IsModern="TRUE" MaxLength="255" Name="PromoLink" Title="PromoLink" Type="Text" ID="{41c3857a-722e-4e04-8be7-8c741b9640f5}" SourceID="{{listid:Promociones}}" StaticName="PromoLink" ColName="nvarchar6" RowOrdinal="0" CustomFormatter="" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Version="2" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Fecha de comienzo" FriendlyDisplayFormat="Disabled" Format="DateOnly" Name="StartDate" Title="Fecha de comienzo" Type="DateTime" ID="{02f77e13-5f4c-48ea-8dea-d9cc690e3f6c}" Version="2" StaticName="StartDate" SourceID="{{listid:Promociones}}" ColName="datetime1" RowOrdinal="0" />
+            <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" DisplayName="Fecha fin" FriendlyDisplayFormat="Disabled" Format="DateOnly" Name="EndDate" Title="Fecha fin" Type="DateTime" ID="{78dec200-7e19-4dca-aa81-5541f7586724}" Version="2" StaticName="EndDate" SourceID="{{listid:Promociones}}" ColName="datetime2" RowOrdinal="0" />
           </pnp:Fields>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=c7cff4ca-711b-41d0-b5ab-51bbd84cb08b" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="SYS_PermissionChangeRequests" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/PermissionChangeRequests" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PermissionChangeRequests/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PermissionChangeRequests/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PermissionChangeRequests/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -464,9 +496,6 @@
               <pnp:DataValue FieldName="Category">8</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
-          <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=cb682b05-b176-4dbf-8652-00a9becf8505" ExpiresInDays="1" />
-          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Categorías de producto" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/ProductCategories" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/ProductCategories/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/ProductCategories/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/ProductCategories/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -509,6 +538,9 @@
               <pnp:DataValue FieldName="Title">SWB</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=4a5c45ff-7f53-4923-b5c1-894d1381be5b" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Clientes" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/Clients" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/Clients/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/Clients/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/Clients/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -694,6 +726,9 @@
               <pnp:DataValue FieldName="Title">Enfamil 1 RTD</pnp:DataValue>
             </pnp:DataRow>
           </pnp:DataRows>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=09b0289f-b04c-417f-804c-29021c51820c" ExpiresInDays="1" />
+          </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="NotificationTemplates" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/NotificationTemplates" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/NotificationTemplates/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/NotificationTemplates/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/NotificationTemplates/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
@@ -944,7 +979,7 @@
 					&lt;/tr&gt;
 					&lt;tr&gt;
 						&lt;td class="content"&gt;
-							{{ADDITIONAL_INVESTMENT}}
+							{{CURRENCY_SYMBOL}}{{ADDITIONAL_INVESTMENT}}
 						&lt;/td&gt;
 						&lt;td class="content"&gt;
 							{{ROI}}
@@ -1200,7 +1235,7 @@
 					&lt;/tr&gt;
 					&lt;tr&gt;
 						&lt;td class="content"&gt;
-							{{ADDITIONAL_INVESTMENT}}
+							{{CURRENCY_SYMBOL}}{{ADDITIONAL_INVESTMENT}}
 						&lt;/td&gt;
 						&lt;td class="content"&gt;
 							{{ROI}}
@@ -1453,7 +1488,7 @@
 					&lt;/tr&gt;
 					&lt;tr&gt;
 						&lt;td class="content"&gt;
-							{{ADDITIONAL_INVESTMENT}}
+							{{CURRENCY_SYMBOL}}{{ADDITIONAL_INVESTMENT}}
 						&lt;/td&gt;
 						&lt;td class="content"&gt;
 							{{ROI}}
@@ -1706,7 +1741,7 @@
 					&lt;/tr&gt;
 					&lt;tr&gt;
 						&lt;td class="content"&gt;
-							{{ADDITIONAL_INVESTMENT}}
+							{{CURRENCY_SYMBOL}}{{ADDITIONAL_INVESTMENT}}
 						&lt;/td&gt;
 						&lt;td class="content"&gt;
 							{{ROI}}
@@ -1959,7 +1994,7 @@
 					&lt;/tr&gt;
 					&lt;tr&gt;
 						&lt;td class="content"&gt;
-							{{ADDITIONAL_INVESTMENT}}
+							{{CURRENCY_SYMBOL}}{{ADDITIONAL_INVESTMENT}}
 						&lt;/td&gt;
 						&lt;td class="content"&gt;
 							{{ROI}}
@@ -1991,7 +2026,7 @@
             </pnp:DataRow>
           </pnp:DataRows>
           <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=1ed49cf2-bffb-4bef-a7b4-ccad0bcf2a40" ExpiresInDays="1" />
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=e9d8be35-185f-4ee4-982a-6cc24bbd342a" ExpiresInDays="1" />
           </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Unidades de negocio" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/BusinessUnits" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/BusinessUnits/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/BusinessUnits/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/BusinessUnits/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
