@@ -39,7 +39,6 @@ export class CommonHelper {
 
     public static ensurePnPJs(context: WebPartContext | FieldCustomizerContext) {
         if(!_spInitialized) {
-            console.log("PNP initialized...");
             sp.setup({
                 spfxContext: context
             });
