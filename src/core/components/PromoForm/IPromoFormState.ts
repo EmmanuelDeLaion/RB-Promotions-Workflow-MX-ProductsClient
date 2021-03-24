@@ -20,6 +20,7 @@ export interface IPromoFormState {
     hideSavingSpinnerConfirmationDialog: boolean;    
     hideModalConfirmationDialog: boolean;
     hideActionConfirmationDialog: boolean;
+    hideDeleteEvidenceDialog: boolean;
     actionConfirmationDialogTitle?: string;
     actionConfirmationDialogType?: ActionConfirmationType;
     enableActionValidation: boolean;

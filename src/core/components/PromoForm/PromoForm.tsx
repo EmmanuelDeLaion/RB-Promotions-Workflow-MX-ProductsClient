@@ -66,6 +66,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       filteredProducts: [],
       mainModalOpen: true,
       hideDeleteProductDialog: true,
+      hideDeleteEvidenceDialog: true,
       errorMessage: "",
       hideModalConfirmationDialog: true,
       promotionTitle: "",
@@ -901,33 +902,45 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                       </Stack>
                     </Stack>
                   </PivotItem>
-                  <PivotItem onRenderItemLink={this._customPromotionEvidencePivotItemRenderer}>
-                    <Stack className="evidenceSectionContainer padding">
-                      <Stack className="padding-bottom grayContent">
-                        <Stack className="padding-bottom">Utilice esta seccion para subir archivos de evidencia</Stack>
-                        <Stack>Upload</Stack>
-                        <Stack>
-                        <Stack className="controlPadding">
-                            <TextField
-                              label="Descripción"                              
-                              multiline={true}
-                              rows={6}
-                              autoComplete="Off"
-                            />
-                          </Stack>
-                        </Stack>
-                        <Stack>
-                          <RBDatePicker
-                            label="Fecha de evidencia"
-                            onSelectDate={this.onSelectEndDate.bind(this)}//Fix
-                            required={!readOnlyForm}//Fix
-                            value={selectedItem.EndDate!}//Fix
-                            errorMessage={this.getValidationErrorMessage(selectedItem.EndDate)}//Fix
-                            minDate={selectedItem.StartDate}//Fix
-                          />
-                        </Stack>
+                  <PivotItem onRenderItemLink={this._customPromotionEvidencePivotItemRenderer}>                   
+                    <Stack className="evidenceSectionContainer">
+                    <Stack styles={this.repetitiveSectionStyle}>
+                      
+                      <Stack className="statusContainer smallPadding padding-right" horizontal horizontalAlign="end">
+                        <Stack style={{ color: theme.palette.themePrimary, paddingRight: "4px" }}><Icon iconName="MapLayers" /></Stack>
+                        <Stack className="label">Estado:</Stack>
+                        <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>{entity.GetStatusText()}</Stack>
                       </Stack>
 
+                      <Stack className="padding">
+                        <Stack className="grayContent padding padding-left padding-right">
+                          <Stack className="padding-bottom">Utilice esta seccion para subir archivos de evidencia</Stack>
+                          <Stack>Upload</Stack>
+                          <Stack>
+                            <Stack className="controlPadding">
+                              <TextField
+                                label="Descripción"                              
+                                multiline={true}
+                                rows={6}
+                                autoComplete="Off"
+                              />
+                            </Stack>
+                          </Stack>
+                          <Stack horizontal>
+                            <Stack grow={4}>
+                              <RBDatePicker
+                                  label="Fecha de evidencia"
+                                  onSelectDate={this.onSelectEndDate.bind(this)}//Fix
+                                  required={!readOnlyForm}//Fix
+                                  value={selectedItem.EndDate!}//Fix
+                                  errorMessage={this.getValidationErrorMessage(selectedItem.EndDate)}//Fix
+                                  minDate={selectedItem.StartDate}//Fix
+                                />
+                            </Stack>
+                            <Stack grow={8}></Stack>                            
+                          </Stack>
+                        </Stack>                        
+                      </Stack>                      
                       <Stack className="padding-bottom">
                         <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
                           <Stack grow={12} horizontal className="verticalPadding preAnalisisPadding fixedStructure">
@@ -945,14 +958,35 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             </thead>
                             <tbody>
                               <tr>
-                                <td>Imagen1.jpg</td>
+                                <td>
+                                  <Link href="/" target="_blank">Imagen1.jpg</Link></td>
                                 <td>asd asd asd asdasd asd asd asdasd asd asd asdasd asd asd asd</td>
                                 <td>12/03/2021</td>
-                                <td><Link>Eliminar</Link></td>
+                                <td>
+                                  <Stack className="label">
+                                    {/* <div style={{ display: entity.Items.length > 1 ? "block" : "none" }}> */}
+                                      <Link onClick={() => this.setState({ hideDeleteEvidenceDialog: false })}><Icon iconName="MapLayers" /><span style={{ color: '#323130' }}>Borrar evidencia</span></Link>
+                                    {/* </div> */}
+                                  </Stack>
+                                  <Dialog
+                                    hidden={this.state.hideDeleteEvidenceDialog}
+                                    dialogContentProps={this.deleteEvidenceDialogContentProps}
+                                    styles={this.confirmationDialogStyles}>
+                                    <DialogFooter>
+                                      <PrimaryButton onClick={this.RemoveEvidence.bind(this)} text="Eliminar"
+                                      style={{
+                                        backgroundColor: "#425C68",
+                                        border: "transparent"
+                                      }} />
+                                      <DefaultButton onClick={() => this.setState({ hideDeleteProductDialog: true })} text="Cancelar" />
+                                    </DialogFooter>
+                                  </Dialog>
+                                </td>
                               </tr>
                             </tbody>
                           </table>                          
                         </Stack>
+                      </Stack>
                       </Stack>
                     </Stack>
                   </PivotItem>
@@ -1174,6 +1208,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       newState.selectedIndex = items.length - 1;
       return newState;
     });
+  }
+
+  private RemoveEvidence() {
   }
 
   private RemovePromoItem() {
@@ -1715,7 +1752,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
   private _customPromotionEvidencePivotItemRenderer(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {
     return (
-      <Stack horizontal>
+      <Stack horizontal hidden={true}>
         {defaultRenderer(link)}
         <Label style={{ color: theme.palette.themePrimary }}><Icon iconName="Attach" /></Label>
         <Label>Evidencias</Label>
@@ -1763,6 +1800,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     title: 'Eliminar producto',
     closeButtonAriaLabel: 'Cerrar',
     subText: 'Esta seguro que desea eliminar este producto de la promoción?',
+  };
+
+  private deleteEvidenceDialogContentProps = {
+    type: DialogType.normal,
+    title: 'Eliminar evidencia',
+    closeButtonAriaLabel: 'Cerrar',
+    subText: 'Esta seguro que desea eliminar esta evidencia de la promoción?',
   };
 
   private closeModalDialogContentProps = {
