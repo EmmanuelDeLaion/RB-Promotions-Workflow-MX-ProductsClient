@@ -901,6 +901,61 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                       </Stack>
                     </Stack>
                   </PivotItem>
+                  <PivotItem onRenderItemLink={this._customPromotionEvidencePivotItemRenderer}>
+                    <Stack className="evidenceSectionContainer padding">
+                      <Stack className="padding-bottom grayContent">
+                        <Stack className="padding-bottom">Utilice esta seccion para subir archivos de evidencia</Stack>
+                        <Stack>Upload</Stack>
+                        <Stack>
+                        <Stack className="controlPadding">
+                            <TextField
+                              label="Descripción"                              
+                              multiline={true}
+                              rows={6}
+                              autoComplete="Off"
+                            />
+                          </Stack>
+                        </Stack>
+                        <Stack>
+                          <RBDatePicker
+                            label="Fecha de evidencia"
+                            onSelectDate={this.onSelectEndDate.bind(this)}//Fix
+                            required={!readOnlyForm}//Fix
+                            value={selectedItem.EndDate!}//Fix
+                            errorMessage={this.getValidationErrorMessage(selectedItem.EndDate)}//Fix
+                            minDate={selectedItem.StartDate}//Fix
+                          />
+                        </Stack>
+                      </Stack>
+
+                      <Stack className="padding-bottom">
+                        <Stack horizontal className="grayHeader smallPadding padding-left padding-right">
+                          <Stack grow={12} horizontal className="verticalPadding preAnalisisPadding fixedStructure">
+                            <Icon iconName="Attach" />
+                            <Label>Archivos de evidencia</Label>
+                          </Stack>
+                        </Stack>
+                        <Stack className="grayContent padding padding-left padding-right">
+                          <table>
+                            <thead>
+                              <th>Nombre de archivo</th>
+                              <th>Descripcion</th>
+                              <th>Fecha</th>
+                              <th></th>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>Imagen1.jpg</td>
+                                <td>asd asd asd asdasd asd asd asdasd asd asd asdasd asd asd asd</td>
+                                <td>12/03/2021</td>
+                                <td><Link>Eliminar</Link></td>
+                              </tr>
+                            </tbody>
+                          </table>                          
+                        </Stack>
+                      </Stack>
+                    </Stack>
+                  </PivotItem>
                 </Pivot>
               </Stack >
 
@@ -1648,6 +1703,16 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         {defaultRenderer(link)}
         <Label style={{ color: theme.palette.themePrimary }}><Icon iconName="DietPlanNotebook" /></Label>
         <Label>Resumen General</Label>
+      </Stack>
+    );
+  }
+
+  private _customPromotionEvidencePivotItemRenderer(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {
+    return (
+      <Stack horizontal>
+        {defaultRenderer(link)}
+        <Label style={{ color: theme.palette.themePrimary }}><Icon iconName="Attach" /></Label>
+        <Label>Evidencias</Label>
       </Stack>
     );
   }

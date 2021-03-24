@@ -331,3 +331,8 @@ flex-basis: 0;
 .alignMiddle{
     align-items: center;
 }
+
+.evidenceSectionContainer
+{
+    min-height: 550px;
+}
