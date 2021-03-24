@@ -179,7 +179,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
               <Dialog
                 hidden={this.state.hideModalConfirmationDialog}
                 dialogContentProps={this.closeModalDialogContentProps}
-                styles={this.confirmationDialogStyles}>
+                styles={this.confirmationDialogStyles}
+                onDismiss={() => this.setState({ hideModalConfirmationDialog: true })}>
                 <DialogFooter>
                   <DefaultButton
                     onClick={() => this.setState({ hideModalConfirmationDialog: true })}
@@ -335,7 +336,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           <Dialog
                             hidden={this.state.hideDeleteProductDialog}
                             dialogContentProps={this.deleteProductDialogContentProps}
-                            styles={this.confirmationDialogStyles}>
+                            styles={this.confirmationDialogStyles}
+                            onDismiss={() => this.setState({ hideDeleteProductDialog: true })}>
                             <DialogFooter>
                               <PrimaryButton onClick={this.RemovePromoItem.bind(this)} text="Eliminar"
                               style={{
@@ -916,18 +918,16 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         <Stack className="grayContent padding padding-left padding-right">
                           <Stack className="padding-bottom">Utilice esta seccion para subir archivos de evidencia</Stack>
                           <Stack>Upload</Stack>
-                          <Stack>
-                            <Stack className="controlPadding">
-                              <TextField
-                                label="Descripción"                              
-                                multiline={true}
-                                rows={6}
-                                autoComplete="Off"
-                              />
-                            </Stack>
+                          <Stack className="multilineControlPadding">
+                            <TextField
+                              label="Descripción"                              
+                              multiline={true}
+                              rows={3}
+                              autoComplete="Off"
+                            />
                           </Stack>
-                          <Stack horizontal>
-                            <Stack grow={4}>
+                          <Stack className="controlPadding" horizontal>
+                            <Stack grow={4} className="fixedStructure">
                               <RBDatePicker
                                   label="Fecha de evidencia"
                                   onSelectDate={this.onSelectEndDate.bind(this)}//Fix
@@ -937,7 +937,14 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   minDate={selectedItem.StartDate}//Fix
                                 />
                             </Stack>
-                            <Stack grow={8}></Stack>                            
+                            <Stack grow={8} className="fixedStructure"></Stack>                            
+                          </Stack>
+                          <Stack horizontal horizontalAlign="end">
+                            <PrimaryButton text="Subir documento"
+                              style={{
+                                backgroundColor: "#425C68",
+                                border: "transparent"
+                              }} />
                           </Stack>
                         </Stack>                        
                       </Stack>                      
@@ -971,14 +978,15 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Dialog
                                     hidden={this.state.hideDeleteEvidenceDialog}
                                     dialogContentProps={this.deleteEvidenceDialogContentProps}
-                                    styles={this.confirmationDialogStyles}>
+                                    styles={this.confirmationDialogStyles}
+                                    onDismiss={() => this.setState({ hideDeleteEvidenceDialog: true })}>
                                     <DialogFooter>
                                       <PrimaryButton onClick={this.RemoveEvidence.bind(this)} text="Eliminar"
                                       style={{
                                         backgroundColor: "#425C68",
                                         border: "transparent"
                                       }} />
-                                      <DefaultButton onClick={() => this.setState({ hideDeleteProductDialog: true })} text="Cancelar" />
+                                      <DefaultButton onClick={() => this.setState({ hideDeleteEvidenceDialog: true })} text="Cancelar" />
                                     </DialogFooter>
                                   </Dialog>
                                 </td>
