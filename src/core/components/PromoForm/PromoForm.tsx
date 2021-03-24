@@ -1314,7 +1314,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   }
 
   private GetFilteredBrands(): LookupValue[] {
-    const filteredBrands = [];
+    const filteredBrands: LookupValue[] = [];
     const map = new Map();
 
     for (const item of this.GetFilteredProducts().map((p) => p.Brand)) {
@@ -1324,6 +1324,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       }
     }
 
+    filteredBrands.sort((a, b) => a.Value > b.Value ? 1 :-1);
+
     if (this.state.viewModel.Entity.Items[this.state.selectedIndex].Brand != null)
       filteredBrands.unshift(new LookupValue({ Value: Constants.Miscellaneous.ClearSelectionText }));
 
@@ -1331,7 +1333,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   }
 
   private GetFilteredBUs(): LookupValue[] {
-    const filteredBUs = [];
+    const filteredBUs: LookupValue[] = [];
     const map = new Map();
 
     for (const item of this.GetFilteredProducts().map((p) => p.BusinessUnit)) {
@@ -1341,6 +1343,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       }
     }
 
+    filteredBUs.sort((a, b) => a.Value > b.Value ? 1 :-1);
+
     if (this.state.viewModel.Entity.Items[this.state.selectedIndex].BusinessUnit != null)
       filteredBUs.unshift(new LookupValue({ Value: Constants.Miscellaneous.ClearSelectionText }));
 
@@ -1348,7 +1352,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   }
 
   private GetFilteredProductCategories(): LookupValue[] {
-    const filteredCategories = [];
+    const filteredCategories: LookupValue[] = [];
     const map = new Map();
 
     for (const item of this.GetFilteredProducts().map((p) => p.Category)) {
@@ -1357,6 +1361,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         filteredCategories.push(item);
       }
     }
+
+    filteredCategories.sort((a, b) => a.Value > b.Value ? 1 :-1);
 
     if (this.state.viewModel.Entity.Items[this.state.selectedIndex].ProductCategory != null)
       filteredCategories.unshift(new LookupValue({ Value: Constants.Miscellaneous.ClearSelectionText }));
