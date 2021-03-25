@@ -14,7 +14,7 @@
     "clean": "gulp clean",
     "test": "gulp test",
     "build-package": "gulp bundle && gulp package-solution",
-    "build-package-production": "gulp bundle --ship && gulp package-solution --ship"
+    "build-package-production": "gulp clean && gulp bundle --ship && gulp package-solution --ship"
   },
   "dependencies": {
     "@microsoft/sp-core-library": "1.11.0",
