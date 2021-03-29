@@ -23,7 +23,6 @@ export class ConfigurationRepository {
                 configuration.CountryCode = ConfigurationRepository.GetConfigurationValue(items, ConfigurationKey.CountryCode);
                 configuration.CountryName = ConfigurationRepository.GetConfigurationValue(items, ConfigurationKey.CountryName);
                 configuration.CurrencySymbol = ConfigurationRepository.GetConfigurationValue(items, ConfigurationKey.CurrencySymbol);
-                configuration.TeamsChannelId = ConfigurationRepository.GetConfigurationValue(items, ConfigurationKey.TeamsChannelId);
                 configuration.ApprovalAmountLimit = ConfigurationRepository.GetNumberConfigurationValue(items, ConfigurationKey.ApprovalAmountLimit);
                 
                 return configuration;
