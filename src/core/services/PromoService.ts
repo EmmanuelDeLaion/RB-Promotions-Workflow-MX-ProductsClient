@@ -4,6 +4,8 @@ import { PromoRepository } from "../data/PromoRepository";
 import { TypeRepository } from "../data/TypeRepository";
 import { Type } from "../model/Common";
 import { ConfigurationRepository } from "../data";
+import { PromoEvidence } from "../model/Promo/PromoEvidence";
+import { EvidenceRepository } from "../data/EvidenceRepository";
 
 export class PromoService { 
 
@@ -34,5 +36,9 @@ export class PromoService {
 
   public static async GetTypesByCategory(categoryId: number): Promise<Type[]> {
     return await TypeRepository.GetByCategory(categoryId);
+  }
+
+  public static async UpdateEvidence(promoID: string, evidence: PromoEvidence[]): Promise<void> {
+    return await EvidenceRepository.UpdateEvidence(promoID, evidence);
   }
 }

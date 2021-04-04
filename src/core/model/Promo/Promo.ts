@@ -1,4 +1,4 @@
-import { Entity, LookupValue } from "../../infrastructure";
+import { Entity } from "../../infrastructure";
 import { CategoryType, Client, WorkflowLog } from "../Common";
 import { NewPromoState, PromoState, DraftPromoState } from "./PromoStates";
 import { PromoStatus, PromoViewModel } from "./";
@@ -8,6 +8,7 @@ import { PromoWorkflowState } from "./PromoWorkflowState";
 import { ApprovedState } from "./PromoStates/ApprovedState";
 import { RejectedState } from "./PromoStates/RejectedState";
 import { Configuration } from "../../infrastructure/Configuration";
+import { PromoEvidence } from "./PromoEvidence";
 
 export class Promo extends Entity {
 
@@ -20,7 +21,8 @@ export class Promo extends Entity {
     public WorkflowStages: PromoWorkflowState[];
     public WorkflowLog: WorkflowLog[] = [];
     public Config: Configuration;
-    protected _state: PromoState;       
+    public Evidence: PromoEvidence[] = [];
+    protected _state: PromoState;
 
     constructor(configuration: Configuration) {
         super();
@@ -167,5 +169,18 @@ export class Promo extends Entity {
         return this.Items.reduce((prev, current) => {
             return (prev.EndDate > current.EndDate) ? prev : current;
         }).EndDate;
+    }
+
+    public EvidenceHasChanges(): boolean {
+        let hasChanges = false;
+
+        this.Evidence.forEach((evidence) => {
+            if(evidence.File != null || evidence.Deleted){
+                hasChanges = true;
+                return;
+            }
+        });
+
+        return hasChanges;
     }
 }

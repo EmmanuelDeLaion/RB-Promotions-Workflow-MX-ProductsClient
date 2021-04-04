@@ -1,6 +1,5 @@
 import { sp } from "@pnp/sp/presets/all";
 import { Approvers } from "../model/Common/Approvers/Approvers";
-import { CommonHelper } from "../common/CommonHelper";
 import { ApproverItem } from "../model/Common/Approvers/ApproverItem";
 import { ApproverKeys } from "../model/Common/Approvers/ApproverKeys";
 import { LookupValue } from "../infrastructure";

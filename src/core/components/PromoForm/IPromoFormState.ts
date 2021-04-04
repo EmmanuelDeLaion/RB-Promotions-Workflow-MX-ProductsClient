@@ -15,6 +15,10 @@ export interface IPromoFormState {
     filteredProducts: Product[];
     actionsComments?: string;
 
+    evidenceDescription?:string;
+    evidenceDate?:Date;
+    hasEvidenceValidatioNError?: boolean;
+
     mainModalOpen: boolean;
     hideDeleteProductDialog: boolean;
     hideSavingSpinnerConfirmationDialog: boolean;    

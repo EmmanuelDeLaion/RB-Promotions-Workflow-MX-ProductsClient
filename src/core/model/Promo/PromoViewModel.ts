@@ -31,4 +31,5 @@ export class PromoViewModel {
     public ShowSubmitButton: boolean;
     public ShowApproveButton: boolean;
     public ShowRejectButton: boolean;
+    public ShowEvidenceButton: boolean;
 }

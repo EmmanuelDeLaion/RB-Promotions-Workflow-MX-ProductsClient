@@ -34,7 +34,7 @@ import {
 import styles from './PromoForm.module.scss';
 import { Category, Client, ClientProduct, Product, Type } from '../../model/Common';
 import { ClientRepository } from '../../data';
-import { PromoItem } from '../../model/Promo';
+import { PromoItem, PromoStatus } from '../../model/Promo';
 import { Constants } from '../../Constants';
 import { ActionConfirmationType, LookupValue } from '../../infrastructure';
 import { ProductSelector } from '../ProductSelector/ProductSelector';
@@ -47,6 +47,7 @@ import { initializeTheme } from './Theme';
 import { LastYearVolumesRepository } from '../../data/LastYearVolumesRepository';
 import { LastYearVolumes } from '../../model/Common/LastYearVolumes';
 import { RBDatePicker } from '../RBDatePicker/RBDatePicker';
+import { PromoEvidence } from '../../model/Promo/PromoEvidence';
 
 initializeTheme();
 const theme = getTheme();
@@ -876,8 +877,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   <Stack horizontal className="verticalPadding borderBottom alignMiddle">
                                     <Label>GM promo estimado</Label>
                                     <Label className="toRight">{item.RequiresEstimatedGMPromo() ? (entity.Config.CurrencySymbol + " " + item.GetEstimatedGMPromoAsString()) : "N/A"}</Label>
-                                  </Stack>                                                                    
-                                  
+                                  </Stack>                                  
                                 </Stack>
                                 <Stack className="smallPadding fixedStructure" grow={4}>
                                   <Stack horizontal className="verticalPadding borderBottom alignMiddle">
@@ -903,17 +903,15 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         })}
                       </Stack>
                     </Stack>
-                  </PivotItem>
-                  <PivotItem onRenderItemLink={this._customPromotionEvidencePivotItemRenderer}>                   
+                  </PivotItem>                  
+                  <PivotItem onRenderItemLink={entity.GetStatusId() == PromoStatus.Approved ? this._customPromotionEvidencePivotItemRenderer : null}>
                     <Stack className="evidenceSectionContainer">
-                    <Stack styles={this.repetitiveSectionStyle}>
-                      
+                    <Stack styles={this.repetitiveSectionStyle}>                      
                       <Stack className="statusContainer smallPadding padding-right" horizontal horizontalAlign="end">
                         <Stack style={{ color: theme.palette.themePrimary, paddingRight: "4px" }}><Icon iconName="MapLayers" /></Stack>
                         <Stack className="label">Estado:</Stack>
                         <Stack style={{ color: theme.palette.themePrimary, fontWeight: "bold" }}>{entity.GetStatusText()}</Stack>
                       </Stack>
-
                       <Stack className="padding">
                         <Stack className="grayContent padding padding-left padding-right">
                           <Stack className="padding-bottom">Utilice esta seccion para subir archivos de evidencia</Stack>
@@ -924,27 +922,36 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               multiline={true}
                               rows={3}
                               autoComplete="Off"
+                              required={true}
+                              onChange={this.onEvidenceDescriptionChange.bind(this)}
+                              errorMessage={this.getEvidenceValidationErrorMessage(this.state.evidenceDescription)}
                             />
                           </Stack>
                           <Stack className="controlPadding" horizontal>
                             <Stack grow={4} className="fixedStructure">
                               <RBDatePicker
                                   label="Fecha de evidencia"
-                                  onSelectDate={this.onSelectEndDate.bind(this)}//Fix
-                                  required={!readOnlyForm}//Fix
-                                  value={selectedItem.EndDate!}//Fix
-                                  errorMessage={this.getValidationErrorMessage(selectedItem.EndDate)}//Fix
-                                  minDate={selectedItem.StartDate}//Fix
+                                  onSelectDate={this.onSelectEvidenceDate.bind(this)}
+                                  required={true}
+                                  value={this.state.evidenceDate}
+                                  errorMessage={this.getEvidenceValidationErrorMessage(this.state.evidenceDate)}
+                                  minDate={entity.GetFromDate()}
                                 />
                             </Stack>
                             <Stack grow={8} className="fixedStructure"></Stack>                            
                           </Stack>
                           <Stack horizontal horizontalAlign="end">
+                            <input id="evidence_file_input" type="file" onChange={this.onFileChanged.bind(this)} hidden={true} />
                             <PrimaryButton text="Subir documento"
                               style={{
                                 backgroundColor: "#425C68",
                                 border: "transparent"
-                              }} />
+                              }} 
+                              onClick={() => {
+                                if (!this.validateEvidence()) return;
+                                document.getElementById("evidence_file_input").click();
+                              }}
+                            />
                           </Stack>
                         </Stack>                        
                       </Stack>                      
@@ -964,40 +971,59 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               <th></th>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>
-                                  <Link href="/" target="_blank">Imagen1.jpg</Link></td>
-                                <td>asd asd asd asdasd asd asd asdasd asd asd asdasd asd asd asd</td>
-                                <td>12/03/2021</td>
-                                <td>
-                                  <Stack className="label">
-                                    {/* <div style={{ display: entity.Items.length > 1 ? "block" : "none" }}> */}
-                                      <Link onClick={() => this.setState({ hideDeleteEvidenceDialog: false })}><Icon iconName="MapLayers" /><span style={{ color: '#323130' }}>Borrar evidencia</span></Link>
-                                    {/* </div> */}
-                                  </Stack>
-                                  <Dialog
-                                    hidden={this.state.hideDeleteEvidenceDialog}
-                                    dialogContentProps={this.deleteEvidenceDialogContentProps}
-                                    styles={this.confirmationDialogStyles}
-                                    onDismiss={() => this.setState({ hideDeleteEvidenceDialog: true })}>
-                                    <DialogFooter>
-                                      <PrimaryButton onClick={this.RemoveEvidence.bind(this)} text="Eliminar"
-                                      style={{
-                                        backgroundColor: "#425C68",
-                                        border: "transparent"
-                                      }} />
-                                      <DefaultButton onClick={() => this.setState({ hideDeleteEvidenceDialog: true })} text="Cancelar" />
-                                    </DialogFooter>
-                                  </Dialog>
-                                </td>
-                              </tr>
+                            {entity.Evidence.map((evidence, index) => { 
+                              if(!evidence.Deleted) {
+                              return ( 
+                                <tr>
+                                  <td>
+                                    <Link href={evidence.FileUrl} target="_blank">{evidence.FileName}</Link></td>
+                                  <td>{evidence.Description}</td>
+                                  <td>{CommonHelper.formatDate(evidence.Date)}</td>
+                                  <td>
+                                    <Stack className="label">
+                                      <Link onClick={() => this.setState({ hideDeleteEvidenceDialog: false })}>
+                                        <Icon iconName="MapLayers" /><span style={{ color: '#323130' }}>Borrar evidencia</span>
+                                      </Link>
+                                    </Stack>
+                                    <Dialog
+                                      hidden={this.state.hideDeleteEvidenceDialog}
+                                      dialogContentProps={this.deleteEvidenceDialogContentProps}
+                                      styles={this.confirmationDialogStyles}
+                                      onDismiss={() => this.setState({ hideDeleteEvidenceDialog: true })}>
+                                      <DialogFooter>
+                                        <PrimaryButton onClick={() => {
+                                            this.setState((state) => { 
+                                              let newState = state as IPromoFormState;
+
+                                              newState.viewModel.Entity.Evidence[index].Deleted = true;
+                                              newState.hideDeleteEvidenceDialog = true;
+
+                                              return newState;
+                                            });
+                                          }}
+                                          text="Eliminar"
+                                          style={{
+                                            backgroundColor: "#425C68",
+                                            border: "transparent"
+                                          }}
+                                        />
+                                        <DefaultButton onClick={() => {
+                                            this.setState({hideDeleteEvidenceDialog: true});
+                                          }} 
+                                          text="Cancelar" />
+                                      </DialogFooter>
+                                    </Dialog>
+                                  </td>
+                                </tr>
+                              )};
+                            })}
                             </tbody>
                           </table>                          
                         </Stack>
                       </Stack>
                       </Stack>
                     </Stack>
-                  </PivotItem>
+                  </PivotItem>                  
                 </Pivot>
               </Stack >
 
@@ -1044,7 +1070,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         text="Aprobar"
                         allowDisabledFocus
                         onClick={this.approve.bind(this)}
-                      //disabled={!this.state.enableSubmit} 
                       />
                       <Dialog
                         hidden={this.state.hideSavingSpinnerConfirmationDialog}
@@ -1122,7 +1147,17 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         text="Rechazar"
                         allowDisabledFocus
                         onClick={this.reject.bind(this)}
-                      //disabled={!this.state.enableSubmit} 
+                      />
+                      <PrimaryButton
+                        style={{ 
+                          display: this.state.viewModel.ShowEvidenceButton ? "block" : "none", 
+                          backgroundColor: "#425C68",
+                          border: "transparent" 
+                        }}
+                        text="Actualizar evidencia"
+                        allowDisabledFocus
+                        onClick={this.updateEvidence.bind(this)}
+                        disabled={!entity.EvidenceHasChanges() || !this.state.enableSubmit}
                       />
                     </Stack>
                   </Stack>
@@ -1216,9 +1251,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       newState.selectedIndex = items.length - 1;
       return newState;
     });
-  }
-
-  private RemoveEvidence() {
   }
 
   private RemovePromoItem() {
@@ -1551,6 +1583,71 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
   //#endregion
 
+  //#region  Evidencias
+
+  private onFileChanged(event: React.ChangeEvent<HTMLInputElement>) {
+    const self = this;
+
+    let promoEvidence = this.state.viewModel.Entity.Evidence;
+
+    if(event.target && event.target.files[0]) {
+      let file = event.target.files[0];
+      let reader = new FileReader();
+
+      reader.addEventListener("loadend", () => {
+        let evidence = new PromoEvidence();
+
+        evidence.File = file;
+        evidence.FileName = file.name;
+        evidence.Description = this.state.evidenceDescription;
+        evidence.Date = this.state.evidenceDate;
+
+        promoEvidence.push(evidence);
+        console.log(promoEvidence);
+
+        this.setState((state) => {          
+          state.viewModel.Entity.Evidence = promoEvidence;
+          return state;
+        });
+      });
+
+      reader.readAsDataURL(file);
+    }
+  }
+
+  private onEvidenceDescriptionChange(event: any, text: any) {
+    this.setState({
+      evidenceDescription: text
+    });
+  }
+
+  private onSelectEvidenceDate(date: Date | null | undefined): void {
+    this.setState({
+      evidenceDate: date
+    });
+  }
+
+  private updateEvidence(): void {
+    const entity = this.state.viewModel.Entity;
+
+    this.setState({
+      enableSubmit: false,
+      hideSavingSpinnerConfirmationDialog: false
+    });
+
+    PromoService.UpdateEvidence(entity.PromoID, entity.Evidence).then(() => {
+      this.setState({
+        formSubmitted: true,
+        resultIsOK: true
+      });
+    }).catch((err) => {
+      console.error(err);
+      this.setState({ formSubmitted: true, errorMessage: err });
+    });
+  }
+
+  //#endregion
+
   //#region Actions
 
   private save(): void {
@@ -1684,6 +1781,30 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     this.setState({ hasValidationError: invalidCount > 0 });
 
     return invalidCount == 0;
+  }
+
+  private validateEvidence(): boolean {
+    var invalidCount = 0;
+
+    if (CommonHelper.IsNullOrEmpty(this.state.evidenceDescription)) invalidCount++;
+    if (!CommonHelper.IsDate(this.state.evidenceDate)) invalidCount++;
+
+    this.setState({ hasEvidenceValidatioNError: invalidCount > 0 });
+
+    return invalidCount == 0;
+  }
+
+  private getEvidenceValidationErrorMessage(value: any): string {
+    if (value == undefined)
+      return this.state.hasEvidenceValidatioNError ? Constants.Messages.RequiredField : CommonHelper.EmptyString;
+
+    if (typeof value === "string")
+      return this.state.hasEvidenceValidatioNError && CommonHelper.IsNullOrEmpty(value) ? Constants.Messages.RequiredField : CommonHelper.EmptyString;
+
+    if (CommonHelper.IsArray(value))
+      return this.state.hasEvidenceValidatioNError && value.length == 0 ? Constants.Messages.RequiredField : CommonHelper.EmptyString;
+
+    return CommonHelper.EmptyString;
   }
 
   private _getShimmerStyles = (props: IShimmerStyleProps): IShimmerStyles => {

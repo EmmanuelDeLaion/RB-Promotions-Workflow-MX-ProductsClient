@@ -1,8 +1,10 @@
 import { IItemAddResult, sp } from "@pnp/sp/presets/all";
 import { ClientRepository, ConfigurationRepository } from ".";
 import { Client, WorkflowLog } from "../model/Common";
-import { PromoItem, PromoStatus, PromoWorkflowState } from "../model/Promo";
+import { PromoItem, PromoWorkflowState } from "../model/Promo";
 import { Promo } from "../model/Promo/Promo";
+import { PromoEvidence } from "../model/Promo/PromoEvidence";
+import { EvidenceRepository } from "./EvidenceRepository";
 import { PromoItemRepository } from "./PromoItemRepository";
 import { WorkflowLogRepository } from "./WorkflowLogRepository";
 
@@ -24,11 +26,12 @@ export class PromoRepository {
           "SYS_CurrentStageNumber"
         ).get();  
         
-      const items = await PromoItemRepository.GetByPromo(item.ID, item.ClientId);
+      const items = await PromoItemRepository.GetByPromo(item.ID, item.ClientId);      
       const client = item.ClientId ? await ClientRepository.GetById(item.ClientId) : null;
       const workflowLog = await WorkflowLogRepository.GetByPromo(item.ID);
+      const evidence = await EvidenceRepository.GetByPromoID(item.Title);
 
-      return PromoRepository.BuildEntity(item, items, client, workflowLog);
+      return PromoRepository.BuildEntity(item, items, client, workflowLog, evidence);
     }
 
     public static async SaveOrUpdate(entity: Promo): Promise<void> {
@@ -71,7 +74,7 @@ export class PromoRepository {
       return new Promo(configuration);
     }
 
-    private static async BuildEntity(item: any, items: PromoItem[], client: Client, workflowLog: WorkflowLog[]): Promise<Promo> {
+    private static async BuildEntity(item: any, items: PromoItem[], client: Client, workflowLog: WorkflowLog[], evidence: PromoEvidence[]): Promise<Promo> {
 
       let entity = await PromoRepository.GetNewPromo();
 
@@ -82,6 +85,7 @@ export class PromoRepository {
       entity.Client = client;     
       entity.CurrentStageNumber = item.SYS_CurrentStageNumber; 
       entity.WorkflowLog = workflowLog;
+      entity.Evidence = evidence;
 
       items.map((promoItem) => {
         promoItem.GetBaseGMSum = entity.GetBaseGMSum.bind(entity);

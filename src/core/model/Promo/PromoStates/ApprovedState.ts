@@ -22,6 +22,7 @@ export class ApprovedState extends PromoState {
         let viewModel = new PromoViewModel(this.Entity);
 
         viewModel.ReadOnlyForm = true;
+        viewModel.ShowEvidenceButton = true;
 
         return viewModel;
     }
