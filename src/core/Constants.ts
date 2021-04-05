@@ -15,8 +15,8 @@ export namespace Constants {
     }
 
     export class Groups {
-        public static ReadOnlyGroupName = "RB - Solo consulta";
-        public static KAMsGroupName = "RB - KAMs";
+        public static ReadOnlyBaseGroupName = "RB - Solo consulta";
+        public static KAMsBaseGroupName = "RB - KAMs";
     }
 
     export class Miscellaneous{

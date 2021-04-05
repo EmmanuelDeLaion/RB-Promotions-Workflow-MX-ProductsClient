@@ -1015,7 +1015,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     </Dialog>
                                   </td>
                                 </tr>
-                              )};
+                              );}
                             })}
                             </tbody>
                           </table>                          
@@ -1603,7 +1603,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         evidence.Date = this.state.evidenceDate;
 
         promoEvidence.push(evidence);
-        console.log(promoEvidence);
 
         this.setState((state) => {          
           state.viewModel.Entity.Evidence = promoEvidence;
@@ -1651,7 +1650,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   //#region Actions
 
   private save(): void {
-    console.log(this.state.viewModel.Entity);
 
     this.setState({
       enableSubmit: false,
@@ -1670,7 +1668,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   }
 
   private submit(): void {
-    console.log(this.state.viewModel.Entity);
 
     if (!this.validateFormControls()) return;
 

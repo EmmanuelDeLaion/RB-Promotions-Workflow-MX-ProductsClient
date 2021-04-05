@@ -6,7 +6,6 @@ export class NotificationTemplateRepository {
 
     public static async GetByNotificationTemplateId(notificationTemplateId: NotificationTemplateId) : Promise<NotificationTemplate>
     {
-        //console.log('<View><Query><Where><Eq><FieldRef Name="Title"/><Value Type="Texr">' + notificationTemplateId + '</Value></Eq></Where></Query></View>');
         const retVal = sp.web.lists.getByTitle(NotificationTemplateRepository.LIST_NAME)
             .getItemsByCAMLQuery({
                 ViewXml: '<View><Query><Where><Eq><FieldRef Name="Title"/><Value Type="Text">' + notificationTemplateId + '</Value></Eq></Where></Query></View>',

@@ -15,7 +15,6 @@ export class DraftPromoState extends PromoState {
     public async Initialize(): Promise<void> {
         const currentUser = await SecurityHelper.GetCurrentUser();
 
-        console.log("Initialize draft state. ItemId: " + this.Entity.ItemId);
         SecurityHelper.SetPromoPermissions(this.Entity.ItemId, null, [currentUser.ItemId]);
     }
 

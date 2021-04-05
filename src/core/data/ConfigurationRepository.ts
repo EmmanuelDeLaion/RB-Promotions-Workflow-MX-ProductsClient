@@ -3,6 +3,7 @@ import { ConfigurationItem} from "../infrastructure/Configuration/ConfigurationI
 import { ConfigurationKey} from "../infrastructure/Configuration/ConfigurationKey";
 import { Configuration} from "../infrastructure/Configuration/Configuration";
 import { CommonHelper } from "../common/CommonHelper";
+import { Constants } from "../Constants";
 
 export class ConfigurationRepository {
     private static LIST_NAME: string = "Configuración";
@@ -24,6 +25,8 @@ export class ConfigurationRepository {
                 configuration.CountryName = ConfigurationRepository.GetConfigurationValue(items, ConfigurationKey.CountryName);
                 configuration.CurrencySymbol = ConfigurationRepository.GetConfigurationValue(items, ConfigurationKey.CurrencySymbol);
                 configuration.ApprovalAmountLimit = ConfigurationRepository.GetNumberConfigurationValue(items, ConfigurationKey.ApprovalAmountLimit);
+                configuration.KAMsGroupName = Constants.Groups.KAMsBaseGroupName + " - " + configuration.CountryCode;
+                configuration.ReadOnlyGroupName = Constants.Groups.ReadOnlyBaseGroupName + " - " + configuration.CountryCode;
                 
                 return configuration;
             });

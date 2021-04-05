@@ -1,5 +1,6 @@
 import { sp } from "@pnp/sp/presets/all";
 import { Constants } from "../Constants";
+import { ConfigurationRepository } from "../data";
 import { LookupValue } from "../infrastructure";
 import { UserValue } from "../infrastructure/UserValue";
 
@@ -40,7 +41,8 @@ export class SecurityHelper {
 
     public static async SetPromoPermissions(itemId: number, readerIDs?: number[], contributorIDs?: number[]): Promise<void> {
         const date = new Date();
-        const readOnlyGroup = await SecurityHelper.GetGroupByName(Constants.Groups.ReadOnlyGroupName);
+        const config = await ConfigurationRepository.GetInstance();
+        const readOnlyGroup = await SecurityHelper.GetGroupByName(config.ReadOnlyGroupName);
 
         if(readOnlyGroup != null) {
             if(readerIDs == null)

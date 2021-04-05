@@ -10,7 +10,7 @@ import { CommonHelper } from "../../common/CommonHelper";
 import { initializeTheme } from './Theme';
 import { SecurityHelper } from "../../common";
 import { Constants } from "../../Constants";
-import { ClientRepository } from "../../data";
+import { ClientRepository, ConfigurationRepository } from "../../data";
 initializeTheme();
 const theme = getTheme();
 
@@ -62,13 +62,16 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, IPromoFo
         if(itemId != null)
             this.openPromoFormDialog();
 
-        SecurityHelper.GetCurrentUser().then((user) => {
-            SecurityHelper.UserIsMemberOfGroup(user.ItemId, Constants.Groups.KAMsGroupName).then((isMember) => {                
-                if(isMember) {
-                    ClientRepository.UserIsKAM(user.ItemId).then((isKAM) => {
-                        this.setState({showButton: isKAM});
-                    });
-                }
+
+        ConfigurationRepository.GetInstance().then((config) => {
+            SecurityHelper.GetCurrentUser().then((user) => {
+                SecurityHelper.UserIsMemberOfGroup(user.ItemId, config.KAMsGroupName).then((isMember) => {                
+                    if(isMember) {
+                        ClientRepository.UserIsKAM(user.ItemId).then((isKAM) => {
+                            this.setState({showButton: isKAM});
+                        });
+                    }
+                });
             });
         });
     }

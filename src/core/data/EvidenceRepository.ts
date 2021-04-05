@@ -47,8 +47,6 @@ export class EvidenceRepository {
         const docLibUrl = webData.ServerRelativeUrl + "/Evidence/";
         const folderUrl = docLibUrl + promoID;
 
-        console.log(folderUrl);
-
         let folderExists = await sp.web.getFolderByServerRelativeUrl(folderUrl)
         .select('Exists').get()
         .then((d) => d.Exists)
@@ -66,8 +64,6 @@ export class EvidenceRepository {
                 evidence.FileUrl = file.LinkingUrl;
                 evidence.Description = item.EvidenceDescription;
                 evidence.Date = item.EvidenceDate ? new Date(item.EvidenceDate) : null;
-                
-                console.log(file);
 
                 promoEvidence.push(evidence);
             }));
