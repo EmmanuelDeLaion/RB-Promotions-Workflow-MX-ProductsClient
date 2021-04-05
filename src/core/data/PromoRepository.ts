@@ -48,7 +48,8 @@ export class PromoRepository {
         StatusId: entity.GetStatusId(),
         SYS_WorkflowStages: entity.WorkflowStages ? JSON.stringify(entity.WorkflowStages) : null,
         SYS_CurrentStageNumber: entity.CurrentStageNumber,
-        PendingApproversId: { results: pendingApprovers ? entity.GetPendingApproverIDs() : [] }
+        PendingApproversId: { results: pendingApprovers ? entity.GetPendingApproverIDs() : [] },
+        TotalEstimatedInvestment: entity.GetTotalEstimatedInvestment()
       };
 
       if(!entity.ItemId) {
@@ -59,9 +60,10 @@ export class PromoRepository {
         entity.PromoID = entity.Config.CountryCode + iar.data.ID;
         
         await sp.web.lists.getByTitle(PromoRepository.LIST_NAME).items.getById(iar.data.ID).update({
-          Title: entity.PromoID
+          Title: entity.PromoID,
+          PromoLink: entity.PromoID
         });
-      } 
+      }
       else
         await sp.web.lists.getByTitle(PromoRepository.LIST_NAME).items.getById(entity.ItemId).update(data);
 
