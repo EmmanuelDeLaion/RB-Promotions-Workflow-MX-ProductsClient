@@ -1,9 +1,47 @@
 <?xml version="1.0"?>
 <pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2020/02/ProvisioningSchema">
   <pnp:Preferences Generator="OfficeDevPnP.Core, Version=3.28.2012.0, Culture=neutral, PublicKeyToken=5e633289e95c321a" />
-  <pnp:Templates ID="CONTAINER-TEMPLATE-429E88C9E44E418DB4A5827D3B387BF3">
-    <pnp:ProvisioningTemplate ID="TEMPLATE-429E88C9E44E418DB4A5827D3B387BF3" Version="1" BaseSiteTemplate="GROUP#0">
+  <pnp:Templates ID="CONTAINER-TEMPLATE-591716125CA14E479DEA13F502155026">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-591716125CA14E479DEA13F502155026" Version="1" BaseSiteTemplate="GROUP#0">
       <pnp:Lists>
+        <pnp:ListInstance Title="Evidencias" Description="" DocumentTemplate="{site}/Evidence/Forms/template.dotx" TemplateType="101" Url="Evidence" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" EnableAttachments="false" DefaultDisplayFormUrl="{site}/Evidence/Forms/DispForm.aspx" DefaultEditFormUrl="{site}/Evidence/Forms/EditForm.aspx" DefaultNewFormUrl="{site}/Evidence/Forms/Upload.aspx" ImageUrl="/_layouts/15/images/itdl.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x0101" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{A4CB875F-84B1-43FA-8951-A93B6E21B6E4}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="Todos los documentos" Url="{site}/Evidence/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="EvidenceDescription" />
+                <FieldRef Name="EvidenceDate" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+              <ViewData />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field Type="Note" DisplayName="EvidenceDescription" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" Sortable="FALSE" ID="{a1d7de26-119d-4687-b5f2-1db6f6a9d6d1}" SourceID="{{listid:Evidencias}}" StaticName="EvidenceDescription" Name="EvidenceDescription" ColName="ntext2" RowOrdinal="0" />
+            <Field Type="DateTime" DisplayName="EvidenceDate" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="DateOnly" FriendlyDisplayFormat="Disabled" ID="{e9521702-72ed-45ae-b360-ff5fab74ad07}" SourceID="{{listid:Evidencias}}" StaticName="EvidenceDate" Name="EvidenceDate" ColName="datetime1" RowOrdinal="0" />
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="d307dff3-340f-44a2-9f4b-fbfe1ba07459" Name="_CommentCount" DisplayName="Recuento de comentarios" />
+            <pnp:FieldRef ID="db8d9d6d-dc9a-4fbd-85f3-4a753bfdc58c" Name="_LikeCount" DisplayName="Recuento de Like" />
+          </pnp:FieldRefs>
+          <pnp:Webhooks>
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=c4dced40-c6c2-493c-b886-7ef8f1f84525" ExpiresInDays="1" />
+          </pnp:Webhooks>
+        </pnp:ListInstance>
         <pnp:ListInstance Title="Promo items" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/PromoItems" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PromoItems/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PromoItems/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PromoItems/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
           <pnp:ContentTypeBindings>
             <pnp:ContentTypeBinding ContentTypeID="0x01" Default="true" />
@@ -182,7 +220,7 @@
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="0" DisplayName="Inversión estimada total" Format="Dropdown" Name="TotalEstimatedInvestment" Percentage="FALSE" Title="Inversión estimada total" Type="Number" ID="{31975e7f-a229-4c1a-b4c3-74ce31b49fd2}" Version="4" StaticName="TotalEstimatedInvestment" SourceID="{{listid:Promociones}}" ColName="float4" RowOrdinal="0" />
           </pnp:Fields>
           <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=d2c5a808-f963-40ea-9080-27721f1071b5" ExpiresInDays="1" />
+            <pnp:Webhook ServerNotificationUrl="https://southcentralus1.pushnp.svc.ms/notifications?token=6bebc184-0421-4d72-8a55-0a2a9e367dd8" ExpiresInDays="1" />
           </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="SYS_PermissionChangeRequests" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/PermissionChangeRequests" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableAttachments="false" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/PermissionChangeRequests/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/PermissionChangeRequests/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/PermissionChangeRequests/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
@@ -211,7 +249,7 @@
             <Field ClientSideComponentId="00000000-0000-0000-0000-000000000000" CommaSeparator="TRUE" Decimals="0" DisplayName="PromoItemId" Format="Dropdown" Name="PromoItemId" Percentage="FALSE" Title="PromoItemId" Type="Number" ID="{275dfad2-6794-4dc4-893e-6e44605c6f94}" Version="2" StaticName="PromoItemId" SourceID="{{listid:SYS_PermissionChangeRequests}}" ColName="float1" RowOrdinal="0" />
           </pnp:Fields>
           <pnp:Webhooks>
-            <pnp:Webhook ServerNotificationUrl="https://flow-apim-msmanaged-na-northcentralus-01.azure-apim.net/apim/sharepointonline/ontableupdatedhook?r=https%253a%252f%252fprod-91.westus.logic.azure.com%252fworkflows%252f3f77e076dfe944f6a59e8caba2b03f74%252ftriggers%252fWhen_an_item_is_created_or_modified%252fpaths%252finvoke%253fapi-version%253d2016-06-01%2526sp%253d%25252Ftriggers%25252FWhen_an_item_is_created_or_modified%25252Frun%25252C%25252Ftriggers%25252FWhen_an_item_is_created_or_modified%25252Fread%2526sv%253d1.0%2526sig%253ddKq9NdUnoYx2sUrvDqY7eDpt40Fm9eEm6hHF-IbOtc4" ExpiresInDays="3" />
+            <pnp:Webhook ServerNotificationUrl="https://flow-apim-msmanaged-na-northcentralus-01.azure-apim.net/apim/sharepointonline/ontableupdatedhook?r=https%253a%252f%252fprod-91.westus.logic.azure.com%252fworkflows%252f3f77e076dfe944f6a59e8caba2b03f74%252ftriggers%252fWhen_an_item_is_created_or_modified%252fpaths%252finvoke%253fapi-version%253d2016-06-01%2526sp%253d%25252Ftriggers%25252FWhen_an_item_is_created_or_modified%25252Frun%25252C%25252Ftriggers%25252FWhen_an_item_is_created_or_modified%25252Fread%2526sv%253d1.0%2526sig%253ddKq9NdUnoYx2sUrvDqY7eDpt40Fm9eEm6hHF-IbOtc4" ExpiresInDays="2" />
           </pnp:Webhooks>
         </pnp:ListInstance>
         <pnp:ListInstance Title="Workflow log" Description="" DocumentTemplate="" TemplateType="100" Url="Lists/WorkflowLog" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" DefaultDisplayFormUrl="{site}/Lists/WorkflowLog/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/WorkflowLog/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/WorkflowLog/NewForm.aspx" ImageUrl="/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">

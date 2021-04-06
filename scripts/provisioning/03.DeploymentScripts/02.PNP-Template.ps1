@@ -16,5 +16,8 @@ function CreateGroup($groupName)
 
 Apply-PnPProvisioningTemplate -Path "../template.xml" -Handlers Lists
 
-CreateGroup "RB - KAMs"
-CreateGroup "RB - Solo consulta"
+CreateGroup "RB - KAMs - MX"
+CreateGroup "RB - Solo consulta - MX"
+
+CreateGroup "RB - KAMs - PR"
+CreateGroup "RB - Solo consulta - PR"
