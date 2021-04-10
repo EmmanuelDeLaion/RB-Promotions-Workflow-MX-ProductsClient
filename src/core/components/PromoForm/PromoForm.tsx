@@ -915,7 +915,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                       <Stack className="padding">
                         <Stack className="grayContent padding padding-left padding-right">
                           <Stack className="padding-bottom">Utilice esta seccion para subir archivos de evidencia</Stack>
-                          <Stack>Upload</Stack>
                           <Stack className="multilineControlPadding">
                             <TextField
                               label="Descripción"                              
@@ -940,9 +939,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             </Stack>
                             <Stack grow={8} className="fixedStructure"></Stack>                            
                           </Stack>
-                          <Stack horizontal horizontalAlign="end">
+                          <Stack className="controlPadding" horizontal>
                             <input id="evidence_file_input" type="file" onChange={this.onFileChanged.bind(this)} hidden={true} />
-                            <PrimaryButton text="Subir documento"
+                            <PrimaryButton text="Seleccionar archivo"
                               style={{
                                 backgroundColor: "#425C68",
                                 border: "transparent"
