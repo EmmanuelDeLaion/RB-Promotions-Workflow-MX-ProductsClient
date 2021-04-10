@@ -85,7 +85,8 @@ export class PromoItemRepository {
                 BaseVolume: entity.BaseVolume,
                 EstimatedROI: entity.GetROI(),
                 EstimatedIncrementalVolume: entity.EstimatedIncrementalVolume,
-                AdditionalInvestment: entity.AdditionalInvestment
+                AdditionalInvestment: entity.AdditionalInvestment,
+                TotalEstimatedVolume: entity.GetTotalEstimatedVolume()
             };
 
             if(entity.ItemId)
@@ -121,6 +122,7 @@ export class PromoItemRepository {
         entity.EstimatedIncrementalVolume = item.EstimatedIncrementalVolume;
         entity.AdditionalInvestment = item.AdditionalInvestment;
         entity.LastYearVolumes = lyVolumes;
+
   
         return entity;
     }
