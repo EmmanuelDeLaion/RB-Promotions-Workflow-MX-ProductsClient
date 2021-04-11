@@ -1053,7 +1053,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     <Label className="modalBottomContentValue">{entity.Config.CurrencySymbol + " " + entity.GetTotalEstimatedInvestmentAsString()}</Label>
                   </Stack>
                   <Stack grow={2} className="modalBottomButtonsContainer fixedStructure" horizontal horizontalAlign="end">
-                    <Stack grow={6}>
+                    <Stack grow={6} className="fixedStructure">
                       <DefaultButton
                         style={{ display: this.state.viewModel.ShowSaveButton ? "block" : "none" }}
                         text="Guardar borrador"
@@ -1129,7 +1129,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         </Stack>
                       </Dialog>
                     </Stack>
-                    <Stack grow={6}>
+                    <Stack grow={6} className="fixedStructure">
                       <PrimaryButton
                         style={{ 
                           display: this.state.viewModel.ShowSubmitButton ? "block" : "none", 
