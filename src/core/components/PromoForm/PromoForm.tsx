@@ -1149,14 +1149,16 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                       />
                       <PrimaryButton
                         style={{ 
-                          display: this.state.viewModel.ShowEvidenceButton ? "block" : "none", 
+                          display: (this.state.viewModel.ShowEvidenceButton 
+                                    && entity.EvidenceHasChanges() 
+                                    && this.state.enableSubmit)
+                                    ? "block" : "none", 
                           backgroundColor: "#425C68",
                           border: "transparent" 
                         }}
                         text="Actualizar evidencia"
                         allowDisabledFocus
                         onClick={this.updateEvidence.bind(this)}
-                        disabled={!entity.EvidenceHasChanges() || !this.state.enableSubmit}
                       />
                     </Stack>
                   </Stack>
