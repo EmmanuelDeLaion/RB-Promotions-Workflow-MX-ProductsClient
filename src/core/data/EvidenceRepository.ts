@@ -59,9 +59,9 @@ export class EvidenceRepository {
                 const item: any = await sp.web.getFileByServerRelativePath(file.ServerRelativeUrl).getItem();
 
                 let evidence = new PromoEvidence();
-
+                
                 evidence.FileName = file.Name;
-                evidence.FileUrl = file.LinkingUrl;
+                evidence.FileUrl = file.ServerRelativeUrl;
                 evidence.Description = item.EvidenceDescription;
                 evidence.Date = item.EvidenceDate ? new Date(item.EvidenceDate) : null;
 
