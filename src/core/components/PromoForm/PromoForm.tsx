@@ -100,6 +100,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     const selectedItem = entity ? entity.Items[this.state.selectedIndex] : null;
     const readOnlyForm = this.state.viewModel ? this.state.viewModel.ReadOnlyForm : true;
 
+    if(entity)
+      console.log(entity.Evidence);
+
     let output =
       <DialogContent
         title={this.props.title}
@@ -976,7 +979,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               return ( 
                                 <tr>
                                   <td>
-                                    <Link href={evidence.FileUrl} target="_blank">{evidence.FileName}</Link></td>
+                                    <div hidden={CommonHelper.IsNullOrEmpty(evidence.FileUrl)}>
+                                      <Link href={evidence.FileUrl} target="_blank">{evidence.FileName}</Link>
+                                    </div>
+                                    <div hidden={!CommonHelper.IsNullOrEmpty(evidence.FileUrl)}>
+                                      {evidence.FileName}
+                                    </div>
+                                  </td>
                                   <td>{evidence.Description}</td>
                                   <td>{CommonHelper.formatDate(evidence.Date)}</td>
                                   <td>
@@ -994,8 +1003,15 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         <PrimaryButton onClick={() => {
                                             this.setState((state) => { 
                                               let newState = state as IPromoFormState;
+                                              let evidence = newState.viewModel.Entity.Evidence[index];
 
-                                              newState.viewModel.Entity.Evidence[index].Deleted = true;
+                                              if(evidence.File) {
+                                                newState.viewModel.Entity.Evidence.splice(index, 1);
+                                              }
+                                              else {
+                                                newState.viewModel.Entity.Evidence[index].Deleted = true;
+                                              }                                              
+
                                               newState.hideDeleteEvidenceDialog = true;
 
                                               return newState;
@@ -1588,7 +1604,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   private onFileChanged(event: React.ChangeEvent<HTMLInputElement>) {
     const self = this;
 
-    let promoEvidence = this.state.viewModel.Entity.Evidence;
+    let promoEvidence = this.state.viewModel.Entity.Evidence;    
 
     if(event.target && event.target.files[0]) {
       let file = event.target.files[0];
@@ -1608,6 +1624,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
           state.viewModel.Entity.Evidence = promoEvidence;
           return state;
         });
+
+        (document.getElementById("evidence_file_input") as HTMLInputElement).value = "";
       });
 
       reader.readAsDataURL(file);
