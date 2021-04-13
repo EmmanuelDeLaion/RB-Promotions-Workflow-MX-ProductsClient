@@ -918,7 +918,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                       <Stack className="padding">
                         <Stack className="grayContent padding padding-left padding-right">
                           <Stack className="padding-bottom">Utilice esta seccion para subir archivos de evidencia</Stack>
-                          <Stack>Upload</Stack>
                           <Stack className="multilineControlPadding">
                             <TextField
                               label="Descripción"                              
@@ -943,9 +942,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             </Stack>
                             <Stack grow={8} className="fixedStructure"></Stack>                            
                           </Stack>
-                          <Stack horizontal horizontalAlign="end">
+                          <Stack className="controlPadding" horizontal>
                             <input id="evidence_file_input" type="file" onChange={this.onFileChanged.bind(this)} hidden={true} />
-                            <PrimaryButton text="Subir documento"
+                            <PrimaryButton text="Seleccionar archivo"
                               style={{
                                 backgroundColor: "#425C68",
                                 border: "transparent"
@@ -1070,7 +1069,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     <Label className="modalBottomContentValue">{entity.Config.CurrencySymbol + " " + entity.GetTotalEstimatedInvestmentAsString()}</Label>
                   </Stack>
                   <Stack grow={2} className="modalBottomButtonsContainer fixedStructure" horizontal horizontalAlign="end">
-                    <Stack grow={6}>
+                    <Stack grow={6} className="fixedStructure">
                       <DefaultButton
                         style={{ display: this.state.viewModel.ShowSaveButton ? "block" : "none" }}
                         text="Guardar borrador"
@@ -1146,7 +1145,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         </Stack>
                       </Dialog>
                     </Stack>
-                    <Stack grow={6}>
+                    <Stack grow={6} className="fixedStructure">
                       <PrimaryButton
                         style={{ 
                           display: this.state.viewModel.ShowSubmitButton ? "block" : "none", 
@@ -1166,14 +1165,16 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                       />
                       <PrimaryButton
                         style={{ 
-                          display: this.state.viewModel.ShowEvidenceButton ? "block" : "none", 
+                          display: (this.state.viewModel.ShowEvidenceButton 
+                                    && entity.EvidenceHasChanges() 
+                                    && this.state.enableSubmit)
+                                    ? "block" : "none", 
                           backgroundColor: "#425C68",
                           border: "transparent" 
                         }}
                         text="Actualizar evidencia"
                         allowDisabledFocus
                         onClick={this.updateEvidence.bind(this)}
-                        disabled={!entity.EvidenceHasChanges() || !this.state.enableSubmit}
                       />
                     </Stack>
                   </Stack>
