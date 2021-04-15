@@ -25,6 +25,7 @@ export interface IPromoFormState {
     hideModalConfirmationDialog: boolean;
     hideActionConfirmationDialog: boolean;
     hideDeleteEvidenceDialog: boolean;
+    hideFileExistsMessageDialog: boolean;
     actionConfirmationDialogTitle?: string;
     actionConfirmationDialogType?: ActionConfirmationType;
     enableActionValidation: boolean;

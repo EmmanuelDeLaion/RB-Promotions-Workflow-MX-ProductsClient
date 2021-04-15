@@ -73,7 +73,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       promotionTitle: "",
       hideSavingSpinnerConfirmationDialog: true,
       hideActionConfirmationDialog: true,
-      enableActionValidation: false
+      enableActionValidation: false,
+      hideFileExistsMessageDialog: true
     };
   }
 
@@ -99,9 +100,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     const subchannel = client ? client.Subchannel : null;
     const selectedItem = entity ? entity.Items[this.state.selectedIndex] : null;
     const readOnlyForm = this.state.viewModel ? this.state.viewModel.ReadOnlyForm : true;
-
-    if(entity)
-      console.log(entity.Evidence);
 
     let output =
       <DialogContent
@@ -906,7 +904,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                         })}
                       </Stack>
                     </Stack>
-                  </PivotItem>                  
+                  </PivotItem>
                   <PivotItem onRenderItemLink={entity.GetStatusId() == PromoStatus.Approved ? this._customPromotionEvidencePivotItemRenderer : null}>
                     <Stack className="evidenceSectionContainer">
                     <Stack styles={this.repetitiveSectionStyle}>                      
@@ -994,6 +992,18 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                       </Link>
                                     </Stack>
                                     <Dialog
+                                      hidden={this.state.hideFileExistsMessageDialog}
+                                      dialogContentProps={this.fileExistsDialogContentProps}
+                                      styles={this.confirmationDialogStyles}
+                                      onDismiss={() => this.setState({ hideFileExistsMessageDialog: true })}>
+                                      <DialogFooter>                                        
+                                        <DefaultButton onClick={() => {
+                                            this.setState({hideFileExistsMessageDialog: true});
+                                          }}
+                                          text="OK" />
+                                      </DialogFooter>
+                                    </Dialog>
+                                    <Dialog
                                       hidden={this.state.hideDeleteEvidenceDialog}
                                       dialogContentProps={this.deleteEvidenceDialogContentProps}
                                       styles={this.confirmationDialogStyles}
@@ -1002,9 +1012,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                         <PrimaryButton onClick={() => {
                                             this.setState((state) => { 
                                               let newState = state as IPromoFormState;
-                                              let evidence = newState.viewModel.Entity.Evidence[index];
+                                              let currentEvidence = newState.viewModel.Entity.Evidence[index];
 
-                                              if(evidence.File) {
+                                              if(currentEvidence.File) {
                                                 newState.viewModel.Entity.Evidence.splice(index, 1);
                                               }
                                               else {
@@ -1613,18 +1623,31 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
       reader.addEventListener("loadend", () => {
         let evidence = new PromoEvidence();
+        let fileExists = false;
 
-        evidence.File = file;
-        evidence.FileName = file.name;
-        evidence.Description = this.state.evidenceDescription;
-        evidence.Date = this.state.evidenceDate;
-
-        promoEvidence.push(evidence);
-
-        this.setState((state) => {          
-          state.viewModel.Entity.Evidence = promoEvidence;
-          return state;
+        promoEvidence.map((ev) => {
+          if(ev.FileName == file.name) {
+            fileExists = true;
+            return;
+          }
         });
+
+        if(!fileExists) {
+          evidence.File = file;
+          evidence.FileName = file.name;
+          evidence.Description = this.state.evidenceDescription;
+          evidence.Date = this.state.evidenceDate;
+
+          promoEvidence.push(evidence);
+
+          this.setState((state) => {          
+            state.viewModel.Entity.Evidence = promoEvidence;
+            return state;
+          });
+        }
+        else {
+          this.setState({hideFileExistsMessageDialog: false});
+        }
 
         (document.getElementById("evidence_file_input") as HTMLInputElement).value = "";
       });
@@ -1952,6 +1975,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     title: 'Eliminar evidencia',
     closeButtonAriaLabel: 'Cerrar',
     subText: 'Esta seguro que desea eliminar esta evidencia de la promoción?',
+  };
+
+  private fileExistsDialogContentProps = {
+    type: DialogType.normal,
+    title: 'Archivo existente',
+    closeButtonAriaLabel: 'Cerrar',
+    subText: 'Ya existe una archivo con este nombre.'
   };
 
   private closeModalDialogContentProps = {
