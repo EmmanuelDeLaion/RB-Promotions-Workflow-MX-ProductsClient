@@ -1,5 +1,5 @@
 $themepalette = @{
-    "themePrimary" = "#ea3592";
+    "themePrimary" = "#f31078";
     "themeLighterAlt" = "#fef6fa";
     "themeLighter" = "#fcdded";
     "themeLight" = "#f9bfdd";

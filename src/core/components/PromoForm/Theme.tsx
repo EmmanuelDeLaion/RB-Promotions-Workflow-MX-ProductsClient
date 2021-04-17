@@ -3,7 +3,7 @@ import { createTheme, mergeStyles } from 'office-ui-fabric-react';
 
 const rbTheme = createTheme({
     palette: {
-      themePrimary: '#ea3592', /* Custom pink color #ea3592*/
+      themePrimary: '#f31078', /* Custom pink color #f31078*/
       themeLighterAlt: '#fef6fa',
       themeLighter: '#fcdded',
       themeLight: '#f9bfdd',
