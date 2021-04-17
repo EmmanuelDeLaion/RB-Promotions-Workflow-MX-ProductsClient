@@ -299,7 +299,7 @@ export class PromoItem extends Entity {
     }
 
     public GetEstimatedInvestment(): number {
-        let investment: number = 0
+        let investment: number = 0;
 
         switch (this.GetCategoryType()) {
             case CategoryType.Visibility:
