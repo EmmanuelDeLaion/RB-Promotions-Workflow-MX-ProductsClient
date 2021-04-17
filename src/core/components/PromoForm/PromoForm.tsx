@@ -327,7 +327,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               </PivotItem>
                             );
                           })}
-                          <PivotItem headerText="Nuevo" itemIcon="Add" onClick={this.AddPromoItem.bind(this)} itemKey="ADD" />
+                          {!readOnlyForm &&
+                            <PivotItem headerText="Nuevo" itemIcon="Add" onClick={this.AddPromoItem.bind(this)} itemKey="ADD" />
+                          }
                         </Pivot>
                         <Stack className="deleteProductContainer" horizontal horizontalAlign="end">
                           <Stack className="label">
