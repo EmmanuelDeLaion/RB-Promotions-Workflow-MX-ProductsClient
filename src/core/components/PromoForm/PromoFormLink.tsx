@@ -80,8 +80,8 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, IPromoFo
         var output = 
             <Stack style={this.mainStakStyles}>
                 <Stack verticalFill verticalAlign="start">
-                    <span style={this.headerStyles}>Sistema de Promociones</span>
-                    <span style={this.subHeaderStyles}>Portal de carga y aprobaciones de Promociones</span>
+                    {/* <span style={this.headerStyles}>Sistema de Promociones</span>
+                    <span style={this.subHeaderStyles}>Portal de carga y aprobaciones de Promociones</span> */}
                 </Stack>
                 <Stack verticalAlign="end" horizontal>
                     <div hidden={!this.state.showButton}>
