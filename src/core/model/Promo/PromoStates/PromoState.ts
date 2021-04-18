@@ -37,11 +37,23 @@ export abstract class PromoState {
 
     public async InitializeWorkflowState(entity: Promo): Promise<void> {
         const approvers = await ApproversRepository.GetInstance();
+        const kamUserId = entity.Client.Channel.HeadOfChannel.ItemId;
+        const approverUserId = approvers.Phase1Approver1.ItemId;
 
-        entity.WorkflowStages = [new PromoWorkflowState([entity.Client.Channel.HeadOfChannel.ItemId, approvers.Phase1Approver1.ItemId])];
+        if(kamUserId != approverUserId)
+            entity.WorkflowStages = [new PromoWorkflowState([kamUserId, approverUserId])];
+        else
+            entity.WorkflowStages = [new PromoWorkflowState([kamUserId])];
 
-        if(entity.GetTotalEstimatedInvestment() > entity.Config.ApprovalAmountLimit)
-            entity.WorkflowStages.push(new PromoWorkflowState([approvers.Phase2Approver1.ItemId,approvers.Phase2Approver2.ItemId]));
+        if(entity.GetTotalEstimatedInvestment() > entity.Config.ApprovalAmountLimit) {
+            const approver1 = approvers.Phase2Approver1.ItemId;
+            const approver2 = approvers.Phase2Approver2.ItemId;
+
+            if(approver1 !=  approver2)
+                entity.WorkflowStages.push(new PromoWorkflowState([approver1, approver2]));
+            else
+            entity.WorkflowStages.push(new PromoWorkflowState([approver1]));
+        }
 
         entity.CurrentStageNumber = 1;
     }
