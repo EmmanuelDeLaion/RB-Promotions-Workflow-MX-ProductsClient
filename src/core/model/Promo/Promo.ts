@@ -129,18 +129,21 @@ export class Promo extends Entity {
     }
 
     public GetROI(): number {
+        //Queda excluída la inversión adicional MKT de los cálculos por estar ya incluída 
+        //en la inversión estimada (lo cual fue un cambio)
         let value: number = 0;
         let incrementalGM: number = 0;
-        let additionalInvestment: number = 0;
+        //let additionalInvestment: number = 0;
         const estimatedInvestment = this.GetTotalEstimatedInvestment();
 
         if(this.Items) {
             this.Items.map((item:PromoItem) => {
                 incrementalGM += item.GetIncrementalGM() || 0;
-                additionalInvestment += item.AdditionalInvestment || 0;
+                //additionalInvestment += item.AdditionalInvestment || 0;
             });
 
-            const investment = estimatedInvestment + additionalInvestment;
+
+            const investment = estimatedInvestment;// + additionalInvestment;
             value = investment > 0 ? incrementalGM / investment : 0;
         }
 

@@ -313,7 +313,7 @@ export class PromoItem extends Entity {
                 break;
             case CategoryType.ConsumerPromo:
                 if(this.Type != null && this.Type.Name.toLowerCase() == "redemption")
-                    investment = this.BaseVolume * (this.Redemption/100) * this.DiscountPerPiece;
+                    investment = this.GetTotalEstimatedVolume() * (this.Redemption/100) * this.DiscountPerPiece;
                 else    
                     investment = this.GetTotalEstimatedVolume() * this.DiscountPerPiece;
                 break;
@@ -337,7 +337,9 @@ export class PromoItem extends Entity {
 
     public GetROI(): number {
         const value1 = (this.GetEstimatedGMPromo() || 0) - (this.GetBaseGM() || 0);
-        const value2 = (this.GetEstimatedInvestment() || 0) + (this.AdditionalInvestment || 0);
+        //En la siguiente línea se excluye la inversión adicional MKT por estar ya incluída 
+        //en la inversión estimada (lo cual fue un cambio)
+        const value2 = (this.GetEstimatedInvestment() || 0);// + (this.AdditionalInvestment || 0);
 
         if(value2 > 0)
             return value1/value2;
