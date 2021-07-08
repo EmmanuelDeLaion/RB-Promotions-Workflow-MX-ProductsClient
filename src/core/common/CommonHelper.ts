@@ -39,9 +39,19 @@ export class CommonHelper {
 
     public static ensurePnPJs(context: WebPartContext | FieldCustomizerContext) {
         if(!_spInitialized) {
-            sp.setup({
+            /*sp.setup({
                 spfxContext: context
-            });
+            });*/
+
+            sp.setup({
+                sp: {
+                  headers: {
+                    Accept: "application/json;odata=verbose",
+                  },
+                  baseUrl: context.pageContext.web.absoluteUrl
+                },
+              });
+              
             _spInitialized = true;
         }
     }
