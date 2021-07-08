@@ -13,7 +13,7 @@ export class WorkflowLogRepository {
             "User/ID",
             "User/Title",
             "Action", 
-            "Comments").expand("User").filter(`PromoId eq ${promoId}`).get().then((items) => { 
+            "Comments").expand("User").filter(`PromoId eq ${promoId}`).getAll().then((items) => { 
             return items.map((item) => {                     
                 return WorkflowLogRepository.BuildEntity(item);
             });

@@ -16,7 +16,7 @@ export class TypeRepository {
     public static async GetByCategory(categoryId: number):Promise<Type[]>
     {
         const collection = sp.web.lists.getByTitle(TypeRepository.LIST_NAME)
-            .items.select("ID", "Title").filter(`CategoryId eq ${categoryId}`).get().then((items) => { 
+            .items.select("ID", "Title").filter(`CategoryId eq ${categoryId}`).getAll().then((items) => { 
                 return items.map((item) => {                     
                     return TypeRepository.BuildEntity(item);
                 });

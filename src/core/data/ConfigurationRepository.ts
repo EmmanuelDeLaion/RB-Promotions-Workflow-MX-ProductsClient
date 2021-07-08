@@ -64,7 +64,7 @@ export class ConfigurationRepository {
                 "ID", 
                 "Title", 
                 "Value", 
-            ).get().then((items) => { 
+            ).getAll().then((items) => { 
                 return items.map((item) => {                     
                     return ConfigurationRepository.BuildEntity(item);
                 });

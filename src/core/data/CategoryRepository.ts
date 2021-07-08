@@ -24,7 +24,7 @@ export class CategoryRepository {
                 "ID", 
                 "Title", 
                 "SYS_Identifier", 
-            ).get().then((items) => { 
+            ).getAll().then((items) => { 
                 return items.map((item) => {                     
                     return CategoryRepository.BuildEntity(item);
                 });

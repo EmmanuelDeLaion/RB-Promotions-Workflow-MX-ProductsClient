@@ -33,7 +33,7 @@ export class ClientRepository {
     {
         const user = await SecurityHelper.GetCurrentUser();
         const collection = sp.web.lists.getByTitle(ClientRepository.LIST_NAME)
-            .items.select("ID", "Title", "KeyAccountManager/ID").expand("KeyAccountManager").filter(`KeyAccountManagerId eq ${user.ItemId}`).get().then((items) => { 
+            .items.select("ID", "Title", "KeyAccountManager/ID").expand("KeyAccountManager").filter(`KeyAccountManagerId eq ${user.ItemId}`).getAll().then((items) => { 
                 return items.map((item) => {                     
                     return ClientRepository.BuildEntity(item);
                 });

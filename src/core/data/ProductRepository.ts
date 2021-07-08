@@ -34,7 +34,7 @@ export class ProductRepository {
                 "Brand/ID",
                 "Brand/Title",
                 "ProductCategory/ID",
-                "ProductCategory/Title").expand("BusinessUnit", "Brand", "ProductCategory").get().then((items) => { 
+                "ProductCategory/Title").expand("BusinessUnit", "Brand", "ProductCategory").getAll().then((items) => { 
                 let result: Product[] = [];
                 items.map((item) => {
                     if(item.BusinessUnit && item.BusinessUnit.ID && item.BusinessUnit.Title && 
