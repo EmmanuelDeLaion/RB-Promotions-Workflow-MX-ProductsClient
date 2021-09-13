@@ -86,7 +86,8 @@ export class PromoItemRepository {
                 EstimatedROI: entity.GetROI(),
                 EstimatedIncrementalVolume: entity.EstimatedIncrementalVolume,
                 AdditionalInvestment: entity.AdditionalInvestment,
-                TotalEstimatedVolume: entity.GetTotalEstimatedVolume()
+                TotalEstimatedVolume: entity.GetTotalEstimatedVolume(),
+                EstimatedInvestment: entity.GetEstimatedInvestment()
             };
 
             if(entity.ItemId)
