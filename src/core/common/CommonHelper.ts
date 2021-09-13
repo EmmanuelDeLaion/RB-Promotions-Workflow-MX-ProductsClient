@@ -66,7 +66,7 @@ export class CommonHelper {
         }
     
         return retVal;
-    };
+    }
 
     public static isValidDecimal(value: string, decimals: number): boolean {
         let re = new RegExp('^\\d+(\\.\\d{0,' + decimals + '})?$');
