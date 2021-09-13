@@ -463,6 +463,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     disabled={!selectedItem.RequiresDiscountPerPiece()}
                                     errorMessage={selectedItem.RequiresDiscountPerPiece() ? this.getValidationErrorMessage(selectedItem.GetDiscountPerPieceAsString()) : CommonHelper.EmptyString}
                                     readOnly={readOnlyForm}
+                                    type="number"
+                                    step={0.01}
                                   />
                                 </Stack>
                               </Stack>
@@ -514,6 +516,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     disabled={!selectedItem.RequiresInvestment()}
                                     errorMessage={selectedItem.RequiresInvestment() ? this.getValidationErrorMessage(selectedItem.GetInvestmentAsString()) : CommonHelper.EmptyString}
                                     readOnly={readOnlyForm}
+                                    type="number"
+                                    step={0.01}
                                   />
                                 </Stack>
                                 <Stack className="padding-right controlPadding">
@@ -561,6 +565,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     disabled={!selectedItem.RequiresRedemption()}
                                     errorMessage={selectedItem.RequiresRedemption() ? this.getValidationErrorMessage(selectedItem.GetRedemptionAsString()) : CommonHelper.EmptyString}
                                     readOnly={readOnlyForm}
+                                    type="number"
+                                    step={0.01}
                                   />
                                 </Stack>
                               </Stack>
@@ -670,6 +676,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                     autoComplete="Off"
                                     readOnly={readOnlyForm}
                                     width="100%"
+                                    type="number"
+                                    step={0.01}
                                   />
                                 </Stack>
                               </Stack>
@@ -1374,10 +1382,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   }
 
   private onInvestmentChange(event: any, text: any) {
-    this.setState((state) => {
-      state.viewModel.Entity.Items[this.state.selectedIndex].Investment = !isNaN(parseInt(text)) ? parseInt(text) : null;
-      return state;
-    });
+    if(CommonHelper.IsNullOrEmpty(text) || CommonHelper.isValidDecimal(text, 2)) {
+      this.setState((state) => {
+        state.viewModel.Entity.Items[this.state.selectedIndex].Investment = !isNaN(parseFloat(text)) ? parseFloat(text) : null;
+        return state;
+      });
+    }
   }
 
   private onTypeChanged(item: IDropdownOption) {
@@ -1576,17 +1586,22 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   //#region Input - Pre analisis
 
   private onDiscountPerPieceChange(event: any, text: any) {
-    this.setState((state) => {
-      state.viewModel.Entity.Items[this.state.selectedIndex].DiscountPerPiece = !isNaN(parseInt(text)) ? parseInt(text) : null;
-      return state;
-    });
+    if(CommonHelper.IsNullOrEmpty(text) || CommonHelper.isValidDecimal(text, 2))
+    {
+      this.setState((state) => {
+        state.viewModel.Entity.Items[this.state.selectedIndex].DiscountPerPiece = !isNaN(parseFloat(text)) ? parseFloat(text) : null;
+        return state;
+      });
+    }
   }
 
   private onRedemptionChange(event: any, text: any) {
-    this.setState((state) => {
-      state.viewModel.Entity.Items[this.state.selectedIndex].Redemption = !isNaN(parseInt(text)) ? parseInt(text) : null;
-      return state;
-    });
+    if(CommonHelper.IsNullOrEmpty(text) || CommonHelper.isValidDecimal(text, 2)) {
+      this.setState((state) => {
+        state.viewModel.Entity.Items[this.state.selectedIndex].Redemption = !isNaN(parseFloat(text)) ? parseFloat(text) : null;
+        return state;
+      });
+    }
   }
 
   private onBaseVolumeChange(event: any, text: any) {
@@ -1597,10 +1612,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   }
 
   private onAdditionalInvestmentChange(event: any, text: any) {
-    this.setState((state) => {
-      state.viewModel.Entity.Items[this.state.selectedIndex].AdditionalInvestment = !isNaN(parseInt(text)) ? parseInt(text) : null;
-      return state;
-    });
+    if(CommonHelper.IsNullOrEmpty(text) || CommonHelper.isValidDecimal(text, 2)) {
+      this.setState((state) => {
+        state.viewModel.Entity.Items[this.state.selectedIndex].AdditionalInvestment = !isNaN(parseFloat(text)) ? parseFloat(text) : null;
+        return state;
+      });
+    }
   }
 
   private onEstimatedIncrementalVolumeChange(event: any, text: any) {

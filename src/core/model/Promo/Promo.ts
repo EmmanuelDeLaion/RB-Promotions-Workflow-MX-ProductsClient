@@ -125,7 +125,7 @@ export class Promo extends Entity {
 
     public GetTotalEstimatedInvestmentAsString(): string {
         const value = this.GetTotalEstimatedInvestment();
-        return value != null ? value.toFixed(0) : "0";
+        return value != null ? value.toFixed(2) : "0.00";
     }
 
     public GetROI(): number {

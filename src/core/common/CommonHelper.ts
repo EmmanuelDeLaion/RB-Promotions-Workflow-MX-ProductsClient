@@ -55,4 +55,23 @@ export class CommonHelper {
             _spInitialized = true;
         }
     }
+
+    public static getDecimal (value: any, decimals: number): number {
+        var retVal = null;
+    
+        if (value || value === 0) {
+            if (!isNaN(parseFloat(value))) {
+                retVal = parseFloat(parseFloat(value).toFixed(decimals));
+            }
+        }
+    
+        return retVal;
+    };
+
+    public static isValidDecimal(value: string, decimals: number): boolean {
+        let re = new RegExp('^\\d+(\\.\\d{0,' + decimals + '})?$');
+        let retVal = re.test(value);
+
+        return retVal;
+    }
 }

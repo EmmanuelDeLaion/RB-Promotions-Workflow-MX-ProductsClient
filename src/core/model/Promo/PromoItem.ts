@@ -100,8 +100,7 @@ export class PromoItem extends Entity {
 
     public RequiresTotalEstimatedVolume(): boolean {
         switch (this.GetCategoryType()) {
-            case CategoryType.SpecialExhibitions:
-            case CategoryType.Institutional:    
+            case CategoryType.SpecialExhibitions: 
             case CategoryType.Unknown:     
                 return false;
             default:
@@ -303,11 +302,11 @@ export class PromoItem extends Entity {
 
         switch (this.GetCategoryType()) {
             case CategoryType.Visibility:
+            case CategoryType.Institutional:
             case CategoryType.Performance:
                 const baseGMSum = this.GetBaseGMSum(this.GetCategoryType());
                 investment = (baseGMSum > 0 ? (this.GetBaseGM() / baseGMSum) * (this.Investment || 0): 0);
-                break;
-            case CategoryType.Institutional:
+                break;            
             case CategoryType.SpecialExhibitions:
                 investment = this.Investment || 0;
                 break;
@@ -365,7 +364,7 @@ export class PromoItem extends Entity {
     }
 
     public GetNetPriceAsString():string {
-        return this.NetPrice != null ? this.NetPrice.toFixed(2) : "0.0";
+        return this.NetPrice != null ? this.NetPrice.toFixed(2) : "0.00";
     }
 
     public GetDiscountPercentageAsString(): string {
@@ -375,7 +374,7 @@ export class PromoItem extends Entity {
 
     public GetBEPNRAsString(): string {
         const value = this.GetBEPNR();
-        return value != null ? value.toFixed(1) : "0.0";
+        return value != null ? value.toFixed(2) : "0.00";
     }
 
     public GetCOGSAsString():string {
@@ -404,7 +403,7 @@ export class PromoItem extends Entity {
 
     public GetBEPGMAsString(): string {
         const value = this.GetBEPGM();
-        return value != null ? value.toFixed(1) : "0.0";
+        return value != null ? value.toFixed(2) : "0.00";
     }
 
     public GetLastYearVolumeAsString(): string {
@@ -435,47 +434,48 @@ export class PromoItem extends Entity {
 
     public GetTotalEstimatedVolumeAsString(): string {
         const value = this.GetTotalEstimatedVolume();
-        return value != null ? value.toFixed(1) :  null;
+        return value != null ? value.toFixed(0) :  null;
     }
 
     public GetIncrementalVolumePercentageAsString(): string {
         const value = this.GetIncrementalVolumePercentage();
-        return value != null ? value.toFixed(1) :  null;
+        return value != null ? value.toFixed(2) :  null;
     }
 
     public GetBaseNRAsString(): string {
         const value = this.GetBaseNR();
-        return value != null ? value.toFixed(1) : null;
+        return value != null ? value.toFixed(2) : null;
     }
 
     public GetEstimatedNRAsString(): string {
         const value = this.GetEstimatedNR();
-        return value != null ? value.toFixed(1) : null;
+        return value != null ? value.toFixed(2) : null;
     }
 
     public GetIncrementalEstimatedNRAsString(): string {
         const value = this.GetIncrementalEstimatedNR();
-        return value != null ? value.toFixed(1) : null;
+        return value != null ? value.toFixed(2) : null;
     }
 
     public GetBaseGMAsString(): string {
         const value = this.GetBaseGM();
-        return value != null ? value.toFixed(1) :  null;
+        return value != null ? value.toFixed(2) :  null;
     }
 
     public GetEstimatedGMPromoAsString(): string {
         const value = this.GetEstimatedGMPromo();
-        return value != null ? value.toFixed(1) :  null;
+        return value != null ? value.toFixed(2) :  null;
     }
 
     public GetIncrementalGMAsString(): string {
         const value = this.GetIncrementalGM();
-        return value != null ? value.toFixed(1) :  null;
+        return value != null ? value.toFixed(2) :  null;
     }
 
     public GetEstimatedInvestmentAsString(): string {
         const value = this.GetEstimatedInvestment();
-        return value != null ? value.toFixed(0) : null;
+
+        return value != null ? value.toFixed(2) : null;
     }
 
     public GetROIAsString(): string {
