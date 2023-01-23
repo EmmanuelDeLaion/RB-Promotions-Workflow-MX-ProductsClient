@@ -247,6 +247,7 @@ export class ApprovalState extends PromoState {
       if (flowType.ItemId == 2 || flowType.ItemId == 3) {
         await NotificacionsManager.SendTaskAssignedNotification(entity, teamLeaderEmail.Email, null, teamLeaderEmail.Value);
       }
+
     });
     await WorkflowLogRepository.Save(entity.ItemId, entity.PromoID, mensaje, comments, entity);
 
