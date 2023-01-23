@@ -2,8 +2,8 @@ import { Promo } from "..";
 import { Constants } from "../../..";
 import { CommonHelper } from "../../../common/CommonHelper";
 import { SecurityHelper } from "../../../common/SecurityHelper";
-import { 
-    ClientRepository, 
+import {
+    ClientRepository,
     PromoRepository,
     CategoryRepository,
     ProductRepository,
@@ -12,12 +12,14 @@ import { PromoStatus } from "../PromoStatus";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoState } from "./PromoState";
 import { NotificacionsManager } from '../../../common/NotificacionsManager';
+import { ClientProductRepository } from "../../../data/ClientProductRepository";
+import { FlowApproversRepository } from "../../../data/FlowApproversRepository";
 
 export class NewPromoState extends PromoState {
     public GetStatusId(): number {
         return PromoStatus.New;
     }
-    
+
     public GetStatusText(): string {
         return Constants.StatusTexts.NewPromo;
     }
@@ -27,7 +29,9 @@ export class NewPromoState extends PromoState {
 
         viewModel.Clients = await ClientRepository.GetClients();
         viewModel.Categories = await CategoryRepository.GetAll();
-        viewModel.Products = await ProductRepository.GetAll();
+        viewModel.ClientProducts = await ClientProductRepository.GetAll();
+        viewModel.FlowsTypes = await FlowApproversRepository.GetAll();
+        //viewModel.Products = await ProductRepository.GetAll();
 
         viewModel.ShowSaveButton = true;
         viewModel.ShowSubmitButton = true;
@@ -40,7 +44,7 @@ export class NewPromoState extends PromoState {
         entity.ChangeState(PromoStatus.Draft);
 
         await PromoRepository.SaveOrUpdate(entity);
-        
+
         return entity.InitializeState();
     }
 

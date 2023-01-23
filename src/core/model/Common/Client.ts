@@ -6,7 +6,8 @@ export class Client extends Entity {
     public Channel: Channel;
     public Subchannel: LookupValue;
     public KeyAccountManager: LookupValue;
-
+    public teamLeader: LookupValue;
+    
     public constructor(init?:Partial<Client>) {
         super();
         (<any>Object).assign(this, init);

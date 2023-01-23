@@ -8,9 +8,10 @@ interface IRBDatePickerProps {
     required: boolean;
     onSelectDate: (date: Date) => void;
     value: Date;
-    errorMessage?: string; 
+    errorMessage?: string;
     minDate?: Date;
     maxDate?: Date;
+    isDisabled: boolean;
 }
 
 export class RBDatePicker extends React.Component<IRBDatePickerProps, {}> {
@@ -29,10 +30,11 @@ export class RBDatePicker extends React.Component<IRBDatePickerProps, {}> {
                     placeholder="Seleccione una fecha..."
                     ariaLabel="Seleccione una fecha"
                     value={this.props.value}
-                    onSelectDate={this.onSelectDate.bind(this)}   
+                    onSelectDate={this.onSelectDate.bind(this)}
                     formatDate={CommonHelper.formatDate}
                     minDate={this.props.minDate}
                     maxDate={this.props.maxDate}
+                    disabled={this.props.isDisabled}
                 />
                 <div hidden={CommonHelper.IsNullOrEmpty(this.props.errorMessage)} role="alert" className="errorMessage">{this.props.errorMessage}</div>
             </div>

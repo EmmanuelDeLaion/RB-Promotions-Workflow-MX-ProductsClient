@@ -2,34 +2,38 @@ import * as React from 'react';
 import Select from 'react-select';
 import { Label } from "office-ui-fabric-react";
 import { Product } from '../../model/Common';
+import { ClientProduct } from "../../model/Common";
 import { CommonHelper } from '../../common/CommonHelper';
 
 interface IProductSelectorProps {
-    products: Product[];
-    onChanged: (product: Product) => void;
-    value: Product;
+    clientProducts: ClientProduct[];
+    onChanged: (product: ClientProduct) => void;
+    value: ClientProduct;
     errorMessage: string;
     required: boolean;
+    isDisabled: boolean;
 }
 
 export class ProductSelector extends React.Component<IProductSelectorProps, {}> {
+
 
     constructor(props: IProductSelectorProps) {
         super(props);
     }
 
     public render(): React.ReactElement<IProductSelectorProps> {
+
         const options: Array<{ value: number, label: string }> =
-            this.props.products != null ?
-                (this.props.products as Array<Product>).map((item): { value: number, label: string } => {
+            this.props.clientProducts != null ?
+                (this.props.clientProducts as Array<ClientProduct>).map((item): { value: number, label: string } => {
                     return { value: item.ItemId, label: item.SKUNumber + " - " + item.SKUDescription };
                 }) : [];
 
         const value = this.props.value ? options.filter(x => x.value === this.props.value.ItemId)[0] : null;
 
         const selectStyles = {
-            control: (styles: any) => ({ 
-                ...styles, 
+            control: (styles: any) => ({
+                ...styles,
                 borderColor: (CommonHelper.IsNullOrEmpty(this.props.errorMessage) ? "rgb(96, 94, 92)" : "rgb(164, 38, 44)") + " !important",
                 minHeight: "32px",
                 boxShadow: "0"
@@ -56,11 +60,11 @@ export class ProductSelector extends React.Component<IProductSelectorProps, {}> 
         return (
             <div>
                 <Label required={this.props.required}>SKU: </Label>
-                <Select 
-                    options={options} 
+                <Select
+                    options={options}
                     theme={selectTheme}
                     styles={selectStyles}
-                    onChange={this.onChange.bind(this)} 
+                    onChange={this.onChange.bind(this)}
                     value={value}
                 />
                 <div hidden={CommonHelper.IsNullOrEmpty(this.props.errorMessage)} role="alert" className="errorMessage">{this.props.errorMessage}</div>
@@ -71,4 +75,5 @@ export class ProductSelector extends React.Component<IProductSelectorProps, {}> 
     private onChange(item: any, action: any) {
         this.props.onChanged(item.value);
     }
+
 }

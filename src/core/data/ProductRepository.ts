@@ -15,7 +15,7 @@ export class ProductRepository {
               "Brand/ID",
               "Brand/Title",
               "ProductCategory/ID",
-              "ProductCategory/Title").expand("BusinessUnit", "Brand", "ProductCategory").get().then((item) => {      
+              "ProductCategory/Title").expand("BusinessUnit", "Brand", "ProductCategory" ).get().then((item) => {      
             return ProductRepository.BuildEntity(item);
           });
   
@@ -34,7 +34,7 @@ export class ProductRepository {
                 "Brand/ID",
                 "Brand/Title",
                 "ProductCategory/ID",
-                "ProductCategory/Title").expand("BusinessUnit", "Brand", "ProductCategory").getAll().then((items) => { 
+                "ProductCategory/Title").expand("BusinessUnit", "Brand", "ProductCategory" ).getAll().then((items) => { 
                 let result: Product[] = [];
                 items.map((item) => {
                     if(item.BusinessUnit && item.BusinessUnit.ID && item.BusinessUnit.Title && 
@@ -57,6 +57,7 @@ export class ProductRepository {
         entity.BusinessUnit = item.BusinessUnit ? { ItemId: item.BusinessUnit.ID, Value: item.BusinessUnit.Title } : null;
         entity.Brand = item.Brand ? { ItemId: item.Brand.ID, Value: item.Brand.Title } : null;
         entity.Category = item.ProductCategory ? { ItemId: item.ProductCategory.ID, Value: item.ProductCategory.Title } : null;
+    
 
         return entity;
     }

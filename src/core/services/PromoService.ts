@@ -2,7 +2,7 @@ import { Promo } from "../model/Promo/Promo";
 import { PromoViewModel } from "../model/Promo/PromoViewModel";
 import { PromoRepository } from "../data/PromoRepository";
 import { TypeRepository } from "../data/TypeRepository";
-import { Type } from "../model/Common";
+import { FlowType, Type } from "../model/Common";
 import { ConfigurationRepository } from "../data";
 import { PromoEvidence } from "../model/Promo/PromoEvidence";
 import { EvidenceRepository } from "../data/EvidenceRepository";
@@ -11,7 +11,7 @@ export class PromoService {
 
   private static async GetPromo(itemId?: number): Promise<Promo> {
     return itemId ? await PromoRepository.GetById(itemId)
-                  : await PromoRepository.GetNewPromo();
+      : await PromoRepository.GetNewPromo();
   }
 
   public static async GetViewModel(itemId?: number): Promise<PromoViewModel> {
@@ -40,5 +40,13 @@ export class PromoService {
 
   public static async UpdateEvidence(promoID: string, evidence: PromoEvidence[]): Promise<void> {
     return await EvidenceRepository.UpdateEvidence(promoID, evidence);
+  }
+
+  public static async Proven(entity: Promo, comments: string): Promise<void> {
+    return await (await this.GetPromo(entity.ItemId)).Proven(comments);
+  }
+
+  public static async FlowAsign(entity: Promo, comments: string, flowtype: FlowType): Promise<void> {
+    return await (await this.GetPromo(entity.ItemId)).FlowAsign(entity ,comments, flowtype);
   }
 }

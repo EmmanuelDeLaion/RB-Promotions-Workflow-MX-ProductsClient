@@ -1,8 +1,9 @@
 import { sp } from "@pnp/sp/presets/all";
-import { Category, Product, Type } from "../model/Common";
+import { Category, ClientProduct, Product, Type } from "../model/Common";
 import { LastYearVolumes } from "../model/Common/LastYearVolumes";
 import { PromoItem } from "../model/Promo";
 import { CategoryRepository } from "./CategoryRepository";
+import { ClientProductRepository } from "./ClientProductRepository";
 import { LastYearVolumesRepository } from "./LastYearVolumesRepository";
 import { ProductRepository } from "./ProductRepository";
 
@@ -13,13 +14,13 @@ export class PromoItemRepository {
     {
         const items = await sp.web.lists.getByTitle(PromoItemRepository.LIST_NAME)
             .items.select(
-                "ID", 
-                "Title", 
+                "ID",
+                "Title",
                 "ShortDescription",
                 "CategoryId",
                 "Investment",
-                "Type/ID", 
-                "Type/Title", 
+                "Type/ID",
+                "Type/Title",
                 "CappedActivity",
                 "BusinessUnit/ID",
                 "BusinessUnit/Title",
@@ -27,38 +28,52 @@ export class PromoItemRepository {
                 "Brand/Title",
                 "ProductCategory/ID",
                 "ProductCategory/Title",
-                "ProductId",
                 "StartDate",
                 "EndDate",
+                "StartDateSellIn", //Sell In
+                "EndDateSellIn", //Sell In
                 "DiscountPerPiece",
                 "NetPrice",
                 "COGS",
-                "Redemption",  
+                "Redemption",
                 "BaseVolume",
                 "EstimatedIncrementalVolume",
                 "AdditionalInvestment",
-            ).expand("Type", "BusinessUnit", "Brand", "ProductCategory").filter(`PromoId eq ${promoId}`).get();
-        
+                "SKUProductId",
+            ).expand("Type", "BusinessUnit", "Brand", "ProductCategory", ).filter(`PromoId eq ${promoId}`).get();
+
         //TODO: revisar y mejorar este query
-        const collection = items.map(async (item) => { 
+        const collection = items.map(async (item) => {
             const category = item.CategoryId ? await CategoryRepository.GetById(item.CategoryId) : null;
-            const product = item.ProductId ? await ProductRepository.GetById(item.ProductId) : null;
+            const clientproduct = item.SKUProductId ? await ClientProductRepository.GetById(item.SKUProductId) : null;
             const volumesLY = clientId && item.ProductId ? await LastYearVolumesRepository.GetByClientAndProduct(clientId, item.ProductId) : null;
-            return PromoItemRepository.BuildEntity(item, category, product, volumesLY);
-        });       
+            return PromoItemRepository.BuildEntity(item, category, clientproduct, volumesLY);
+        });
 
         return Promise.all(collection);
     }
 
-    public static async SaveOrUpdateItems(promoItemId: number, promoID: string, items: PromoItem[]):Promise<void> {
+
+    public static async DeletePromoItemsByPromoID(promoItemsToDelete: any, promoItemId: number): Promise<void> {
+      let list = sp.web.lists.getByTitle(PromoItemRepository.LIST_NAME);
+      let batch = sp.web.createBatch();
+      promoItemsToDelete.map((element: any) => {
+        list.items.getById(element).inBatch(batch).delete();
+      });
+      await batch.execute();
+    }
+
+
+    public static async SaveOrUpdateItems(promoItemId: number, promoID: string, items: PromoItem[], itemsToDelete: number[]):Promise<void> {
+      this.DeletePromoItemsByPromoID(itemsToDelete, promoItemId);
+
         let list = sp.web.lists.getByTitle(PromoItemRepository.LIST_NAME);
-
         const entityTypeFullName = await list.getListItemEntityTypeFullName();
-
         let batch = sp.web.createBatch();
 
         items.map((entity, index) => {
             const number = index + 1;
+            //console.log(entity.Product.ItemId);
             const data = {
                 PromoId: promoItemId,
                 Title: promoID + "." + number,
@@ -70,9 +85,14 @@ export class PromoItemRepository {
                 BusinessUnitId: entity.BusinessUnit ? entity.BusinessUnit.ItemId: null,
                 BrandId: entity.Brand ? entity.Brand.ItemId : null,
                 ProductCategoryId: entity.ProductCategory ? entity.ProductCategory.ItemId : null,
-                ProductId: entity.Product ? entity.Product.ItemId : null,
+                SKUProductId: entity.ClientProduct ? entity.ClientProduct.ItemId : null,
+                //Product: entity.GetSKUNumberString(),
                 StartDate: entity.StartDate,
                 EndDate: entity.EndDate,
+                //Sell In
+                StartDateSellIn: entity.StartDateSellIn,
+                EndDateSellIn: entity.EndDateSellIn,
+
                 DiscountPerPiece: entity.DiscountPerPiece,
                 NetPrice: entity.NetPrice,
                 COGS: entity.COGS,
@@ -81,27 +101,30 @@ export class PromoItemRepository {
                 GMPercentageNRWithPromo: entity.GetGMPercentageNRWithPromo(),
                 GMBaseUnit: entity.GetGMBaseUnit(),
                 GMPromoUnit: entity.GetGMPromoUnit(),
-                Redemption: entity.Redemption,  
+                Redemption: entity.Redemption,
                 BaseVolume: entity.BaseVolume,
                 EstimatedROI: entity.GetROI(),
                 EstimatedIncrementalVolume: entity.EstimatedIncrementalVolume,
                 AdditionalInvestment: entity.AdditionalInvestment,
                 TotalEstimatedVolume: entity.GetTotalEstimatedVolume(),
-                EstimatedInvestment: entity.GetEstimatedInvestment()
+                EstimatedInvestment: entity.GetEstimatedInvestment(),
+                //ClientId: entity.Client ? entity.Client.ItemId : null,
+                //ProductSKU: entity.GetSKUNumberString(),
+
             };
 
             if(entity.ItemId)
-                list.items.getById(entity.ItemId).inBatch(batch).update(data, "*", entityTypeFullName);                
+                list.items.getById(entity.ItemId).inBatch(batch).update(data, "*", entityTypeFullName);
             else
-                list.items.inBatch(batch).add(data, entityTypeFullName);                
-        });        
+                list.items.inBatch(batch).add(data, entityTypeFullName);
+        });
 
         await batch.execute();
     }
 
-    private static BuildEntity(item: any, category?: Category, product?: Product, lyVolumes?: LastYearVolumes): PromoItem {
+    private static BuildEntity(item: any, category?: Category, clientproduct?: ClientProduct, lyVolumes?: LastYearVolumes): PromoItem {
         let entity = new PromoItem();
-  
+
         entity.ItemId = item.ID;
         entity.AdditionalID = item.Title;
         entity.ShortDescription = item.ShortDescription;
@@ -112,19 +135,26 @@ export class PromoItemRepository {
         entity.BusinessUnit = item.BusinessUnit ? { ItemId: item.BusinessUnit.ID, Value: item.BusinessUnit.Title } : null;
         entity.Brand = item.Brand ? { ItemId: item.Brand.ID, Value: item.Brand.Title } : null;
         entity.ProductCategory = item.ProductCategory ? { ItemId: item.ProductCategory.ID, Value: item.ProductCategory.Title } : null;
-        entity.Product = product;
+        entity.ClientProduct = clientproduct;
+        //entity.Product = item.Product ? { ItemId: item.Product.ID, Value: item.Product.Title } : null,
+        //entity.Product = product;
         entity.StartDate = item.StartDate ? new Date(item.StartDate) : null;
         entity.EndDate = item.EndDate ? new Date(item.EndDate) : null;
+        //Sell In
+        entity.StartDateSellIn = item.StartDateSellIn ? new Date(item.StartDateSellIn) : null;
+        entity.EndDateSellIn = item.EndDateSellIn ? new Date(item.EndDateSellIn): null;
+
         entity.DiscountPerPiece = item.DiscountPerPiece;
         entity.NetPrice= item.NetPrice;
         entity.COGS = item.COGS;
-        entity.Redemption = item.Redemption; 
-        entity.BaseVolume = item.BaseVolume;       
+        entity.Redemption = item.Redemption;
+        entity.BaseVolume = item.BaseVolume;
         entity.EstimatedIncrementalVolume = item.EstimatedIncrementalVolume;
         entity.AdditionalInvestment = item.AdditionalInvestment;
         entity.LastYearVolumes = lyVolumes;
+        //entity.Client = item.Client ? {ItemId: item.Client.ID, Value: item.Client.Title} : null;
 
-  
+
         return entity;
     }
 }

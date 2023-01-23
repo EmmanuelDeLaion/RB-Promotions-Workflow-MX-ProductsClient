@@ -1,5 +1,5 @@
 import { ActionConfirmationType } from "../../infrastructure";
-import { Product } from "../../model/Common";
+import { ClientProduct } from "../../model/Common";
 import { PromoViewModel } from "../../model/Promo/PromoViewModel";
 
 export interface IPromoFormState {
@@ -9,25 +9,33 @@ export interface IPromoFormState {
     formSubmitted: boolean;
     resultIsOK: boolean;
     viewModel?: PromoViewModel;
-    errorMessage?: string; 
+    errorMessage?: string;
     selectedIndex: number;
     loadingTypes: boolean;
-    filteredProducts: Product[];
+    filteredProducts: ClientProduct[];
     actionsComments?: string;
 
+    canUploadEvidence?: boolean;
     evidenceDescription?:string;
     evidenceDate?:Date;
     hasEvidenceValidatioNError?: boolean;
 
     mainModalOpen: boolean;
     hideDeleteProductDialog: boolean;
-    hideSavingSpinnerConfirmationDialog: boolean;    
+    hideSavingSpinnerConfirmationDialog: boolean;
     hideModalConfirmationDialog: boolean;
     hideActionConfirmationDialog: boolean;
     hideDeleteEvidenceDialog: boolean;
     hideFileExistsMessageDialog: boolean;
+
+    hideLoading?: boolean;
+
     actionConfirmationDialogTitle?: string;
     actionConfirmationDialogType?: ActionConfirmationType;
     enableActionValidation: boolean;
     promotionTitle: string;
+    copiarPromo: boolean;
+    currentUser: String;
+    promoProven: boolean;
+    flowApproval: boolean;
 }

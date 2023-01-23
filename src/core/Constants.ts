@@ -7,6 +7,7 @@ export namespace Constants {
         public static Approval = "Aprobación";
         public static Approved = "Aprobada";
         public static Rejected = "Rechazada";
+        public static Proven = "Comprobada";
     } 
     
     export class Messages {

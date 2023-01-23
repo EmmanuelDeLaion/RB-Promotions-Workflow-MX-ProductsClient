@@ -9,10 +9,10 @@ export class ApproversRepository {
     private static _instance : Approvers;
 
     public static async GetInstance(): Promise<Approvers> {
-        
+
         if(ApproversRepository._instance == null)
             ApproversRepository._instance = await ApproversRepository.GetApprovers();
-        
+
         return ApproversRepository._instance;
     }
 
@@ -20,21 +20,26 @@ export class ApproversRepository {
 
         const entity = ApproversRepository.GetValues().then((items) => {
                 let approvers = new Approvers();
+                approvers.Phase0Coordinator1 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase0Coordinator1);
+                approvers.Phase0Coordinator2 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase0Coordinator2);
+                approvers.Phase0Coordinator3 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase0Coordinator3);
                 approvers.Phase1Approver1 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase1Approver1);
                 approvers.Phase2Approver1 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase2Approver1);
-                approvers.Phase2Approver2 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase2Approver2);
+                approvers.Phase3Approver1 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase3Approver1);
+                approvers.Phase3Approver2 = ApproversRepository.GetApproverValue(items, ApproverKeys.Phase3Approver2);
+
                 return approvers;
             });
-  
+
         return entity;
     }
-    
+
     private static GetApproverValue(items: ApproverItem[], role: ApproverKeys): LookupValue
     {
         let appoverItem = items.filter(x => x.Role.toLowerCase() === role.toLowerCase())[0];
 
         if(appoverItem == null)
-        {            
+        {
             console.log("Approver item for role '%s' not found.", role);
             return null;
         }
@@ -49,14 +54,14 @@ export class ApproversRepository {
     {
         const collection = sp.web.lists.getByTitle(ApproversRepository.LIST_NAME)
             .items.select(
-                "ID", 
-                "Role", 
+                "ID",
+                "Role",
                 "User/ID",
-                "User/Title" 
+                "User/Title"
             )
             .expand("User")
-            .get().then((items) => { 
-                return items.map((item) => {                     
+            .get().then((items) => {
+                return items.map((item) => {
                     return ApproversRepository.BuildEntity(item);
                 });
             });
@@ -67,10 +72,14 @@ export class ApproversRepository {
     private static BuildEntity(item: any): ApproverItem {
 
         let entity = new ApproverItem();
-  
+
         entity.ItemId = item.ID;
         entity.Role = item.Role;
         entity.User = item.User ? { ItemId: item.User.ID, Value: item.User.Title } : null;
+
+        // console.log(entity.ItemId);
+        // console.log(entity.Role);
+        // console.log(entity.User);
 
         return entity;
     }

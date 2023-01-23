@@ -3,5 +3,6 @@ export enum PromoStatus {
     Draft,
     Approval,
     Approved,
-    Rejected
+    Rejected,
+    Proven
 }

@@ -1,15 +1,20 @@
 import { PromoStatus } from "..";
 import { Constants } from "../../..";
-import { 
-    CategoryRepository, 
-    ClientRepository,  
-    ProductRepository, 
-    TypeRepository 
+import {
+    CategoryRepository,
+    ClientRepository,
+    ProductRepository,
+    PromoRepository,
+    TypeRepository
 } from "../../../data";
+import { SecurityHelper } from "../../../common/SecurityHelper";
+import { WorkflowLogRepository } from "../../../data/WorkflowLogRepository";
+import { Promo } from "../Promo";
 import { PromoViewModel } from "../PromoViewModel";
 import { PromoState } from "./PromoState";
 
 export class ApprovedState extends PromoState {
+
     public GetStatusId(): number {
         return PromoStatus.Approved;
     }
@@ -26,4 +31,13 @@ export class ApprovedState extends PromoState {
 
         return viewModel;
     }
+
+    public async Proven(comments: string): Promise<void>
+    {
+        await WorkflowLogRepository.Save(this.Entity.ItemId, this.Entity.PromoID, "Comprobada", comments, this.Entity);
+        this.Entity.ChangeState(PromoStatus.Proven);
+        return PromoRepository.SaveOrUpdate(this.Entity, 1);
+
+    }
+
 }

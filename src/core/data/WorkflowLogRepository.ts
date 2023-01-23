@@ -1,6 +1,10 @@
 import { sp } from "@pnp/sp/presets/all";
 import { SecurityHelper } from "../common/SecurityHelper";
 import { WorkflowLog } from "../model/Common/WorkflowLog";
+import { Promo } from "../model/Promo/Promo";
+import { PromoRepository } from "./PromoRepository";
+import { ApproversRepository } from "./ApproversRepository";
+import { concat } from "lodash";
 
 export class WorkflowLogRepository {
     private static LIST_NAME: string = "Workflow log";
@@ -22,7 +26,7 @@ export class WorkflowLogRepository {
         return collection;
     }
 
-    public static async Save(promoItemId: number, promoID: string, action: string, comments: string):Promise<void> {
+    public static async Save(promoItemId: number, promoID: string, action: string, comments: string, entity: Promo):Promise<void> {
         const date = new Date();        
         const currentUser = await SecurityHelper.GetCurrentUser();
 

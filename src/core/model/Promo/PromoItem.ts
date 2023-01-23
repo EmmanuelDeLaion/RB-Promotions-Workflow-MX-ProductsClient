@@ -1,6 +1,6 @@
 import { CommonHelper } from "../../common/CommonHelper";
 import { Entity, LookupValue } from "../../infrastructure";
-import { Category, CategoryType, Product, Type } from "../Common";
+import { Category, CategoryType, ClientProduct, FlowType, Product, Type } from "../Common";
 import { LastYearVolumes } from "../Common/LastYearVolumes";
 
 export class PromoItem extends Entity {
@@ -13,16 +13,24 @@ export class PromoItem extends Entity {
     public BusinessUnit: LookupValue;
     public Brand: LookupValue;
     public ProductCategory: LookupValue;
+    public ClientProduct: ClientProduct;
     public Product: Product;
+    //public SKUNumber: string;
     public StartDate: Date;
     public EndDate: Date;
+    //Sell In
+    public StartDateSellIn: Date;
+    public EndDateSellIn: Date;
+
     public DiscountPerPiece?: number = null;
     public NetPrice?: number = null;
     public COGS: number = null;
-    public Redemption: number;    
+    public Redemption: number;
     public BaseVolume: number;
     public EstimatedIncrementalVolume: number;
     public AdditionalInvestment: number;
+    public Client: LookupValue;
+    public FlowType: LookupValue;
 
     public LastYearVolumes: LastYearVolumes;
     public GetBaseGMSum?: (category: CategoryType) => number;
@@ -69,25 +77,25 @@ export class PromoItem extends Entity {
                 return true;
             default:
                 return false;
-        }        
+        }
     }
 
     public RequiresNetPrice():boolean {
 /*         switch (this.GetCategoryType()) {
             case CategoryType.SpecialExhibitions:
-            case CategoryType.Institutional: 
-            case CategoryType.Unknown:           
+            case CategoryType.Institutional:
+            case CategoryType.Unknown:
                 return false;
             default:
                 return true;
-        } */ 
+        } */
         return true;
     }
 
     public RequiresDiscountPerPiece():boolean {
         switch (this.GetCategoryType()) {
             case CategoryType.ConsumerPromo:
-            case CategoryType.Rollback:            
+            case CategoryType.Rollback:
                 return true;
             default:
                 return false;
@@ -100,8 +108,8 @@ export class PromoItem extends Entity {
 
     public RequiresTotalEstimatedVolume(): boolean {
         switch (this.GetCategoryType()) {
-            case CategoryType.SpecialExhibitions: 
-            case CategoryType.Unknown:     
+            case CategoryType.SpecialExhibitions:
+            case CategoryType.Unknown:
                 return false;
             default:
                 return true;
@@ -143,7 +151,7 @@ export class PromoItem extends Entity {
             case CategoryType.Institutional:
             case CategoryType.Visibility:
             case CategoryType.Performance:
-            case CategoryType.Unknown:     
+            case CategoryType.Unknown:
                 return false;
             default:
                 return true;
@@ -215,13 +223,13 @@ export class PromoItem extends Entity {
     }
 
     public GetLastYearVolume(): number {
-        if(this.LastYearVolumes && CommonHelper.IsDate(this.StartDate) && CommonHelper.IsDate(this.EndDate) && this.EndDate >= this.StartDate) {            
+        if(this.LastYearVolumes && CommonHelper.IsDate(this.StartDate) && CommonHelper.IsDate(this.EndDate) && this.EndDate >= this.StartDate) {
             let currentDate = new Date(this.StartDate.getTime());
             let currentMonth = currentDate.getMonth();
             let dailyVolume = this.LastYearVolumes.GetDailyVolume(currentDate.getFullYear() - 1, currentMonth);
             let volume = 0;
 
-            while(this.EndDate >= currentDate) {                
+            while(this.EndDate >= currentDate) {
                 volume += dailyVolume;
                 currentDate.setDate(currentDate.getDate() + 1);
 
@@ -240,7 +248,7 @@ export class PromoItem extends Entity {
     }
 
     public GetAverageVolumeL3Months(): number {
-        if(this.LastYearVolumes && CommonHelper.IsDate(this.StartDate)) 
+        if(this.LastYearVolumes && CommonHelper.IsDate(this.StartDate))
             return this.LastYearVolumes.GetAverageVolumeL3Months(this.StartDate.getMonth());
 
         return null;
@@ -270,7 +278,7 @@ export class PromoItem extends Entity {
                 return (this.GetTotalEstimatedVolume() || 0) * (this.NetPrice || 0) - (this.GetEstimatedInvestment() || 0);
             else
                 return (this.GetTotalEstimatedVolume() || 0) * ((this.NetPrice || 0) - (this.RequiresDiscountPerPiece() ? (this.DiscountPerPiece || 0) : 0));
-        }            
+        }
 
         return null;
     }
@@ -278,7 +286,7 @@ export class PromoItem extends Entity {
     public GetIncrementalEstimatedNR(): number {
         if(this.RequiresIncrementalEstimatedNR()) {
             return (this.GetEstimatedNR() || 0) - (this.GetBaseNR() || 0);
-        }            
+        }
 
         return null;
     }
@@ -291,7 +299,7 @@ export class PromoItem extends Entity {
     }
 
     public GetEstimatedGMPromo(): number {
-        if(this.RequiresEstimatedGMPromo()) 
+        if(this.RequiresEstimatedGMPromo())
             return (this.GetTotalEstimatedVolume() || 0) * (this.GetGMBaseUnit() || 0);
 
         return null;
@@ -306,14 +314,14 @@ export class PromoItem extends Entity {
             case CategoryType.Performance:
                 const baseGMSum = this.GetBaseGMSum(this.GetCategoryType());
                 investment = (baseGMSum > 0 ? (this.GetBaseGM() / baseGMSum) * (this.Investment || 0): 0);
-                break;            
+                break;
             case CategoryType.SpecialExhibitions:
                 investment = this.Investment || 0;
                 break;
             case CategoryType.ConsumerPromo:
                 if(this.Type != null && this.Type.Name.toLowerCase() == "redemption")
                     investment = this.GetTotalEstimatedVolume() * (this.Redemption/100) * this.DiscountPerPiece;
-                else    
+                else
                     investment = this.GetTotalEstimatedVolume() * this.DiscountPerPiece;
                 break;
             default:
@@ -336,7 +344,7 @@ export class PromoItem extends Entity {
 
     public GetROI(): number {
         const value1 = (this.GetEstimatedGMPromo() || 0) - (this.GetBaseGM() || 0);
-        //En la siguiente línea se excluye la inversión adicional MKT por estar ya incluída 
+        //En la siguiente línea se excluye la inversión adicional MKT por estar ya incluída
         //en la inversión estimada (lo cual fue un cambio)
         const value2 = (this.GetEstimatedInvestment() || 0);// + (this.AdditionalInvestment || 0);
 
@@ -444,44 +452,44 @@ export class PromoItem extends Entity {
 
     public GetBaseNRAsString(): string {
         const value = this.GetBaseNR();
-        return value != null ? value.toFixed(2) : null;
+        return value != null ? value.toLocaleString() : null;
     }
 
     public GetEstimatedNRAsString(): string {
         const value = this.GetEstimatedNR();
-        return value != null ? value.toFixed(2) : null;
+        return value != null ? value.toLocaleString() : null;
     }
 
     public GetIncrementalEstimatedNRAsString(): string {
         const value = this.GetIncrementalEstimatedNR();
-        return value != null ? value.toFixed(2) : null;
+        return value != null ? value.toLocaleString() : null;
     }
 
     public GetBaseGMAsString(): string {
         const value = this.GetBaseGM();
-        return value != null ? value.toFixed(2) :  null;
+        return value != null ? value.toLocaleString() :  null;
     }
 
     public GetEstimatedGMPromoAsString(): string {
         const value = this.GetEstimatedGMPromo();
-        return value != null ? value.toFixed(2) :  null;
+        return value != null ? value.toLocaleString() :  null;
     }
 
     public GetIncrementalGMAsString(): string {
         const value = this.GetIncrementalGM();
-        return value != null ? value.toFixed(2) :  null;
+        return value != null ? value.toLocaleString() :  null;
     }
 
     public GetEstimatedInvestmentAsString(): string {
-        const value = this.GetEstimatedInvestment();
+        const value = this.GetEstimatedInvestment().toLocaleString();
 
-        return value != null ? value.toFixed(2) : null;
+        return value != null ? value.toLocaleString() : null;
     }
 
     public GetROIAsString(): string {
         const value = this.GetROI();
         return value != null ? value.toFixed(2) : "0.00";
-    }    
+    }
 
     //#endregion
 
@@ -494,8 +502,10 @@ export class PromoItem extends Entity {
         if (this.Type == null) invalidCount++;
         if (this.BusinessUnit == null) invalidCount++;
         if (this.Brand == null) invalidCount++;
-        if (this.Product == null) invalidCount++;
+        //if (this.Product == null) invalidCount++;
+        if (this.ClientProduct == null) invalidCount++;
         if (this.ProductCategory == null) invalidCount++;
+        //if (this.Client == null) invalidCount++;
         if (!CommonHelper.IsDate(this.StartDate)) invalidCount++;
         if (!CommonHelper.IsDate(this.EndDate)) invalidCount++;
         if (this.RequiresDiscountPerPiece() && !(this.DiscountPerPiece > 0)) invalidCount++;
