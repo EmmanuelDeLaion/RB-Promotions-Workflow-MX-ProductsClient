@@ -19,13 +19,16 @@ export class ClientProductRepository {
 
 
   public static GetById(id: number, clientName?: string): Promise<ClientProduct> {
-    const entity = sp.web.lists.getByTitle(ClientProductRepository.LIST_NAME_DEFAULT)
+    if (clientName == undefined || clientName == null) {
+      clientName = this.LIST_NAME_DEFAULT;
+    } else {
+      clientName = `ZProd - ${clientName}`
+    }
+    const entity = sp.web.lists.getByTitle(clientName)
       .items.getById(id).select(
         "ID",
         "Title",
         "SKUDescription",
-        // "Client/ID",
-        // "Client/Title",
         "Product/ID",
         "Product/Title",
         "Price",
@@ -72,6 +75,38 @@ export class ClientProductRepository {
   }
 
 
+
+  public static GetByClientAndSKUProduct(skuNumber: string, clientName?: string): Promise<ClientProduct> {
+    if (clientName == undefined || clientName == null) {
+      clientName = this.LIST_NAME_DEFAULT;
+    } else {
+      clientName = `ZProd - ${clientName}`
+    }
+
+    const entity = sp.web.lists.getByTitle(clientName)
+      .items.select(
+        "ID",
+        "Title",
+        "SKUDescription",
+        "Product/ID",
+        "Product/Title",
+        "Price",
+        "COGS",
+        "EAN",
+        "BusinessUnit/ID",
+        "BusinessUnit/Title",
+        "Brand/ID",
+        "Brand/Title",
+        "ProductCategory/ID",
+        "ProductCategory/Title")
+      .expand("Product", "BusinessUnit", "Brand", "ProductCategory")
+      .filter(`Title eq ${skuNumber}`).get().then((item) => {
+        return ClientProductRepository.BuildEntity(item[0]);
+      });
+    return entity;
+  }
+
+
   public static async GetAll(clientName?: string): Promise<ClientProduct[]> {
     if (clientName == undefined || clientName == null) {
       clientName = this.LIST_NAME_DEFAULT;
@@ -106,11 +141,11 @@ export class ClientProductRepository {
               item.ProductCategory && item.ProductCategory.ID && item.ProductCategory.Title)
               result.push(ClientProductRepository.BuildEntity(item));
           });
-          console.log(result);
           return result;
         });
     return collection;
   }
+
 
   private static BuildEntity(item: any): ClientProduct {
     let entity = new ClientProduct();

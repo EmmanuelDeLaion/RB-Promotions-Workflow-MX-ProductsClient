@@ -31,6 +31,7 @@ export class DraftPromoState extends PromoState {
     public async GetViewModel(): Promise<PromoViewModel> {
         let viewModel = new PromoViewModel(this.Entity);
 
+        // TODO: Collections
         viewModel.Clients = await ClientRepository.GetClients();
         viewModel.Categories = await CategoryRepository.GetAll();
         viewModel.ClientProducts = await ClientProductRepository.GetAll();

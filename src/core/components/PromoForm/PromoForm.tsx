@@ -90,13 +90,11 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       canUploadEvidence: false
     };
 
-
   }
 
 
   async GetUser() {
     const user = await SecurityHelper.GetCurrentUser();
-
     if (user) {
       this.setState({
         currentUser: user.Value
@@ -114,11 +112,26 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     this.GetUser();
 
     PromoService.GetViewModel(this.props.itemId).then((viewModel) => {
+
+      // TODO: Filtra todos los prouctos de cada cliente
+      if (viewModel.Entity.Client) {
+        ClientProductRepository.GetAll(viewModel.Entity.Client.Name).then((products) => {
+          this.setState((state, props) => {
+            state.viewModel.ClientProducts = products;
+          });
+          this.setState({
+            hideLoading: true
+          });
+        });
+      }
+
+
       this.setState({
         isLoading: false,
         enableSubmit: true,
         viewModel: viewModel
       });
+
 
       this.setState((state, props) => ({
         copiarPromo: viewModel.Entity.Client && this.state.currentUser
@@ -128,19 +141,18 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
             || approvers.Phase0Coordinator3.Value == this.state.currentUser ? true : false) : false,
         flowApproval: this.state.viewModel.Entity.TipoFlujo == null && this.state.viewModel.Entity.GetStatusId() == PromoStatus.Approval ? (approvers.Phase0Coordinator1.Value == this.state.currentUser || approvers.Phase0Coordinator2.Value == this.state.currentUser
           || approvers.Phase0Coordinator3.Value == this.state.currentUser ? true : false) : false,
-
         canUploadEvidence:
           (
             this.state.viewModel.Entity.GetStatusId() == PromoStatus.Draft ||
             this.state.viewModel.Entity.GetStatusId() == PromoStatus.Rejected ||
             this.state.viewModel.Entity.GetStatusId() == PromoStatus.New
           )
-          && (this.state.viewModel ? this.state.viewModel.ReadOnlyForm : true) == false
-          ?
-          true :
-          (this.state.viewModel.Entity.GetStatusId() == PromoStatus.Approved ? true : false)
-
+            && (this.state.viewModel ? this.state.viewModel.ReadOnlyForm : true) == false
+            ?
+            true :
+            (this.state.viewModel.Entity.GetStatusId() == PromoStatus.Approved ? true : false)
       }));
+
 
 
     }).catch((err) => {
@@ -158,6 +170,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     const subchannel = client ? client.Subchannel : null;
     const selectedItem = entity ? entity.Items[this.state.selectedIndex] : null;
     const readOnlyForm = this.state.viewModel ? this.state.viewModel.ReadOnlyForm : true;
+
 
 
     let output =
@@ -333,6 +346,8 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   readOnly={true}
                                 />
                               }
+                              {/* {console.log(entity.Client)
+                              } */}
                             </Stack>
                           </Stack >
                           <Stack grow={12} className="padding-right multilineControlPadding">
@@ -717,7 +732,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Stack className="grayContent smallPadding padding-left padding-right" verticalFill>
                                   <Stack verticalFill horizontal className="verticalPadding detailsControlPadding borderBottom" verticalAlign="center">
                                     <Label>Precio neto OFF</Label>
-                                    {console.log(selectedItem)}
+                                    {/* {console.log(selectedItem)} */}
                                     <Label className="toRight">{selectedItem.RequiresNetPrice() ? (entity.Config.CurrencySymbol + " " + selectedItem.GetNetPriceAsString()) : "N/A"}</Label>
                                   </Stack>
                                   <Stack verticalFill horizontal className="verticalPadding detailsControlPadding borderBottom" verticalAlign="center">
@@ -1147,7 +1162,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                             <Link
                                               disabled={this.state.promoProven == true ? false : readOnlyForm == true ? true : false}
                                               onClick={() => this.setState({ hideDeleteEvidenceDialog: false })}
-                                              >
+                                            >
                                               <Icon iconName="MapLayers" /><span style={{ color: '#323130' }}>Borrar evidencia</span>
                                             </Link>
                                           </Stack>
@@ -1364,7 +1379,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                           {
                             display:
                               this.state.viewModel.ShowRejectButton == true ||
-                              this.state.flowApproval == true ? "block" : "none",
+                                this.state.flowApproval == true ? "block" : "none",
                             marginTop: this.state.flowApproval ? "4px" : "0"
                           }
                         }
@@ -1437,6 +1452,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     });
   }
 
+
   private onClientChanged(item: IDropdownOption) {
     const clientId = item.key as number;
 
@@ -1449,7 +1465,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       });
     });
 
-
     this.setState({
       hideLoading: false
     });
@@ -1461,7 +1476,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         /*Seleccionar el cliente busca la lista del cliente seleccionado
           Actualiza los productos por el cliente seleccionado
         */
-        ClientProductRepository.GetAll(this.state.viewModel.Entity.Client.Name).then((products)=>{
+        ClientProductRepository.GetAll(this.state.viewModel.Entity.Client.Name).then((products) => {
           newState.viewModel.ClientProducts = products;
           state.viewModel.Entity.Items[this.state.selectedIndex].BusinessUnit = null;
           state.viewModel.Entity.Items[this.state.selectedIndex].Brand = null;
@@ -1556,7 +1571,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
 
     let toDelete = this.state.viewModel.Entity.Items[this.state.selectedIndex];
 
-    if(!this.arrayPromoItemsDelete.includes(toDelete.ItemId) && toDelete.ItemId !== undefined ){
+    if (!this.arrayPromoItemsDelete.includes(toDelete.ItemId) && toDelete.ItemId !== undefined) {
       this.arrayPromoItemsDelete.push(toDelete.ItemId);
     }
 
@@ -1704,13 +1719,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     const selectedItem = this.state.viewModel.Entity.Items[this.state.selectedIndex];
     let filteredProducts = this.state.viewModel.ClientProducts || [];
 
-    console.log(this.state.viewModel.ClientProducts);
-    console.log(selectedItem.Client);
-
     // Mostrar los productos que tiene un cliente
-    if(this.state.viewModel.Entity.Client == null || this.state.viewModel.Entity.Client == undefined){
+    if (this.state.viewModel.Entity.Client == null || this.state.viewModel.Entity.Client == undefined) {
       filteredProducts = [];
-    }else{
+    } else {
       filteredProducts = this.state.viewModel.ClientProducts;
     }
 
@@ -1897,7 +1909,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     let clientName = this.state.viewModel.Entity.Client.Name;
 
     if (client && product) {
-      console.log(skunumber.SKUNumber);
       ClientProductRepository.GetByClientAndProduct(client.ItemId, skunumber.SKUNumber, clientName).then((item: ClientProduct) => {
         promoItem.NetPrice = promoItem.RequiresNetPrice() && item ? item.Price : null;
         promoItem.COGS = item ? item.COGS : null;
@@ -2138,7 +2149,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         this.setState({
           formSubmitted: true,
           resultIsOK: true
-      });
+        });
       }).catch((err) => {
         console.error(err);
         this.setState({ formSubmitted: true, errorMessage: err });
@@ -2179,7 +2190,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
         this.setState({
           formSubmitted: true,
           resultIsOK: true
-      });
+        });
       }).catch((err) => {
         console.error(err);
         this.setState({ formSubmitted: true, errorMessage: err });

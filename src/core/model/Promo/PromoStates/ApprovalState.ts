@@ -13,15 +13,16 @@ import { Promo } from "../Promo";
 import { ApproversRepository } from "../../../data/ApproversRepository";
 import { PromoWorkflowState } from "../PromoWorkflowState";
 import { sp } from "@pnp/sp/presets/all";
+import { ClientRepository } from '../../../data/ClientRepository';
+import { CategoryRepository } from '../../../data/CategoryRepository';
+import { ClientProductRepository } from '../../../data/ClientProductRepository';
 
 export class ApprovalState extends PromoState {
 
 
   public async Initialize(): Promise<void> {
     const users = await this.GetCurrentStage().GetPendingUsers();
-
     await SecurityHelper.SetPromoPermissions(this.Entity.ItemId, [this.Entity.Client.KeyAccountManager.ItemId], this.GetCurrentStage().GetPendingUserIDs());
-
     await Promise.all(users.map(async (user) => {
       await NotificacionsManager.SendTaskAssignedNotification(this.Entity, user.Email, null, user.Value);
     }));
@@ -41,6 +42,12 @@ export class ApprovalState extends PromoState {
   public async GetViewModel(): Promise<PromoViewModel> {
     console.log("version 7.1");
     let viewModel = new PromoViewModel(this.Entity);
+
+    // TODO: Collections
+    viewModel.Clients = await ClientRepository.GetClients();
+    viewModel.Categories = await CategoryRepository.GetAll();
+    viewModel.ClientProducts = await ClientProductRepository.GetAll();
+
     viewModel.ReadOnlyForm = true;
     const currentUser = await SecurityHelper.GetCurrentUser();
     viewModel.FlowsTypes = await FlowApproversRepository.GetAll();
@@ -69,7 +76,7 @@ export class ApprovalState extends PromoState {
       viewModel.ShowApproveButton = true;
       viewModel.ShowRejectButton = true;
     }
-    console.log(viewModel);
+    // console.log(viewModel);
     return viewModel;
 
   }
@@ -105,20 +112,20 @@ export class ApprovalState extends PromoState {
     if (apr.Approvals && apr.Approvals != "" && apr.Approvals != undefined && apr.Approvals != null) {
       apr.Approvals.split("|").map((data) => {
         if (Number(data.split("-")[0]) == user.ItemId && !encontrado) {
-          console.log("Primer IF");
+          // console.log("Primer IF");
           if (data.replace("Pendiente", "Aprobar") !== data) {
-            console.log("Segundo IF");
+            // console.log("Segundo IF");
             aprobadores = concat(aprobadores + data.replace("Pendiente", "Aprobar") + "|").toString();
             encontrado = true;
           }
           else {
             data != null || data != "" || data ? aprobadores = concat(aprobadores + data + "|").toString() : null;
-            console.log("Primer else");
+            // console.log("Primer else");
           }
         }
         else {
           data != null || data != "" || data ? aprobadores = concat(aprobadores + data + "|").toString() : null;
-          console.log("Segundo else");
+          // console.log("Segundo else");
         }
       });
     }
