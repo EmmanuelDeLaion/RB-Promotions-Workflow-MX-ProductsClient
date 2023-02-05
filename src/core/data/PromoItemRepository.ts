@@ -8,7 +8,7 @@ import { LastYearVolumesRepository } from "./LastYearVolumesRepository";
 import { ProductRepository } from "./ProductRepository";
 
 export class PromoItemRepository {
-  private static LIST_NAME: string = "Promo items copy";
+  private static LIST_NAME: string = "Promo items";
 
   public static async GetByPromo(promoId: number, clientId?: number, clientName?: string): Promise<PromoItem[]> {
     const items = await sp.web.lists.getByTitle(PromoItemRepository.LIST_NAME)

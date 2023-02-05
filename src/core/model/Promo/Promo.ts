@@ -28,6 +28,7 @@ export class Promo extends Entity {
     protected _state: PromoState;
     public Approvals: string = "";
     public TipoFlujo: FlowType;
+    public PromotionMechanics: string = "";
 
     constructor(configuration: Configuration) {
         super();

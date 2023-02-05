@@ -346,8 +346,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   readOnly={true}
                                 />
                               }
-                              {/* {console.log(entity.Client)
-                              } */}
                             </Stack>
                           </Stack >
                           <Stack grow={12} className="padding-right multilineControlPadding">
@@ -364,7 +362,23 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                               maxLength={500}
                             />
                           </Stack>
+                          <Stack grow={12} className="padding-right multilineControlPadding">
+                            <TextField
+                              label="Mecánica de promoción:"
+                              required={!readOnlyForm}
+                              multiline={true}
+                              rows={3}
+                              onChange={this.onPromotionMechanicsChange.bind(this)}
+                              value={entity.PromotionMechanics}
+                              autoComplete="Off"
+                              errorMessage={this.getValidationErrorMessage(entity.PromotionMechanics)}
+                              readOnly={readOnlyForm}
+                              maxLength={500}
+                            />
+                          </Stack>
                         </Stack>
+                        {console.log(entity.PromotionMechanics)}
+                        {console.log(entity.ActivityObjective)}
                         <Stack grow={4} horizontal className="fixedStructure">
                           <Stack grow={12} className="grayBorderLeft">
                             <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
@@ -935,6 +949,10 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                 <Label>Objetivo de la promoción</Label>
                                 <span className="twoColumnsContentMaxWidth">{entity.ActivityObjective}</span>
                               </Stack>
+                              <Stack className="verticalPadding borderBottom">
+                                <Label>Mecánica de promoción</Label>
+                                <span className="twoColumnsContentMaxWidth">{entity.PromotionMechanics}</span>
+                              </Stack>
                             </Stack>
                           </Stack>
                           <Stack grow={4} horizontal className="fixedStructure">
@@ -1452,6 +1470,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     });
   }
 
+  private onPromotionMechanicsChange(_event: any, text: any) {
+    this.setState((state) => {
+      state.viewModel.Entity.PromotionMechanics = text;
+      return state;
+    });
+  }
 
   private onClientChanged(item: IDropdownOption) {
     const clientId = item.key as number;
@@ -2320,6 +2344,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     var invalidCount = 0;
 
     if (CommonHelper.IsNullOrEmpty(this.state.viewModel.Entity.ActivityObjective)) invalidCount++;
+    if (CommonHelper.IsNullOrEmpty(this.state.viewModel.Entity.PromotionMechanics)) invalidCount++;
     if (this.state.viewModel.Entity.Client == null) invalidCount++;
 
     this.state.viewModel.Entity.Items.map((item) => {
