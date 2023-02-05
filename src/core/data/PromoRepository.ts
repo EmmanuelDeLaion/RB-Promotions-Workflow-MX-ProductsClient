@@ -30,8 +30,8 @@ export class PromoRepository {
         "TipoFlujoId"
       ).get();
 
-    const items = await PromoItemRepository.GetByPromo(item.ID, item.ClientId);
     const client = item.ClientId ? await ClientRepository.GetById(item.ClientId) : null;
+    const items = await PromoItemRepository.GetByPromo(item.ID, item.ClientId, client.Name);
     const workflowLog = await WorkflowLogRepository.GetByPromo(item.ID);
     const evidence = await EvidenceRepository.GetByPromoID(item.Title);
     const flowtype = item.TipoFlujoId ? await FlowApproversRepository.GetById(item.TipoFlujoId) : null;
