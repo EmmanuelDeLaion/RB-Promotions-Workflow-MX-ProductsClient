@@ -12,10 +12,10 @@
         Reemplazar el nombre del cliente en las url para cambiar
         el nombre de
         las listas de sharepoint por cada cliente
-        EJ. Url="Lists/ListDefault_Products"
+        EJ. Url="Lists/ListDefault2_Products"
         Cambiar
         el nombre de la lista
-        EJ. Title="ZProd - ListDefault"
+        EJ. Title="ZProd - ListDefault2"
       -->
 
 
@@ -95,7 +95,6 @@
               ColName="float1" RowOrdinal="0" />
           </pnp:Fields>
         </pnp:ListInstance>
-
 
       </pnp:Lists>
     </pnp:ProvisioningTemplate>

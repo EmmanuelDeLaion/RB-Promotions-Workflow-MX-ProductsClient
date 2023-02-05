@@ -27,7 +27,8 @@ export class PromoRepository {
         "SYS_WorkflowStages",
         "SYS_CurrentStageNumber",
         "Approvals",
-        "TipoFlujoId"
+        "TipoFlujoId",
+        "PromotionMechanics"
       ).get();
 
     const client = item.ClientId ? await ClientRepository.GetById(item.ClientId) : null;
@@ -57,7 +58,8 @@ export class PromoRepository {
       PendingApproversId: { results: pendingApprovers ? entity.GetPendingApproverIDs() : [] },
       TotalEstimatedInvestment: entity.GetTotalEstimatedInvestment(),
       Approvals: entity.Approvals,
-      TipoFlujoId: entity.TipoFlujo ? entity.TipoFlujo.ItemId : null
+      TipoFlujoId: entity.TipoFlujo ? entity.TipoFlujo.ItemId : null,
+      PromotionMechanics: entity.PromotionMechanics
     };
 
     if (!entity.ItemId) {
@@ -97,6 +99,7 @@ export class PromoRepository {
     entity.WorkflowLog = workflowLog;
     entity.Evidence = evidence;
     entity.TipoFlujo = flowtype;
+    entity.PromotionMechanics = item.PromotionMechanics;
 
     items.map((promoItem) => {
       promoItem.GetBaseGMSum = entity.GetBaseGMSum.bind(entity);
