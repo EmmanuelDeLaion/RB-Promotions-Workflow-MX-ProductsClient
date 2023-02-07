@@ -98,12 +98,12 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     if (user) {
       this.setState({
         currentUser: user.Value
-      })
+      });
     }
     else {
       this.setState({
         currentUser: ""
-      })
+      });
     }
   }
 
@@ -170,6 +170,9 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     const subchannel = client ? client.Subchannel : null;
     const selectedItem = entity ? entity.Items[this.state.selectedIndex] : null;
     const readOnlyForm = this.state.viewModel ? this.state.viewModel.ReadOnlyForm : true;
+
+    console.log(entity);
+    console.log(this.state.flowApproval);
 
 
 
@@ -265,7 +268,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                     onClick={() => this.setState({ hideModalConfirmationDialog: true })}
                     text="Cancelar" />
                   <PrimaryButton
-                    onClick={this.props.close}
+                    onClick={this.exitWithoutSaving.bind(this)}
                     text="Salir sin guardar"
                     style={{
                       backgroundColor: "#425C68",
@@ -377,8 +380,6 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                             />
                           </Stack>
                         </Stack>
-                        {console.log(entity.PromotionMechanics)}
-                        {console.log(entity.ActivityObjective)}
                         <Stack grow={4} horizontal className="fixedStructure">
                           <Stack grow={12} className="grayBorderLeft">
                             <Stack horizontal className="smallPadding padding-left peopleHeaderStyles" verticalFill verticalAlign="center">
@@ -1132,7 +1133,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
                                   backgroundColor: "#425C68",
                                   border: "transparent",
                                   color: this.state.canUploadEvidence == true ? "white" : "white",
-                                  opacity: this.state.canUploadEvidence == false ? "40%" : "100%"
+                                  opacity: this.state.canUploadEvidence == false ? 40 : 100
                                 }}
                                 onClick={() => {
                                   if (!this.validateEvidence()) return;
@@ -1444,10 +1445,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
   //#region Header events
 
   private onCloseModal() {
-    if (!this.state.viewModel.ReadOnlyForm)
+    if (!this.state.viewModel.ReadOnlyForm) {
       this.setState({ hideModalConfirmationDialog: false });
-    else
+    }
+    else {
       this.props.close();
+      window.location.reload();
+    }
   }
 
   private onNameChange(_event: any, text?: string) {
@@ -1571,7 +1575,7 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
     let customerAux = {
       key: this.state.viewModel.Entity.Client.ItemId,
       text: this.state.viewModel.Entity.Client.Name
-    }
+    };
 
     this.setState((state) => {
       let newState = state as IPromoFormState;
@@ -2499,6 +2503,13 @@ export class PromoForm extends React.Component<IPromoFormProps, IPromoFormState>
       </div>
     );
   }
+
+
+  private exitWithoutSaving() {
+    this.props.close();
+    window.location.reload();
+  }
+
 
   private deleteProductDialogContentProps = {
     type: DialogType.normal,

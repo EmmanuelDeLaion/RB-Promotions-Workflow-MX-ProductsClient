@@ -29,7 +29,9 @@
     ]
   },
   "include": [
-    "src/**/*.ts", "src/core/components/PromoForm/PromoForm.tsx"
+    "src/**/*.ts",
+    "src/core/components/PromoForm/PromoForm.tsx",
+    "src/core/components/ListTaskToDo/ListTaskToDo.tsx"
   ],
   "exclude": [
     "node_modules",

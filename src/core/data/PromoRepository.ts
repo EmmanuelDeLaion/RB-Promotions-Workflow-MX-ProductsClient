@@ -10,6 +10,7 @@ import { FlowApproversRepository } from "./FlowApproversRepository";
 import { EvidenceRepository } from "./EvidenceRepository";
 import { PromoItemRepository } from "./PromoItemRepository";
 import { WorkflowLogRepository } from "./WorkflowLogRepository";
+import { Promos } from '../model/Promo/Promos';
 
 export class PromoRepository {
   public static LIST_NAME: string = "Promociones";
@@ -43,7 +44,6 @@ export class PromoRepository {
 
   public static async SaveOrUpdate(entity: Promo, sU: number = 0): Promise<void> {
     const pendingApprovers = entity.GetPendingApproverIDs();
-
     const data = {
       PromoName: entity.Name,
       ActivityObjective: entity.ActivityObjective,
@@ -61,14 +61,11 @@ export class PromoRepository {
       TipoFlujoId: entity.TipoFlujo ? entity.TipoFlujo.ItemId : null,
       PromotionMechanics: entity.PromotionMechanics
     };
-
     if (!entity.ItemId) {
       const iar: IItemAddResult = await sp.web.lists.getByTitle(PromoRepository.LIST_NAME).items.add(data);
-
       //TODO: Obtener prefijo de país desde configuración
       entity.ItemId = iar.data.ID;
       entity.PromoID = entity.Config.CountryCode + iar.data.ID;
-
       await sp.web.lists.getByTitle(PromoRepository.LIST_NAME).items.getById(iar.data.ID).update({
         Title: entity.PromoID,
         PromoLink: entity.PromoID
@@ -76,9 +73,9 @@ export class PromoRepository {
     }
     else
       await sp.web.lists.getByTitle(PromoRepository.LIST_NAME).items.getById(entity.ItemId).update(data);
-
     await PromoItemRepository.SaveOrUpdateItems(entity.ItemId, entity.PromoID, entity.Items, entity.ItemsToDelete);
   }
+
 
 
   public static async GetNewPromo(): Promise<Promo> {
@@ -87,9 +84,61 @@ export class PromoRepository {
   }
 
 
+  // TODO: Mis pendientes
+  public static async GetByIdAndApprover(idPromo: number, approver?: string, idApprover?: number): Promise<Promo> {
+    const item = await sp.web.lists.getByTitle(PromoRepository.LIST_NAME)
+      .items.getById(idPromo).select(
+        "ID",
+        "Title",
+        "PromoName",
+        "ActivityObjective",
+        "ClientId",
+        "StatusId",
+        "SYS_WorkflowStages",
+        "SYS_CurrentStageNumber",
+        "Approvals",
+        "TipoFlujoId",
+        "PromotionMechanics"
+      ).get();
+    const client = item.ClientId ? await ClientRepository.GetById(item.ClientId) : null;
+    const items = await PromoItemRepository.GetByPromo(item.ID, item.ClientId, client.Name);
+    const workflowLog = await WorkflowLogRepository.GetByPromo(item.ID);
+    const evidence = await EvidenceRepository.GetByPromoID(item.Title);
+    const flowtype = item.TipoFlujoId ? await FlowApproversRepository.GetById(item.TipoFlujoId) : null;
+    return PromoRepository.BuildEntity(item, items, client, workflowLog, evidence, flowtype);
+  }
+
+  public static async GetAllPromos(): Promise<Promos[]> {
+    const collection = await sp.web.lists.getByTitle(PromoRepository.LIST_NAME)
+      .items().then((items) => {
+        return items.map(async (item) => {
+          const client = await ClientRepository.GetById(item.ClientId);
+          return PromoRepository.BuildPromos(item,client);
+        });
+      });
+    return Promise.all(collection);
+  }
+
+  private static BuildPromos(item: any, client: Client): Promos {
+    let entity = new Promos();
+    entity.ItemId = item.ID;
+    entity.Title = item.Title;
+    entity.Name = item.PromoName;
+    entity.Client = client;
+    entity.PromoID = item.ID;
+    entity.Status = item.Status;
+    entity.Approvals = item.Approvals;
+    entity.TipoFlujo = item.TipoFlujo;
+    entity.StartDate = item.StartDate;
+    entity.EndDate = item.EndDate;
+    return entity;
+  }
+  // TODO: Fin mis pendientes
+
+
+
   private static async BuildEntity(item: any, items: PromoItem[], client: Client, workflowLog: WorkflowLog[], evidence: PromoEvidence[], flowtype: FlowType): Promise<Promo> {
     let entity = await PromoRepository.GetNewPromo();
-
     entity.ItemId = item.ID;
     entity.Name = item.PromoName;
     entity.PromoID = item.Title;
@@ -100,21 +149,15 @@ export class PromoRepository {
     entity.Evidence = evidence;
     entity.TipoFlujo = flowtype;
     entity.PromotionMechanics = item.PromotionMechanics;
-
     items.map((promoItem) => {
       promoItem.GetBaseGMSum = entity.GetBaseGMSum.bind(entity);
     });
-
     entity.Items = items;
-
     if (item.SYS_WorkflowStages) {
-
       entity.WorkflowStages = [];
-
       const lengthDataIDS: number = item.SYS_WorkflowStages.split('[')[2].split(']')[0].split(',').length;
       const lenghtDataComplete: number = item.SYS_WorkflowStages.split('[')[3].split(']')[0].split(',').length;
       const datosComplete: string[] = item.SYS_WorkflowStages.split('[')[3].split(']')[0].split(',');
-
       let dataIDS: number[] = [];
       let dataComplete: number[] = [];
 

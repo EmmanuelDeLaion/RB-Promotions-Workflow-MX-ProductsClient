@@ -7,7 +7,7 @@ import { ConfigurationRepository } from "../data";
 import { PromoEvidence } from "../model/Promo/PromoEvidence";
 import { EvidenceRepository } from "../data/EvidenceRepository";
 
-export class PromoService { 
+export class PromoService {
 
   private static async GetPromo(itemId?: number): Promise<Promo> {
     return itemId ? await PromoRepository.GetById(itemId)
@@ -49,4 +49,8 @@ export class PromoService {
   public static async FlowAsign(entity: Promo, comments: string, flowtype: FlowType): Promise<void> {
     return await (await this.GetPromo(entity.ItemId)).FlowAsign(entity ,comments, flowtype);
   }
+
+  // public static async GetPromos(){
+  //   return await PromoRepository.GetAllPromos();
+  // }
 }

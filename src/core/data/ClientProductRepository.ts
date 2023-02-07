@@ -22,7 +22,7 @@ export class ClientProductRepository {
     if (clientName == undefined || clientName == null) {
       clientName = this.LIST_NAME_DEFAULT;
     } else {
-      clientName = `ZProd - ${clientName}`
+      clientName = `ZProd - ${clientName}`;
     }
     const entity = sp.web.lists.getByTitle(clientName)
       .items.getById(id).select(
@@ -62,7 +62,7 @@ export class ClientProductRepository {
     if (clientName == undefined || clientName == null) {
       clientName = this.LIST_NAME_DEFAULT;
     } else {
-      clientName = `ZProd - ${clientName}`
+      clientName = `ZProd - ${clientName}`;
     }
     const collection = sp.web.lists.getByTitle(clientName)
       .items.select("ID", "Title", "Price", "COGS").filter(`Title eq ${skuNumber}`).get().then((items) => {
@@ -80,7 +80,7 @@ export class ClientProductRepository {
     if (clientName == undefined || clientName == null) {
       clientName = this.LIST_NAME_DEFAULT;
     } else {
-      clientName = `ZProd - ${clientName}`
+      clientName = `ZProd - ${clientName}`;
     }
 
     const entity = sp.web.lists.getByTitle(clientName)
@@ -111,7 +111,7 @@ export class ClientProductRepository {
     if (clientName == undefined || clientName == null) {
       clientName = this.LIST_NAME_DEFAULT;
     } else {
-      clientName = `ZProd - ${clientName}`
+      clientName = `ZProd - ${clientName}`;
     }
     const collection = sp.web.lists.getByTitle(clientName)
       .items.select(

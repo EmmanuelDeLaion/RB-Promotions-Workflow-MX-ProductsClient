@@ -1,0 +1,65 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.promoList{
+    min-width: 800px;
+
+    .successMessageContainer{
+        text-align: center;
+        padding: 10px 20px;
+    }
+
+    .errorMessageContainer {
+        @extend .successMessageContainer;
+        text-align: left;
+    }
+
+    .readOnlyInput input {
+        background-color: rgb(254, 245, 249);
+    }
+}
+
+
+.wrapper {
+  margin: 0 auto;
+  padding: 40px;
+  max-width: 800px;
+}
+
+
+.table{
+  margin: 0 0 40px 0;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  display: table;
+}
+
+
+
+.row{
+  display: table-row;
+  background: #f6f6f6;
+
+  &:nth-of-type(odd){
+    background: #e9e9e9;
+  }
+
+
+  &.header{
+    font-weight: 900;
+    color: #ffffff;
+    background: #ea6153;
+  }
+
+}
+
+.cell{
+  padding: 6px 12px;
+  display: table-cell;
+}
+
+
+.badgeApproved{
+  padding: 5px;
+  background-color: rgb(90, 90, 90);
+  color: #ffffff;
+}
