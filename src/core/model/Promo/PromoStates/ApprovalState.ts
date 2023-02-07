@@ -216,19 +216,19 @@ export class ApprovalState extends PromoState {
       let ids: number[] = [teamLeader.ItemId];
       aprobadores = concat(teamLeader.ItemId + "-" + teamLeader.Value + ": " + "Pendiente|").toString();
       if (ids.indexOf(kamUser.ItemId) == -1) {
-        aprobadores = concat(aprobadores + " " + kamUser.ItemId + "-" + kamUser.Value + ": " + "Pendiente|").toString()
+        aprobadores = concat(aprobadores + " " + kamUser.ItemId + "-" + kamUser.Value + ": " + "Pendiente|").toString();
         ids.push(kamUser.ItemId);
       }
       if (ids.indexOf(approvers.Phase2Approver1.ItemId) == -1) {
-        aprobadores = concat(aprobadores + " " + approvers.Phase2Approver1.ItemId + "-" + approvers.Phase2Approver1.Value + ": " + "Pendiente|").toString()
+        aprobadores = concat(aprobadores + " " + approvers.Phase2Approver1.ItemId + "-" + approvers.Phase2Approver1.Value + ": " + "Pendiente|").toString();
         ids.push(approvers.Phase2Approver1.ItemId);
       }
       if (ids.indexOf(approvers.Phase3Approver1.ItemId) == -1) {
-        aprobadores = concat(aprobadores + " " + approvers.Phase3Approver1.ItemId + "-" + approvers.Phase3Approver1.Value + ": " + "Pendiente|").toString()
+        aprobadores = concat(aprobadores + " " + approvers.Phase3Approver1.ItemId + "-" + approvers.Phase3Approver1.Value + ": " + "Pendiente|").toString();
         ids.push(approvers.Phase3Approver1.ItemId);
       }
       if (ids.indexOf(approvers.Phase3Approver2.ItemId) == -1)
-        aprobadores = concat(aprobadores + " " + approvers.Phase3Approver2.ItemId + "-" + approvers.Phase3Approver2.Value + ": " + "Pendiente|").toString()
+        aprobadores = concat(aprobadores + " " + approvers.Phase3Approver2.ItemId + "-" + approvers.Phase3Approver2.Value + ": " + "Pendiente|").toString();
     }
 
 

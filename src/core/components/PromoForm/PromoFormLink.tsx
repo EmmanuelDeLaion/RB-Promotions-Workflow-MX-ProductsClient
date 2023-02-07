@@ -13,6 +13,7 @@ import { initializeTheme } from './Theme';
 import { SecurityHelper } from "../../common";
 import { Constants } from "../../Constants";
 import { ClientRepository, ConfigurationRepository } from "../../data";
+import { PromoFormDialogTaskToDo } from './PromoFormDialogTaskToDo';
 initializeTheme();
 const theme = getTheme();
 
@@ -94,9 +95,10 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, IPromoFo
               text="Nueva promoción"
               title="Nueva promoción" />
           </div>
-          {/* //TODO: Boton mis pendientes */}
+          {/* //TODO: Mis pendientes */}
           <div hidden={false}>
             <PrimaryButton
+            onClick={() => this.openTasksToDo()}
               style={this.openPromotionButtonStyles}
               text="Mis pendientes"
               title="Mis pendientes" />
@@ -112,6 +114,16 @@ export class PromoFormLink extends React.Component<IPromoFormLinkProps, IPromoFo
     dialog.context = this.props.context;
     dialog.show();
   }
+
+
+  // TODO: Mis pendientes
+  private openTasksToDo(): void {
+    console.log("Abrir lista de pendientes");
+    let dialog : PromoFormDialogTaskToDo = new PromoFormDialogTaskToDo();
+    dialog.context = this.props.context;
+    dialog.show();
+  }
+
 
 
 }
